@@ -2,13 +2,10 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.lwjgl.input.Keyboard;
 
-import eu.gir.girsignals.SEProperty;
-import eu.gir.girsignals.SEProperty.ChangeableStage;
 import eu.gir.girsignals.guis.guilib.DrawUtil.IntegerHolder;
 import eu.gir.girsignals.guis.guilib.DrawUtil.SizeIntegerables;
 import net.minecraft.client.Minecraft;
@@ -70,8 +67,8 @@ public class GuiElements {
 		public final IIntegerable<?> property;
 
 		public Consumer<Integer> consumer;
-		public int value = 0;
 		
+		protected int value = 0;
 		protected boolean pressed = false, lor = false, lock = true;
 		protected GuiButton leftButton;
 		protected GuiButton rightButton;
@@ -115,7 +112,6 @@ public class GuiElements {
 		}
 
 		public void drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			System.out.println(this.displayString);
 			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
 			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
 			if (lock && pressed) {
@@ -255,9 +251,19 @@ public class GuiElements {
 		}
 
 		@Override
+		public int getValue() {
+			return isChecked() ? 1:0;
+		}
+		
+		@Override
 		public void update() {
 		}
 
+		@Override
+		public boolean isMouseOver() {
+			return this.checkBox.isMouseOver();
+		}
+		
 		@Override
 		public void updatePos(int x, int y) {
 			this.checkBox.x = x;
@@ -356,27 +362,5 @@ public class GuiElements {
 		}
 
 	}
-
-	@SideOnly(Side.CLIENT)
-	public static Optional<GuiEnumerableSetting> of(SEProperty<?> property, int initialValue,
-			Consumer<Integer> consumer, ChangeableStage stage) {
-		if (property == null)
-			return Optional.empty();
-		if (ChangeableStage.GUISTAGE == stage) {
-			if (property.isChangabelAtStage(ChangeableStage.GUISTAGE)) {
-				if (property.getType().equals(Boolean.class))
-					return Optional.of(new GuiSettingCheckBox(property, initialValue, consumer));
-				return Optional.of(new GuiEnumerableSetting(property, initialValue, consumer));
-			} else if (property.isChangabelAtStage(ChangeableStage.APISTAGE)) {
-				return Optional.of(new GuiSettingCheckBox(property, initialValue, consumer));
-			}
-		} else if (ChangeableStage.APISTAGE == stage) {
-			if (property.isChangabelAtStage(ChangeableStage.GUISTAGE)
-					|| property.isChangabelAtStage(ChangeableStage.APISTAGE_NONE_CONFIG)) {
-				return Optional.of(new GuiEnumerableSetting(property, initialValue, consumer));
-			}
-		}
-		return Optional.empty();
-	}
-
+	
 }
