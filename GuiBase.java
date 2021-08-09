@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiBase extends GuiScreen {
-	
+
 	private static final int TOP_STRING_OFFSET = 15;
 	private static final float STRING_SCALE = 1.5f;
 	private static final int STRING_COLOR = 4210752;
@@ -66,7 +66,7 @@ public class GuiBase extends GuiScreen {
 	public String getTitle() {
 		return "PLS EDIT";
 	}
-	
+
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
@@ -77,19 +77,19 @@ public class GuiBase extends GuiScreen {
 
 		synchronized (buttonList) {
 			super.drawScreen(mouseX, mouseY, partialTicks);
+		}
 
-			GlStateManager.pushMatrix();
-			GlStateManager.translate(this.guiLeft + LEFT_OFFSET, this.guiTop + TOP_STRING_OFFSET, 0);
-			GlStateManager.scale(STRING_SCALE, STRING_SCALE, STRING_SCALE);
-			this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
-			GlStateManager.popMatrix();
-			
-			for (GuiButton guiButton : buttonList) {
-				if (guiButton instanceof GuiEnumerableSetting) {
-					if (((GuiEnumerableSetting) guiButton).drawHoverText(mouseX, mouseY, fontRenderer, this.xSize,
-							this.ySize)) {
-						break;
-					}
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(this.guiLeft + LEFT_OFFSET, this.guiTop + TOP_STRING_OFFSET, 0);
+		GlStateManager.scale(STRING_SCALE, STRING_SCALE, STRING_SCALE);
+		this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
+		GlStateManager.popMatrix();
+
+		for (GuiButton guiButton : buttonList) {
+			if (guiButton instanceof GuiEnumerableSetting) {
+				if (((GuiEnumerableSetting) guiButton).drawHoverText(mouseX, mouseY, fontRenderer, this.xSize,
+						this.ySize)) {
+					break;
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class GuiBase extends GuiScreen {
 				yPos += ELEMENT_SPACING + setting.height;
 			}
 		}
-		
+
 		if (this.pageList.size() > 1) {
 			this.pageselect.updatePos(this.guiLeft + maxWidth / 2, this.guiTop + this.ySize - BOTTOM_OFFSET);
 			this.pageselect.update();
@@ -156,7 +156,7 @@ public class GuiBase extends GuiScreen {
 			this.pageselect.visible = false;
 		}
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public static Optional<GuiEnumerableSetting> of(SEProperty<?> property, int initialValue,
 			Consumer<Integer> consumer, ChangeableStage stage) {
