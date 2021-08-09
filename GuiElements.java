@@ -22,42 +22,6 @@ public class GuiElements {
 
 	private static final int STRING_COLOR = 14737632;
 
-	public interface IIntegerable<T> {
-
-		public T getObjFromID(int obj);
-
-		public int count();
-
-		public String getName();
-
-		@SideOnly(Side.CLIENT)
-		default public String getLocalizedName() {
-			return I18n.format("property." + this.getName() + ".name");
-		}
-
-		@SideOnly(Side.CLIENT)
-		default public String getNamedObj(int obj) {
-			return getLocalizedName() + ": " + I18n.format("property.value." + getObjFromID(obj).toString());
-		}
-
-		@SideOnly(Side.CLIENT)
-		default public String getDescription() {
-			return I18n.format("property." + this.getName() + ".desc");
-		}
-
-		@SideOnly(Side.CLIENT)
-		default public int getMaxWidth(final FontRenderer render) {
-			int ret = 0;
-			for (int i = 0; i < this.count(); i++) {
-				final int newVal = render.getStringWidth(getNamedObj(i));
-				if (ret < newVal)
-					ret = newVal;
-			}
-			return ret;
-		}
-
-	}
-
 	@SideOnly(Side.CLIENT)
 	public static class GuiEnumerableSetting extends GuiButton {
 
