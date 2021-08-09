@@ -8,26 +8,23 @@ import eu.gir.girsignals.guis.guilib.GuiElements.GuiEnumerableSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBase extends GuiScreen {
-
-	public static final int TOP_STRING_OFFSET = 15;
-	public static final float STRING_SCALE = 1.5f;
-	public static final int STRING_COLOR = 4210752;
-	public static final int LEFT_OFFSET = 20;
-	public static final int SIGNALTYPE_FIXED_WIDTH = 150;
-	public static final int SIGNALTYPE_INSET = 20;
-	public static final int MAXIMUM_GUI_HEIGHT = 320;
-	public static final int GUI_INSET = 40;
-	public static final int SIGNAL_RENDER_WIDTH_AND_INSET = 180;
-	public static final int TOP_OFFSET = GUI_INSET;
-	public static final int SIGNAL_TYPE_ID = -100;
-	public static final int ELEMENT_SPACING = 10;
-	public static final int BOTTOM_OFFSET = 30;
-	public static final int DEFAULT_ID = 200;
-	public static final int PAGE_SELECTION_ID = -890;
-	public static final int TEXT_FIELD_ID = -200;
+	
+	private static final int TOP_STRING_OFFSET = 15;
+	private static final float STRING_SCALE = 1.5f;
+	private static final int STRING_COLOR = 4210752;
+	private static final int LEFT_OFFSET = 20;
+	private static final int GUI_MIN_WIDTH = 150;
+	private static final int GUI_MAX_HEIGHT = 320;
+	private static final int RIGHT_INSET = 20;
+	private static final int GUI_INSET = 40;
+	private static final int SIGNAL_RENDER_WIDTH_AND_INSET = 180;
+	private static final int TOP_OFFSET = GUI_INSET;
+	private static final int ELEMENT_SPACING = 10;
+	private static final int BOTTOM_OFFSET = 30;
 
 	private static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
 			"textures/gui/container/creative_inventory/tab_inventory.png");
@@ -59,6 +56,10 @@ public class GuiBase extends GuiScreen {
 		return false;
 	}
 
+	public String getTitle() {
+		return "PLS EDIT";
+	}
+	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
@@ -70,6 +71,12 @@ public class GuiBase extends GuiScreen {
 		synchronized (buttonList) {
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(this.guiLeft + LEFT_OFFSET, this.guiTop + TOP_STRING_OFFSET, 0);
+			GlStateManager.scale(STRING_SCALE, STRING_SCALE, STRING_SCALE);
+			this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
+			GlStateManager.popMatrix();
+			
 			for (GuiButton guiButton : buttonList) {
 				if (guiButton instanceof GuiEnumerableSetting) {
 					if (((GuiEnumerableSetting) guiButton).drawHoverText(mouseX, mouseY, fontRenderer, this.xSize,
@@ -102,9 +109,9 @@ public class GuiBase extends GuiScreen {
 				}
 			}
 		}
-		maxWidth = Math.max(SIGNALTYPE_FIXED_WIDTH, maxWidth) + 20;
-		this.ySize = Math.min(MAXIMUM_GUI_HEIGHT, this.height - GUI_INSET);
-		this.xSize = maxWidth + SIGNAL_RENDER_WIDTH_AND_INSET + SIGNALTYPE_INSET;
+		maxWidth = Math.max(GUI_MIN_WIDTH, maxWidth) + 20;
+		this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET);
+		this.xSize = maxWidth + SIGNAL_RENDER_WIDTH_AND_INSET + RIGHT_INSET;
 		this.guiLeft = (this.width - this.xSize) / 2;
 		this.guiTop = (this.height - this.ySize) / 2;
 
@@ -133,10 +140,10 @@ public class GuiBase extends GuiScreen {
 				yPos += ELEMENT_SPACING + setting.height;
 			}
 		}
-
-		this.pageselect.updatePos(this.guiLeft + maxWidth / 2, this.guiTop + this.ySize);
-		this.pageselect.update();
+		
 		if (this.pageList.size() > 1) {
+			this.pageselect.updatePos(this.guiLeft + maxWidth / 2, this.guiTop + this.ySize - BOTTOM_OFFSET);
+			this.pageselect.update();
 			this.pageselect.visible = true;
 		} else {
 			this.pageselect.visible = false;

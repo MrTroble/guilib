@@ -1,7 +1,5 @@
 package eu.gir.girsignals.guis.guilib;
 
-import static eu.gir.girsignals.guis.guilib.GuiBase.BOTTOM_OFFSET;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -226,8 +224,7 @@ public class GuiElements {
 
 		@Override
 		public void updatePos(int x, int y) {
-			super.updatePos(x, y - BOTTOM_OFFSET);
-			this.x = x - (this.width / 2) + GuiEnumerableSetting.BUTTON_SIZE;
+			super.updatePos(x - (this.width / 2) + GuiEnumerableSetting.BUTTON_SIZE, y);
 		}
 
 		@Override
