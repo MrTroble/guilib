@@ -52,7 +52,23 @@ public class DrawUtil {
 			return t.getSimpleName().toLowerCase();
 		}
 	}
+	
+	public static class NamedEnumIntegerable<T extends Enum<T>> extends EnumIntegerable<T> {
 
+		private final String name;
+		
+		public NamedEnumIntegerable(final String name, Class<T> t) {
+			super(t);
+			this.name = name;
+		}
+		
+		@Override
+		public String getName() {
+			return name;
+		}
+		
+	}
+	
 	public interface ObjGetter<D> {
 		D getObjFrom(int x);
 	}
