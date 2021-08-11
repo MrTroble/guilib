@@ -1,5 +1,6 @@
 package eu.gir.girsignals.guis.guilib;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
@@ -147,6 +148,17 @@ public class GuiBase extends GuiScreen {
 			this.pageselect.visible = true;
 		} else {
 			this.pageselect.visible = false;
+		}
+	}
+	
+	@Override
+	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+		super.keyTyped(typedChar, keyCode);
+		for (GuiButton guiButton : buttonList) {
+			if (guiButton instanceof GuiEnumerableSetting) {
+				GuiEnumerableSetting dselect = (GuiEnumerableSetting) guiButton;
+				dselect.keyTyped(typedChar, keyCode);
+			}
 		}
 	}
 }

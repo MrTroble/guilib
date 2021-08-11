@@ -32,7 +32,7 @@ public class GuiElements {
 
 		public Consumer<Integer> consumer;
 		
-		protected int value = 0;
+		public int value = 0;
 		protected boolean pressed = false, lor = false, lock = true;
 		protected GuiButton leftButton;
 		protected GuiButton rightButton;
@@ -270,7 +270,7 @@ public class GuiElements {
 	@SideOnly(Side.CLIENT)
 	public static class GuiSettingTextbox extends GuiEnumerableSetting {
 
-		private final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100, 20);
+		protected final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100, 20);
 
 		public GuiSettingTextbox(String name, Consumer<Integer> consumer) {
 			super(new SizeIntegerables<>("", 0, i -> ""), 0, consumer);
@@ -322,9 +322,82 @@ public class GuiElements {
 		
 		@Override
 		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			return textfield.mouseClicked(mouseX, mouseY, 0);
+			boolean b1 = super.mousePressed(mc, mouseX, mouseY);
+			boolean b2 = textfield.mouseClicked(mouseX, mouseY, 0);
+			return b1 || b2;
 		}
 
+	}
+	
+	public static class GuiDoubleSelect extends GuiSettingTextbox {
+
+		public double select;
+		private Consumer<Double> selectcon;
+		private int ogY = 0;
+		public final String dname;
+
+		public GuiDoubleSelect(String name, double select, Consumer<Double> consumer) {
+			super(String.format("%g", select), i -> {});
+			this.select = select;
+			this.selectcon = consumer;
+			this.dname = name;
+		}
+		
+		@Override
+		public void update() {
+			final int fheight = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 4;
+			x = this.textfield.x;
+			y = this.textfield.y;
+			ogY = y;
+			height += fheight;
+			y += fheight;
+			this.leftButton = new GuiButton(-130992398, x, y, "<");
+			this.rightButton = new GuiButton(-130992398, x + this.textfield.width + BUTTON_SIZE + OFFSET * 2, y, ">");
+			this.rightButton.setWidth(BUTTON_SIZE);
+			this.leftButton.setWidth(BUTTON_SIZE);
+			x += BUTTON_SIZE + OFFSET;
+			updatePos(x, y);
+		}
+		
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+			if(!this.textfield.getVisible())
+				return;
+			mc.fontRenderer.drawStringWithShadow(dname, x, ogY, STRING_COLOR);
+			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
+			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
+			super.drawButton(mc, mouseX, mouseY, partialTicks);
+			if (lock && pressed) {
+				lock = false;
+				try{ 
+					final String possibleValue = this.textfield.getText();
+					this.select = Double.parseDouble(possibleValue);
+				} catch (Exception e) {
+					this.select = 0;
+				}
+				if (lor) {
+					this.select -= 0.1;
+				} else {
+					this.select += 0.1;
+				}
+				this.selectcon.accept(this.select);
+				this.textfield.setText(String.format("%g", this.select));
+			}
+		}
+				
+		@Override
+		public boolean keyTyped(char typedChar, int keyCode) {
+			boolean flag = super.keyTyped(typedChar, keyCode);
+			if(flag) {
+				try{ 
+					final String possibleValue = this.textfield.getText();
+					this.select = Double.parseDouble(possibleValue);
+					this.selectcon.accept(this.select);
+				} catch (Exception e) {}
+			}
+			return flag;
+		}
+		
 	}
 	
 }
