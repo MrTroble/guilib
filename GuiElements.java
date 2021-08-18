@@ -31,7 +31,7 @@ public class GuiElements {
 		public final IIntegerable<?> property;
 
 		public Consumer<Integer> consumer;
-		
+
 		public int value = 0;
 		protected boolean pressed = false, lor = false, lock = true;
 		protected GuiButton leftButton;
@@ -113,7 +113,7 @@ public class GuiElements {
 
 		@Override
 		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			if (this.visible && !pressed && this.enabled) {
+			if (this.visible && !pressed && this.enabled && this.leftButton != null && this.rightButton != null) {
 				lor = this.leftButton.mousePressed(mc, mouseX, mouseY);
 				pressed = lor || this.rightButton.mousePressed(mc, mouseX, mouseY);
 				return pressed;
@@ -127,7 +127,8 @@ public class GuiElements {
 			pressed = false;
 		}
 
-		public boolean drawHoverText(final int mouseX, final int mouseY, final FontRenderer font, final int width, final int height) {
+		public boolean drawHoverText(final int mouseX, final int mouseY, final FontRenderer font, final int width,
+				final int height) {
 			if (!this.isMouseOver())
 				return false;
 			final String str = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.property.getDescription()
@@ -144,7 +145,7 @@ public class GuiElements {
 		public boolean keyTyped(char typedChar, int keyCode) {
 			return false;
 		}
-		
+
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -216,9 +217,9 @@ public class GuiElements {
 
 		@Override
 		public int getValue() {
-			return isChecked() ? 1:0;
+			return isChecked() ? 1 : 0;
 		}
-		
+
 		@Override
 		public void update() {
 		}
@@ -227,7 +228,7 @@ public class GuiElements {
 		public boolean isMouseOver() {
 			return this.checkBox.isMouseOver();
 		}
-		
+
 		@Override
 		public void updatePos(int x, int y) {
 			this.checkBox.x = x;
@@ -270,56 +271,57 @@ public class GuiElements {
 	@SideOnly(Side.CLIENT)
 	public static class GuiSettingTextbox extends GuiEnumerableSetting {
 
-		protected final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100, 20);
+		protected final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100,
+				20);
 
 		public GuiSettingTextbox(String name, Consumer<Integer> consumer) {
 			super(new SizeIntegerables<>("", 0, i -> ""), 0, consumer);
-			if(name != null)
+			if (name != null)
 				textfield.setText(name);
 		}
-		
+
 		public String getText() {
 			return textfield.getText();
 		}
-		
+
 		@Override
 		public String getValueString(int id) {
 			return "";
 		}
-		
+
 		@Override
 		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 			textfield.drawTextBox();
 		}
-		
+
 		@Override
 		public void update() {
 		}
-		
+
 		@Override
 		public void updatePos(int x, int y) {
 			textfield.x = x;
 			textfield.y = y;
 		}
-		
+
 		@Override
 		public void setWidth(int width) {
 			textfield.width = width;
 		}
-		
+
 		@Override
 		public void setVisible(boolean visible) {
 			textfield.setVisible(visible);
 		}
-		
+
 		@Override
 		public boolean keyTyped(char typedChar, int keyCode) {
 			boolean flag = textfield.textboxKeyTyped(typedChar, keyCode);
-			if(flag)
+			if (flag)
 				consumer.accept(0);
 			return flag;
 		}
-		
+
 		@Override
 		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 			boolean b1 = super.mousePressed(mc, mouseX, mouseY);
@@ -328,7 +330,7 @@ public class GuiElements {
 		}
 
 	}
-	
+
 	public static class GuiDoubleSelect extends GuiSettingTextbox {
 
 		public double select;
@@ -337,12 +339,13 @@ public class GuiElements {
 		public final String dname;
 
 		public GuiDoubleSelect(String name, double select, Consumer<Double> consumer) {
-			super(String.format("%g", select), i -> {});
+			super(String.format("%g", select), i -> {
+			});
 			this.select = select;
 			this.selectcon = consumer;
 			this.dname = name;
 		}
-		
+
 		@Override
 		public void update() {
 			final int fheight = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 4;
@@ -358,10 +361,10 @@ public class GuiElements {
 			x += BUTTON_SIZE + OFFSET;
 			updatePos(x, y);
 		}
-		
+
 		@Override
 		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if(!this.textfield.getVisible())
+			if (!this.textfield.getVisible())
 				return;
 			mc.fontRenderer.drawStringWithShadow(dname, x, ogY, STRING_COLOR);
 			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
@@ -369,7 +372,7 @@ public class GuiElements {
 			super.drawButton(mc, mouseX, mouseY, partialTicks);
 			if (lock && pressed) {
 				lock = false;
-				try{ 
+				try {
 					final String possibleValue = this.textfield.getText();
 					this.select = Double.parseDouble(possibleValue);
 				} catch (Exception e) {
@@ -384,20 +387,21 @@ public class GuiElements {
 				this.textfield.setText(String.format("%g", this.select));
 			}
 		}
-				
+
 		@Override
 		public boolean keyTyped(char typedChar, int keyCode) {
 			boolean flag = super.keyTyped(typedChar, keyCode);
-			if(flag) {
-				try{ 
+			if (flag) {
+				try {
 					final String possibleValue = this.textfield.getText();
 					this.select = Double.parseDouble(possibleValue);
 					this.selectcon.accept(this.select);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 			}
 			return flag;
 		}
-		
+
 	}
-	
+
 }
