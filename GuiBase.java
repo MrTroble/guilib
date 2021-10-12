@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBase extends GuiScreen {
@@ -83,6 +84,8 @@ public class GuiBase extends GuiScreen {
 			if (guiButton instanceof GuiEnumerableSetting) {
 				if (((GuiEnumerableSetting) guiButton).drawHoverText(mouseX, mouseY, fontRenderer, this.xSize,
 						this.ySize)) {
+			        RenderHelper.disableStandardItemLighting();
+			        GlStateManager.disableLighting();
 					break;
 				}
 			}
