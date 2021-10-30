@@ -2,7 +2,10 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.IntConsumer;
 
 import org.lwjgl.input.Keyboard;
 
@@ -13,6 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,90 +24,31 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiElements {
 
-	private static final int STRING_COLOR = 14737632;
+	public static final int STRING_COLOR = 14737632;
+	public static final int IDENTIFIER = -2212321;
+	public static final int OFFSET = 2;
+	public static final int BUTTON_SIZE = 20;
 
 	@SideOnly(Side.CLIENT)
-	public static class GuiEnumerableSetting extends GuiButton {
+	public static abstract class GuiBasicWidget extends GuiButton {
 
-		public static final int OFFSET = 2;
-		public static final int BUTTON_SIZE = 20;
+		private final boolean autoSync;
 
-		public final IIntegerable<?> property;
-
-		public Consumer<Integer> consumer;
-
-		public int value = 0;
-		protected boolean pressed = false, lor = false, lock = true;
-		protected GuiButton leftButton;
-		protected GuiButton rightButton;
-
-		public GuiEnumerableSetting(final IIntegerable<?> property, int initialValue,
-				final Consumer<Integer> consumer) {
-			super(-2212321, 0, 0, null);
-			if (initialValue >= property.count())
-				initialValue = 0;
-			this.property = property;
-			this.displayString = this.getValueString(initialValue);
-			this.value = initialValue;
-			this.width = 150;
-			this.consumer = consumer;
+		public GuiBasicWidget(final boolean autoSync) {
+			super(IDENTIFIER, 0, 0, null);
+			this.autoSync = autoSync;
 		}
 
-		public void update() {
-			this.leftButton = new GuiButton(-130992398, x, y, "<");
-			this.rightButton = new GuiButton(-130992398, x + width + BUTTON_SIZE + OFFSET * 2, y, ">");
-			this.rightButton.setWidth(BUTTON_SIZE);
-			this.leftButton.setWidth(BUTTON_SIZE);
-			x += BUTTON_SIZE + OFFSET;
-			if (this.value <= 0) {
-				this.leftButton.enabled = false;
-			}
-			if (this.value >= property.count() - 1) {
-				this.rightButton.enabled = false;
-			}
+		public abstract void read(final NBTTagCompound tag);
+
+		public abstract void write(final NBTTagCompound tag);
+
+		public boolean isAutoSync() {
+			return autoSync;
 		}
 
-		public void setVisible(final boolean visible) {
-			this.visible = visible;
-		}
-
-		public int getValue() {
-			return this.value;
-		}
-
-		public String getValueString(int id) {
-			return this.property.getNamedObj(id);
-		}
-
-		public void drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
-			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
-			if (lock && pressed) {
-				lock = false;
-				if (lor) {
-					this.value--;
-					if (this.value == 0)
-						this.leftButton.enabled = false;
-					if (!this.rightButton.enabled)
-						this.rightButton.enabled = true;
-				} else {
-					this.value++;
-					if (this.value == property.count() - 1)
-						this.rightButton.enabled = false;
-					if (!this.leftButton.enabled)
-						this.leftButton.enabled = true;
-				}
-				consumer.accept(this.value);
-				this.displayString = getValueString(this.value);
-			}
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if (visible) {
-				super.drawButton(mc, mouseX, mouseY, partialTicks);
-				drawSelection(mc, mouseX, mouseY, partialTicks);
-			}
+		public boolean keyTyped(char typedChar, int keyCode) {
+			return false;
 		}
 
 		public void updatePos(final int x, final int y) {
@@ -111,9 +56,88 @@ public class GuiElements {
 			this.y = y;
 		}
 
-		@Override
+		public void setVisible(final boolean visible) {
+			this.visible = visible;
+		}
+
+		public boolean isVisible() {
+			return this.visible;
+		}
+
+		public void update() {
+
+		}
+
+		public String getDescription() {
+			return "";
+		}
+
+		public boolean drawHoverText(final int mouseX, final int mouseY, final FontRenderer font, final int width,
+				final int height) {
+			if (!this.isMouseOver())
+				return false;
+			final String str = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.getDescription()
+					: I18n.format("gui.keyprompt");
+			GuiUtils.drawHoveringText(Arrays.asList(str.split(System.lineSeparator())), mouseX, mouseY, width, height,
+					-1, font);
+			return true;
+		}
+
+	}
+
+	public static class GuiSelectionArrows {
+
+		protected boolean pressed = false, lor = false, lock = true;
+		protected GuiButton leftButton;
+		protected GuiButton rightButton;
+
+		public void update(final int x, final int y, final int value, final int max, final int width) {
+			update(x, y, value, max, width, 0);
+		}
+
+		public void update(final int x, final int y, final int value, final int max, final int width, final int min) {
+			this.leftButton = new GuiButton(IDENTIFIER, x, y, "<");
+			this.rightButton = new GuiButton(IDENTIFIER, x + width + BUTTON_SIZE + OFFSET * 2, y, ">");
+			this.rightButton.setWidth(BUTTON_SIZE);
+			this.leftButton.setWidth(BUTTON_SIZE);
+			if (value <= min) {
+				this.leftButton.enabled = false;
+			}
+			if (value >= max) {
+				this.rightButton.enabled = false;
+			}
+		}
+
+		public int drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks, final int value,
+				final int max) {
+			return this.drawSelection(mc, mouseX, mouseY, partialTicks, value, max, 0);
+		}
+
+		public int drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks, final int value,
+				final int max, final int min) {
+			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
+			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
+			if (lock && pressed) {
+				lock = false;
+				if (lor) {
+					if (value - 1 == 0)
+						this.leftButton.enabled = false;
+					if (!this.rightButton.enabled)
+						this.rightButton.enabled = true;
+					return -1;
+				} else {
+					if (value + 1 == max)
+						this.rightButton.enabled = false;
+					if (!this.leftButton.enabled)
+						this.leftButton.enabled = true;
+					return 1;
+				}
+			}
+			return 0;
+		}
+
 		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			if (this.visible && !pressed && this.enabled && this.leftButton != null && this.rightButton != null) {
+			if (!pressed && this.leftButton != null && this.rightButton != null) {
 				lor = this.leftButton.mousePressed(mc, mouseX, mouseY);
 				pressed = lor || this.rightButton.mousePressed(mc, mouseX, mouseY);
 				return pressed;
@@ -121,31 +145,91 @@ public class GuiElements {
 			return false;
 		}
 
-		@Override
 		public void mouseReleased(int mouseX, int mouseY) {
 			lock = true;
 			pressed = false;
 		}
 
-		public boolean drawHoverText(final int mouseX, final int mouseY, final FontRenderer font, final int width,
-				final int height) {
-			if (!this.isMouseOver())
-				return false;
-			final String str = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.property.getDescription()
-					: I18n.format("gui.keyprompt");
-			GuiUtils.drawHoveringText(Arrays.asList(str.split(System.lineSeparator())), mouseX, mouseY, width, height,
-					-1, font);
-			return true;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static class GuiEnumerableSetting extends GuiBasicWidget {
+
+		protected final GuiSelectionArrows arrows = new GuiSelectionArrows();
+		public final IIntegerable<?> property;
+
+		public IntConsumer consumer;
+		public int value = 0;
+
+		public GuiEnumerableSetting(final IIntegerable<?> property, final IntConsumer consumer) {
+			this(property, consumer, false);
+		}
+
+		public GuiEnumerableSetting(final IIntegerable<?> property, final boolean autoSync) {
+			this(property, (i) -> {
+			}, autoSync);
+		}
+
+		public GuiEnumerableSetting(final IIntegerable<?> property, final IntConsumer consumer,
+				final boolean autoSync) {
+			super(autoSync);
+			this.property = Objects.requireNonNull(property);
+			this.width = 150;
+			this.consumer = Objects.requireNonNull(consumer);
+			this.displayString = this.property.getNamedObj(this.value);
+		}
+
+		public int getValue() {
+			return this.value;
+		}
+
+		@Override
+		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+			if (visible) {
+				final int result = arrows.drawSelection(mc, mouseX, mouseY, partialTicks, this.value,
+						this.property.count() - 1);
+				if(result != 0) {
+					this.value += result;
+					this.displayString = this.property.getNamedObj(this.value);
+				}
+				super.drawButton(mc, mouseX, mouseY, partialTicks);
+			}
 		}
 
 		public int getMaxWidth(FontRenderer render) {
 			return property.getMaxWidth(render);
 		}
 
+		@Override
+		public void update() {
+			this.arrows.update(x, y, value, this.property.count() - 1, this.width);
+			x += BUTTON_SIZE + OFFSET;
+		}
+
 		public boolean keyTyped(char typedChar, int keyCode) {
 			return false;
 		}
 
+		@Override
+		public void read(final NBTTagCompound tag) {
+			value = tag.getInteger(this.property.getName());
+			this.displayString = this.property.getNamedObj(value);
+		}
+
+		@Override
+		public void write(final NBTTagCompound tag) {
+			tag.setInteger(this.property.getName(), value);
+		}
+
+		@Override
+		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+			return arrows.mousePressed(mc, mouseX, mouseY);
+		}
+
+		@Override
+		public void mouseReleased(int mouseX, int mouseY) {
+			arrows.mouseReleased(mouseX, mouseY);
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -153,7 +237,7 @@ public class GuiElements {
 
 		protected final IntegerHolder holder;
 
-		public GuiPageSelect(final ArrayList<ArrayList<GuiEnumerableSetting>> pageList) {
+		public GuiPageSelect(final ArrayList<ArrayList<GuiBasicWidget>> pageList) {
 			super(new SizeIntegerables<String>("page", pageList.size(), idx -> null) {
 
 				@Override
@@ -166,7 +250,7 @@ public class GuiElements {
 					return I18n.format("property." + this.getName() + ".name") + " " + (obj + 1) + "/"
 							+ pageList.size();
 				}
-			}, 0, null);
+			}, true);
 			this.holder = new IntegerHolder(0);
 			this.consumer = inp -> {
 				pageList.get(holder.getObj()).forEach(t -> t.setVisible(false));
@@ -174,18 +258,18 @@ public class GuiElements {
 				holder.setObj(inp);
 			};
 			final FontRenderer render = Minecraft.getMinecraft().fontRenderer;
-			this.setWidth(this.property.getMaxWidth(render) + GuiEnumerableSetting.OFFSET * 2);
+			this.setWidth(this.property.getMaxWidth(render) + OFFSET * 2);
 		}
 
 		@Override
 		public void update() {
 			super.update();
-			this.displayString = super.getValueString(this.value);
+			this.displayString = this.property.getNamedObj(this.value);
 		}
 
 		@Override
 		public void updatePos(int x, int y) {
-			super.updatePos(x - (this.width / 2) + GuiEnumerableSetting.BUTTON_SIZE, y);
+			super.updatePos(x - (this.width / 2) + BUTTON_SIZE, y);
 		}
 
 		@Override
@@ -193,7 +277,13 @@ public class GuiElements {
 			if (visible) {
 				this.drawCenteredString(mc.fontRenderer, this.displayString, this.x + this.width / 2,
 						this.y + (this.height - 8) / 2, STRING_COLOR);
-				drawSelection(mc, mouseX, mouseY, partialTicks);
+				final int result = this.arrows.drawSelection(mc, mouseX, mouseY, partialTicks, this.value,
+						this.property.count() - 1);
+				if (result != 0) {
+					this.value += result;
+					this.displayString = this.property.getNamedObj(this.value);
+					this.consumer.accept(value);
+				}
 			}
 		}
 
@@ -204,9 +294,9 @@ public class GuiElements {
 
 		private final GuiCheckBox checkBox;
 
-		public GuiSettingCheckBox(IIntegerable<?> property, int initialValue, Consumer<Integer> consumer) {
-			super(property, initialValue, consumer);
-			this.checkBox = new GuiCheckBox(-34720, 0, 0, property.getLocalizedName(), initialValue == 1);
+		public GuiSettingCheckBox(IIntegerable<?> property, IntConsumer consumer) {
+			super(property, consumer);
+			this.checkBox = new GuiCheckBox(-34720, 0, 0, property.getLocalizedName(), false);
 			this.height = this.checkBox.height;
 		}
 
@@ -262,6 +352,12 @@ public class GuiElements {
 			return this.checkBox.isChecked();
 		}
 
+		@Override
+		public void read(NBTTagCompound tag) {
+			super.read(tag);
+			this.checkBox.setIsChecked(this.value == 1);
+		}
+
 		public void setIsChecked(boolean isChecked) {
 			this.checkBox.setIsChecked(isChecked);
 		}
@@ -269,15 +365,22 @@ public class GuiElements {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static class GuiSettingTextbox extends GuiEnumerableSetting {
+	public static class GuiSettingTextbox extends GuiBasicWidget {
 
 		protected final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100,
 				20);
+		private final Consumer<String> consumer;
+		private final String name;
 
-		public GuiSettingTextbox(String name, Consumer<Integer> consumer) {
-			super(new SizeIntegerables<>("", 0, i -> ""), 0, consumer);
-			if (name != null)
-				textfield.setText(name);
+		public GuiSettingTextbox(final String name, final boolean autoSync) {
+			this(name, autoSync, (s) -> {
+			});
+		}
+
+		public GuiSettingTextbox(final String name, final boolean autoSync, final Consumer<String> consumer) {
+			super(autoSync);
+			this.consumer = consumer;
+			this.name = name;
 		}
 
 		public String getText() {
@@ -285,17 +388,8 @@ public class GuiElements {
 		}
 
 		@Override
-		public String getValueString(int id) {
-			return "";
-		}
-
-		@Override
 		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 			textfield.drawTextBox();
-		}
-
-		@Override
-		public void update() {
 		}
 
 		@Override
@@ -310,15 +404,10 @@ public class GuiElements {
 		}
 
 		@Override
-		public void setVisible(boolean visible) {
-			textfield.setVisible(visible);
-		}
-
-		@Override
 		public boolean keyTyped(char typedChar, int keyCode) {
 			boolean flag = textfield.textboxKeyTyped(typedChar, keyCode);
 			if (flag)
-				consumer.accept(0);
+				consumer.accept(textfield.getText());
 			return flag;
 		}
 
@@ -329,19 +418,32 @@ public class GuiElements {
 			return b1 || b2;
 		}
 
+		@Override
+		public void read(NBTTagCompound tag) {
+			this.textfield.setText(tag.getString(name));
+		}
+
+		@Override
+		public void write(NBTTagCompound tag) {
+			tag.setString(name, this.textfield.getText());
+		}
+
+		@Override
+		public boolean isVisible() {
+			return visible;
+		}
 	}
 
 	public static class GuiDoubleSelect extends GuiSettingTextbox {
 
 		public double select;
-		private Consumer<Double> selectcon;
+		private final DoubleConsumer selectcon;
 		private int ogY = 0;
 		public final String dname;
+		public GuiSelectionArrows arrows = new GuiSelectionArrows();
 
-		public GuiDoubleSelect(String name, double select, Consumer<Double> consumer) {
-			super(String.format("%g", select), i -> {
-			});
-			this.select = select;
+		public GuiDoubleSelect(final String name, final boolean sync, final DoubleConsumer consumer) {
+			super(name, sync);
 			this.selectcon = consumer;
 			this.dname = name;
 		}
@@ -354,37 +456,22 @@ public class GuiElements {
 			ogY = y;
 			height += fheight;
 			y += fheight;
-			this.leftButton = new GuiButton(-130992398, x, y, "<");
-			this.rightButton = new GuiButton(-130992398, x + this.textfield.width + BUTTON_SIZE + OFFSET * 2, y, ">");
-			this.rightButton.setWidth(BUTTON_SIZE);
-			this.leftButton.setWidth(BUTTON_SIZE);
+			arrows.update(x, y, (int) Math.round(this.select * 100), -100, 100);
 			x += BUTTON_SIZE + OFFSET;
 			updatePos(x, y);
 		}
 
 		@Override
 		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if (!this.textfield.getVisible())
+			if (!this.isVisible())
 				return;
 			mc.fontRenderer.drawStringWithShadow(dname, x, ogY, STRING_COLOR);
-			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
-			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
 			super.drawButton(mc, mouseX, mouseY, partialTicks);
-			if (lock && pressed) {
-				lock = false;
-				try {
-					final String possibleValue = this.textfield.getText();
-					this.select = Double.parseDouble(possibleValue);
-				} catch (Exception e) {
-					this.select = 0;
-				}
-				if (lor) {
-					this.select -= 0.1;
-				} else {
-					this.select += 0.1;
-				}
+			final float mul = arrows.drawSelection(mc, mouseX, mouseY, partialTicks,
+					(int) Math.round(this.select * 100.0f), 100, -100);
+			if (mul != 0) {
 				this.selectcon.accept(this.select);
-				this.textfield.setText(String.format("%g", this.select));
+				this.select = mul * 0.01f;
 			}
 		}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
+import eu.gir.girsignals.guis.guilib.GuiElements.GuiBasicWidget;
 import eu.gir.girsignals.guis.guilib.GuiElements.GuiEnumerableSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -35,7 +36,7 @@ public class GuiBase extends GuiScreen {
 	protected int guiTop;
 	protected int xSize = 340;
 	protected int ySize = 230;
-	private ArrayList<ArrayList<GuiEnumerableSetting>> pageList = new ArrayList<>();
+	private ArrayList<ArrayList<GuiBasicWidget>> pageList = new ArrayList<>();
 	protected GuiElements.GuiPageSelect pageselect = new GuiElements.GuiPageSelect(pageList);
 
 	@Override
@@ -126,8 +127,8 @@ public class GuiBase extends GuiScreen {
 		final int xPos = this.guiLeft + LEFT_OFFSET;
 		int yPos = this.guiTop + TOP_OFFSET;
 		for (GuiButton guiButton : buttonList) {
-			if (guiButton instanceof GuiEnumerableSetting) {
-				final GuiEnumerableSetting setting = (GuiEnumerableSetting) guiButton;
+			if (guiButton instanceof GuiBasicWidget) {
+				final GuiBasicWidget setting = (GuiBasicWidget) guiButton;
 				setting.setWidth(maxWidth);
 				if (setting.equals(this.pageselect))
 					continue;
