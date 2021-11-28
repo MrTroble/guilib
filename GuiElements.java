@@ -7,7 +7,6 @@ import java.util.function.IntConsumer;
 
 import org.lwjgl.input.Keyboard;
 
-import eu.gir.girsignals.SEProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiLabel;
@@ -158,6 +157,7 @@ public class GuiElements {
 		private int worldY;
 		private int worldX;
 		private boolean hovered;
+		private boolean inheritBounds;
 
 		private ArrayList<UIEntity> children = new ArrayList<>();
 		private ArrayList<UIComponent> components = new ArrayList<>();
@@ -166,6 +166,7 @@ public class GuiElements {
 			this.setPos(0, 0);
 			this.setScale(1, 1);
 			this.setVisible(true);
+			this.setInheritBounds(false);
 		}
 		
 		public UIEntity(final int x, final int y, final int scaleX, final int scaleY) {
@@ -222,6 +223,10 @@ public class GuiElements {
 			if(this.parent != null) {
 				this.worldX = this.x + parent.getWorldX();
 				this.worldY = this.y + parent.getWorldY();
+				if(inheritBounds) {
+					this.width = parent.getWidth();
+					this.height = parent.getHeight();
+				}
 			} else {
 				this.worldX = this.x;
 				this.worldY = this.y;
@@ -302,6 +307,17 @@ public class GuiElements {
 			this.width = width;
 			this.update();
 		}
+		
+		public boolean inheritsBounds() {
+			return inheritBounds;
+		}
+		
+
+		public void setInheritBounds(boolean inheritBounds) {
+			this.inheritBounds = inheritBounds;
+			this.update();
+		}
+		
 
 		@Override
 		public void read(NBTTagCompound compound) {
@@ -731,12 +747,13 @@ public class GuiElements {
 
 	}
 
-	public static UIEntity createBoolElement(SEProperty<?> property, IntConsumer consumer) {
+	public static UIEntity createBoolElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
 		middle.setBounds(Minecraft.getMinecraft().fontRenderer.getStringWidth(property.getLocalizedName()) + 20, 20);
 
-		final UICheckBox middleButton = new UICheckBox(property.getNamedObj(0));
+		final UICheckBox middleButton = new UICheckBox(property.getName());
 		middleButton.setOnChange(consumer);
+		middleButton.setText(property.getLocalizedName());
 		middle.add(middleButton);
 		return middle;
 	}
