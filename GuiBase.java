@@ -1,17 +1,16 @@
 package eu.gir.girsignals.guis.guilib;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-import com.google.common.collect.Lists;
-
-import eu.gir.girsignals.guis.guilib.GuiElements.GuiBasicWidget;
-import eu.gir.girsignals.guis.guilib.GuiElements.GuiEnumerableSetting;
+import eu.gir.girsignals.guis.guilib.GuiElements.EnumMouseState;
+import eu.gir.girsignals.guis.guilib.GuiElements.KeyEvent;
+import eu.gir.girsignals.guis.guilib.GuiElements.MouseEvent;
+import eu.gir.girsignals.guis.guilib.GuiElements.UIEntity;
+import eu.gir.girsignals.guis.guilib.GuiElements.UpdateEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBase extends GuiScreen {
@@ -26,8 +25,6 @@ public class GuiBase extends GuiScreen {
 	private static final int GUI_INSET = 40;
 	private static final int SIGNAL_RENDER_WIDTH_AND_INSET = 180;
 	private static final int TOP_OFFSET = GUI_INSET;
-	private static final int ELEMENT_SPACING = 10;
-	private static final int BOTTOM_OFFSET = 30;
 
 	private static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
 			"textures/gui/container/creative_inventory/tab_inventory.png");
@@ -36,9 +33,16 @@ public class GuiBase extends GuiScreen {
 	protected int guiTop;
 	protected int xSize = 340;
 	protected int ySize = 230;
-	private ArrayList<ArrayList<GuiBasicWidget>> pageList = new ArrayList<>();
-	protected GuiElements.GuiPageSelect pageselect = new GuiElements.GuiPageSelect(pageList);
+	protected UIEntity entity;
+	protected NBTTagCompound compound;
+	private final String name;
 
+	public GuiBase(final String name) {
+		this.name = name;
+		this.entity = new UIEntity();
+		this.compound = new NBTTagCompound();
+	}
+	
 	@Override
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		this.mc = mc;
@@ -52,6 +56,7 @@ public class GuiBase extends GuiScreen {
 		}
 		net.minecraftforge.common.MinecraftForge.EVENT_BUS
 				.post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Post(this, this.buttonList));
+		entity.updateEvent(new UpdateEvent(width, height));
 	}
 
 	@Override
@@ -60,7 +65,7 @@ public class GuiBase extends GuiScreen {
 	}
 
 	public String getTitle() {
-		return "PLS EDIT";
+		return this.name;
 	}
 
 	@Override
@@ -71,9 +76,7 @@ public class GuiBase extends GuiScreen {
 
 		DrawUtil.drawBack(this, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
 
-		synchronized (buttonList) {
-			super.drawScreen(mouseX, mouseY, partialTicks);
-		}
+		entity.draw(mouseX, mouseY);
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(this.guiLeft + LEFT_OFFSET, this.guiTop + TOP_STRING_OFFSET, 0);
@@ -81,88 +84,45 @@ public class GuiBase extends GuiScreen {
 		this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
 		GlStateManager.popMatrix();
 
-		for (GuiButton guiButton : buttonList) {
-			if (guiButton instanceof GuiEnumerableSetting) {
-				if (((GuiEnumerableSetting) guiButton).drawHoverText(mouseX, mouseY, fontRenderer, this.xSize,
-						this.ySize)) {
-			        RenderHelper.disableStandardItemLighting();
-			        GlStateManager.disableLighting();
-					break;
-				}
-			}
-		}
-	}
-
-	public void initButtons() {
-		synchronized (buttonList) {
-			this.buttonList.clear();
-			this.buttonList.add(pageselect);
-		}
+		entity.postDraw(mouseX, mouseY);
 	}
 
 	@Override
 	public void initGui() {
-		if (buttonList.isEmpty())
-			this.initButtons();
 		int maxWidth = 0;
-		for (GuiButton guiButton : buttonList) {
-			if (guiButton instanceof GuiEnumerableSetting) {
-				final GuiEnumerableSetting setting = (GuiEnumerableSetting) guiButton;
-				final int width = setting.getMaxWidth(fontRenderer);
-				if (maxWidth < width) {
-					maxWidth = width;
-				}
-			}
-		}
 		maxWidth = Math.max(GUI_MIN_WIDTH, maxWidth) + 20;
 		this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET);
 		this.xSize = maxWidth + SIGNAL_RENDER_WIDTH_AND_INSET + RIGHT_INSET;
 		this.guiLeft = (this.width - this.xSize) / 2;
 		this.guiTop = (this.height - this.ySize) / 2;
-
-		int index = 0;
-		boolean visible = pageselect.getValue() == index;
-		pageList.clear();
-		pageList.add(Lists.newArrayList());
-		final int xPos = this.guiLeft + LEFT_OFFSET;
-		int yPos = this.guiTop + TOP_OFFSET;
-		for (GuiButton guiButton : buttonList) {
-			if (guiButton instanceof GuiBasicWidget) {
-				final GuiBasicWidget setting = (GuiBasicWidget) guiButton;
-				setting.setWidth(maxWidth);
-				if (setting.equals(this.pageselect))
-					continue;
-				if ((yPos + ELEMENT_SPACING + setting.height) >= (this.guiTop + this.ySize - BOTTOM_OFFSET)) {
-					pageList.add(Lists.newArrayList());
-					yPos = this.guiTop + TOP_OFFSET;
-					index++;
-					visible = pageselect.getValue() == index;
-				}
-				pageList.get(index).add(setting);
-				setting.updatePos(xPos, yPos);
-				setting.update();
-				setting.setVisible(visible);
-				yPos += ELEMENT_SPACING + setting.height;
-			}
-		}
-
-		if (this.pageList.size() > 1) {
-			this.pageselect.updatePos(this.guiLeft + maxWidth / 2, this.guiTop + this.ySize - BOTTOM_OFFSET);
-			this.pageselect.update();
-			this.pageselect.visible = true;
-		} else {
-			this.pageselect.visible = false;
-		}
+		this.entity.read(compound);
+		this.entity.setBounds(this.xSize, this.ySize);
+		this.entity.setPos(this.guiLeft, this.guiTop + TOP_OFFSET);
+	}
+	
+	@Override
+	public void onGuiClosed() {
+		this.entity.write(this.compound);
 	}
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		super.keyTyped(typedChar, keyCode);
-		for (GuiButton guiButton : buttonList) {
-			if (guiButton instanceof GuiEnumerableSetting) {
-				GuiEnumerableSetting dselect = (GuiEnumerableSetting) guiButton;
-				dselect.keyTyped(typedChar, keyCode);
-			}
-		}
+		this.entity.keyEvent(new KeyEvent(keyCode));
+	}
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, 0, EnumMouseState.CLICKED));
+	}
+	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
 	}
 }

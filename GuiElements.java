@@ -2,25 +2,20 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 
 import org.lwjgl.input.Keyboard;
 
-import eu.gir.girsignals.guis.guilib.DrawUtil.IntegerHolder;
-import eu.gir.girsignals.guis.guilib.DrawUtil.SizeIntegerables;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiElements {
 
@@ -29,285 +24,344 @@ public class GuiElements {
 	public static final int OFFSET = 2;
 	public static final int BUTTON_SIZE = 20;
 
-	@SideOnly(Side.CLIENT)
-	public static abstract class GuiBasicWidget extends GuiButton {
+	public static enum EnumMouseState {
+		CLICKED, RELEASE, MOVE
+	}
 
-		private final boolean autoSync;
+	public static class UIToolTip extends UIComponent {
 
-		public GuiBasicWidget(final boolean autoSync) {
-			super(IDENTIFIER, 0, 0, null);
-			this.autoSync = autoSync;
+		public final String descripton;
+		private int width = 0;
+		private int height = 0;
+
+		public UIToolTip(final String descripton) {
+			this.descripton = descripton;
 		}
 
-		public abstract void read(final NBTTagCompound tag);
-
-		public abstract void write(final NBTTagCompound tag);
-
-		public boolean isAutoSync() {
-			return autoSync;
+		@Override
+		public void postDraw(final int mouseX, final int mouseY) {
+			final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+			final String desc = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.descripton
+					: I18n.format("gui.keyprompt");
+			GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())), mouseX, mouseY, width, height,
+					-1, font);
 		}
 
-		public boolean keyTyped(char typedChar, int keyCode) {
-			return false;
+		@Override
+		public void updateEvent(final UpdateEvent event) {
+			this.width = event.width;
+			this.height = event.height;
 		}
 
-		public void updatePos(final int x, final int y) {
+		@Override
+		public void draw(int mouseX, int mouseY) {
+		}
+
+		@Override
+		public void update() {
+		}
+	}
+
+	public static final class UpdateEvent {
+		public final int width;
+		public final int height;
+
+		public UpdateEvent(final int width, final int height) {
+			this.width = width;
+			this.height = height;
+		}
+	}
+
+	public static final class KeyEvent {
+		public final int keyCode;
+
+		public KeyEvent(final int keyCode) {
+			this.keyCode = keyCode;
+		}
+	}
+
+	public static final class MouseEvent {
+		public final int x;
+		public final int y;
+		public final int key;
+		public final EnumMouseState state;
+
+		public MouseEvent(final int x, final int y, final int key, final EnumMouseState enumState) {
 			this.x = x;
 			this.y = y;
+			this.key = key;
+			this.state = enumState;
+		}
+	}
+
+	public static interface UIAutoSync {
+
+		public void write(final NBTTagCompound compound);
+
+		public void read(final NBTTagCompound compound);
+	}
+
+	public static abstract class UIComponent {
+
+		protected UIEntity parent = null;
+		protected boolean visible = true;
+				
+		public abstract void draw(final int mouseX, final int mouseY);
+
+		public abstract void update();
+
+		public void onAdd(final UIEntity entity) {
+			this.parent = entity;
+		}
+
+		public void onRemove(final UIEntity entity) {
+			this.parent = null;
+		}
+
+		public boolean hasParent() {
+			return this.parent == null;
+		}
+
+		public void onClosed() {
+		}
+
+		public void postDraw(final int mouseX, final int mouseY) {
+		}
+
+		public void keyEvent(final KeyEvent event) {
+		}
+
+		public void mouseEvent(final MouseEvent event) {
+		}
+
+		public void updateEvent(final UpdateEvent event) {
+		}
+
+		public boolean isVisible() {
+			return visible;
 		}
 
 		public void setVisible(final boolean visible) {
 			this.visible = visible;
 		}
 
-		public boolean isVisible() {
-			return this.visible;
-		}
-
-		public void update() {
-
-		}
-
-		public String getDescription() {
-			return "";
-		}
-
-		public boolean drawHoverText(final int mouseX, final int mouseY, final FontRenderer font, final int width,
-				final int height) {
-			if (!this.isMouseOver())
-				return false;
-			final String str = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.getDescription()
-					: I18n.format("gui.keyprompt");
-			GuiUtils.drawHoveringText(Arrays.asList(str.split(System.lineSeparator())), mouseX, mouseY, width, height,
-					-1, font);
-			return true;
-		}
-
 	}
 
-	public static class GuiSelectionArrows {
+	public static final class UIEntity extends UIComponent implements UIAutoSync {
 
-		protected boolean pressed = false, lor = false, lock = true;
-		protected GuiButton leftButton;
-		protected GuiButton rightButton;
+		private int x;
+		private int y;
+		private int scaleX;
+		private int scaleY;
+		private int width;
+		private int height;
+		private int worldY;
+		private int worldX;
 
-		public void update(final int x, final int y, final int value, final int max, final int width) {
-			update(x, y, value, max, width, 0);
+		private ArrayList<UIEntity> children = new ArrayList<>();
+		private ArrayList<UIComponent> components = new ArrayList<>();
+
+		public UIEntity() {
+			this.setPos(0, 0);
+			this.setScale(1, 1);
+			this.setVisible(true);
+		}
+		
+		public UIEntity(final int x, final int y, final int scaleX, final int scaleY) {
+			this.setPos(x, y);
+			this.setScale(scaleX, scaleY);
 		}
 
-		public void update(final int x, final int y, final int value, final int max, final int width, final int min) {
-			this.leftButton = new GuiButton(IDENTIFIER, x, y, "<");
-			this.rightButton = new GuiButton(IDENTIFIER, x + width + BUTTON_SIZE + OFFSET * 2, y, ">");
-			this.rightButton.setWidth(BUTTON_SIZE);
-			this.leftButton.setWidth(BUTTON_SIZE);
-			if (value <= min) {
-				this.leftButton.enabled = false;
-			}
-			if (value >= max) {
-				this.rightButton.enabled = false;
-			}
+		public void setPos(final int x, final int y) {
+			this.x = x;
+			this.y = y;
+			update();
 		}
 
-		public int drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks, final int value,
-				final int max) {
-			return this.drawSelection(mc, mouseX, mouseY, partialTicks, value, max, 0);
+		public void setScale(final int scaleX, final int scaleY) {
+			this.scaleX = scaleX;
+			this.scaleY = scaleY;
+			update();
 		}
 
-		public int drawSelection(Minecraft mc, int mouseX, int mouseY, float partialTicks, final int value,
-				final int max, final int min) {
-			this.rightButton.drawButton(mc, mouseX, mouseY, partialTicks);
-			this.leftButton.drawButton(mc, mouseX, mouseY, partialTicks);
-			if (lock && pressed) {
-				lock = false;
-				if (lor) {
-					if (value - 1 == 0)
-						this.leftButton.enabled = false;
-					if (!this.rightButton.enabled)
-						this.rightButton.enabled = true;
-					return -1;
-				} else {
-					if (value + 1 == max)
-						this.rightButton.enabled = false;
-					if (!this.leftButton.enabled)
-						this.leftButton.enabled = true;
-					return 1;
-				}
-			}
-			return 0;
+		public int getX() {
+			return x;
 		}
 
-		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			if (!pressed && this.leftButton != null && this.rightButton != null) {
-				lor = this.leftButton.mousePressed(mc, mouseX, mouseY);
-				pressed = lor || this.rightButton.mousePressed(mc, mouseX, mouseY);
-				return pressed;
-			}
-			return false;
+		public int getY() {
+			return y;
 		}
 
-		public void mouseReleased(int mouseX, int mouseY) {
-			lock = true;
-			pressed = false;
+		public int getScaleX() {
+			return scaleX;
 		}
 
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static class GuiEnumerableSetting extends GuiBasicWidget {
-
-		protected final GuiSelectionArrows arrows = new GuiSelectionArrows();
-		public final IIntegerable<?> property;
-
-		public IntConsumer consumer;
-		public int value = 0;
-
-		public GuiEnumerableSetting(final IIntegerable<?> property, final IntConsumer consumer) {
-			this(property, consumer, false);
+		public int getScaleY() {
+			return scaleY;
 		}
 
-		public GuiEnumerableSetting(final IIntegerable<?> property, final boolean autoSync) {
-			this(property, (i) -> {
-			}, autoSync);
+		public int getWorldY() {
+			return worldY;
 		}
 
-		public GuiEnumerableSetting(final IIntegerable<?> property, final IntConsumer consumer,
-				final boolean autoSync) {
-			super(autoSync);
-			this.property = Objects.requireNonNull(property);
-			this.width = 150;
-			this.consumer = Objects.requireNonNull(consumer);
-			this.displayString = this.property.getNamedObj(this.value);
-		}
-
-		public int getValue() {
-			return this.value;
+		public int getWorldX() {
+			return worldX;
 		}
 
 		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if (visible) {
-				final int result = arrows.drawSelection(mc, mouseX, mouseY, partialTicks, this.value,
-						this.property.count() - 1);
-				if(result != 0) {
-					this.value += result;
-					this.displayString = this.property.getNamedObj(this.value);
-				}
-				super.drawButton(mc, mouseX, mouseY, partialTicks);
-			}
-		}
-
-		public int getMaxWidth(FontRenderer render) {
-			return property.getMaxWidth(render);
+		public void postDraw(final int mouseX, final int mouseY) {
+			if (isVisible())
+				children.forEach(c -> c.postDraw(mouseX, mouseY));
 		}
 
 		@Override
 		public void update() {
-			this.arrows.update(x, y, value, this.property.count() - 1, this.width);
-			x += BUTTON_SIZE + OFFSET;
-		}
-
-		public boolean keyTyped(char typedChar, int keyCode) {
-			return false;
-		}
-
-		@Override
-		public void read(final NBTTagCompound tag) {
-			value = tag.getInteger(this.property.getName());
-			this.displayString = this.property.getNamedObj(value);
-		}
-
-		@Override
-		public void write(final NBTTagCompound tag) {
-			tag.setInteger(this.property.getName(), value);
-		}
-
-		@Override
-		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			return arrows.mousePressed(mc, mouseX, mouseY);
-		}
-
-		@Override
-		public void mouseReleased(int mouseX, int mouseY) {
-			arrows.mouseReleased(mouseX, mouseY);
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static class GuiPageSelect extends GuiEnumerableSetting {
-
-		protected final IntegerHolder holder;
-
-		public GuiPageSelect(final ArrayList<ArrayList<GuiBasicWidget>> pageList) {
-			super(new SizeIntegerables<String>("page", pageList.size(), idx -> null) {
-
-				@Override
-				public int count() {
-					return pageList.size();
-				}
-
-				@Override
-				public String getNamedObj(int obj) {
-					return I18n.format("property." + this.getName() + ".name") + " " + (obj + 1) + "/"
-							+ pageList.size();
-				}
-			}, true);
-			this.holder = new IntegerHolder(0);
-			this.consumer = inp -> {
-				pageList.get(holder.getObj()).forEach(t -> t.setVisible(false));
-				pageList.get(inp).forEach(t -> t.setVisible(true));
-				holder.setObj(inp);
-			};
-			final FontRenderer render = Minecraft.getMinecraft().fontRenderer;
-			this.setWidth(this.property.getMaxWidth(render) + OFFSET * 2);
-		}
-
-		@Override
-		public void update() {
-			super.update();
-			this.displayString = this.property.getNamedObj(this.value);
-		}
-
-		@Override
-		public void updatePos(int x, int y) {
-			super.updatePos(x - (this.width / 2) + BUTTON_SIZE, y);
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if (visible) {
-				this.drawCenteredString(mc.fontRenderer, this.displayString, this.x + this.width / 2,
-						this.y + (this.height - 8) / 2, STRING_COLOR);
-				final int result = this.arrows.drawSelection(mc, mouseX, mouseY, partialTicks, this.value,
-						this.property.count() - 1);
-				if (result != 0) {
-					this.value += result;
-					this.displayString = this.property.getNamedObj(this.value);
-					this.consumer.accept(value);
-				}
+			children.forEach(c -> c.update());
+			components.forEach(c -> c.update());
+			if(this.parent != null) {
+				this.worldX = this.x + parent.getWorldX();
+				this.worldY = this.y + parent.getWorldY();
+			} else {
+				this.worldX = this.x;
+				this.worldY = this.y;
 			}
 		}
 
+		@Override
+		public void draw(final int mouseX, final int mouseY) {
+			if (isVisible()) {
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(this.x, this.y, 0);
+				GlStateManager.scale(this.scaleX, this.scaleY, 1);
+				children.forEach(c -> c.draw(mouseX, mouseY));
+				components.forEach(c -> c.draw(mouseX, mouseY));
+				GlStateManager.popMatrix();
+			}
+		}
+
+		public void add(final UIComponent component) {
+			this.components.add(component);
+			component.onAdd(this);
+			update();
+		}
+
+		public void remove(final UIComponent component) {
+			this.components.remove(component);
+			component.onRemove(this);
+			update();
+		}
+
+		public void add(final UIEntity component) {
+			this.children.add(component);
+			component.onAdd(this);
+			update();
+		}
+
+		public void remove(final UIEntity component) {
+			this.children.remove(component);
+			component.onRemove(this);
+			update();
+		}
+
+		@Override
+		public void onClosed() {
+			children.forEach(c -> c.onClosed());
+		}
+
+		@Override
+		public void mouseEvent(final MouseEvent event) {
+			if (isVisible())
+				children.forEach(c -> c.mouseEvent(event));
+		}
+
+		@Override
+		public void keyEvent(final KeyEvent event) {
+			if (isVisible())
+				children.forEach(c -> c.keyEvent(event));
+		}
+
+		@Override
+		public void updateEvent(final UpdateEvent event) {
+			this.children.forEach(c -> c.updateEvent(event));
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public void setBounds(int width, int height) {
+			this.height = height;
+			this.width = width;
+			this.update();
+		}
+
+		@Override
+		public void read(NBTTagCompound compound) {
+			children.forEach(e -> e.read(compound));
+			components.forEach(c -> {
+				if (c instanceof UIAutoSync)
+					((UIAutoSync) c).read(compound);
+			});
+		}
+
+		@Override
+		public void write(NBTTagCompound compound) {
+			children.forEach(e -> e.write(compound));
+			components.forEach(c -> {
+				if (c instanceof UIAutoSync)
+					((UIAutoSync) c).write(compound);
+			});
+		}
+
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static class GuiSettingCheckBox extends GuiEnumerableSetting {
+    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    {
+        fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
+    }
 
-		private final GuiCheckBox checkBox;
+	public static class UIButton extends UIComponent {
 
-		public GuiSettingCheckBox(IIntegerable<?> property, IntConsumer consumer) {
-			super(property, consumer);
-			this.checkBox = new GuiCheckBox(-34720, 0, 0, property.getLocalizedName(), false);
-			this.height = this.checkBox.height;
+		public static final int DEFAULT_COLOR = 14737632;
+		public static final int DEFAULT_DISABLED_COLOR = 10526880;
+		public static final int DEFAULT_HOVER_COLOR = 16777120;
+
+	    protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("textures/gui/widgets.png");
+
+		private String text;
+		private boolean enabled;
+
+		public UIButton(final String text) {
+			this.setVisible(true);
+			this.setEnabled(true);
+			this.text = text;
 		}
 
 		@Override
-		public int getMaxWidth(FontRenderer render) {
-			return this.checkBox.width - (BUTTON_SIZE * 2 + OFFSET * 2);
-		}
+		public void draw(int mouseX, int mouseY) {
+	        if (this.visible)
+	        {
+	        	final Minecraft mc = Minecraft.getMinecraft();
+	        	final FontRenderer fontrenderer = mc.fontRenderer;
+	            mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+	            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	            final int wX = parent.getWorldX();
+	            final int wY = parent.getWorldY();
 
-		@Override
-		public int getValue() {
-			return isChecked() ? 1 : 0;
+	            final boolean hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + parent.width && mouseY < wY + parent.height;
+	            final int offsetV =  enabled ? (hovered ? 2:1):0;
+	            GlStateManager.enableBlend();
+	            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+	            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+	            GuiUtils.drawTexturedModalRect(0, 0, 0, 46 + offsetV * 20, parent.width / 2, parent.height, 0);
+	            GuiUtils.drawTexturedModalRect(parent.width / 2, 0, 200 - parent.width / 2, 46 + offsetV * 20, parent.width / 2, parent.height, 0);
+	            final int colorUsed = enabled ? (hovered ? DEFAULT_HOVER_COLOR:DEFAULT_COLOR):DEFAULT_DISABLED_COLOR;
+	            drawCenteredString(fontrenderer, this.text, parent.width / 2, (parent.height - 8) / 2, colorUsed);
+	        }
 		}
 
 		@Override
@@ -315,180 +369,348 @@ public class GuiElements {
 		}
 
 		@Override
-		public boolean isMouseOver() {
-			return this.checkBox.isMouseOver();
+		public void mouseEvent(MouseEvent event) {
 		}
 
 		@Override
-		public void updatePos(int x, int y) {
-			this.checkBox.x = x;
-			this.checkBox.y = y;
+		public void onAdd(UIEntity entity) {
+			super.onAdd(entity);
+			update();
+		}
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+		
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+		
+		public String getText() {
+			return this.text;
+		}
+		
+	}
+
+	public static class UILabel extends UIComponent {
+
+		public GuiLabel label;
+
+		public UILabel() {
+			label = new GuiLabel(Minecraft.getMinecraft().fontRenderer, IDENTIFIER, 0, 0, 200, 20, 0xFFFFFFF);
 		}
 
 		@Override
-		public void setWidth(int width) {
-			this.checkBox.width = width;
+		public void draw(int mouseX, int mouseY) {
+			label.drawLabel(Minecraft.getMinecraft(), mouseX, mouseY);
+		}
+
+		@Override
+		public void update() {
+			label.x = parent.x;
+			label.y = parent.y;
 		}
 
 		@Override
 		public void setVisible(boolean visible) {
-			this.checkBox.visible = visible;
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			checkBox.drawButton(mc, mouseX, mouseY, partialTicks);
-		}
-
-		@Override
-		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			boolean flag = checkBox.mousePressed(mc, mouseX, mouseY);
-			if (flag)
-				consumer.accept(checkBox.isChecked() ? 0 : 1);
-			return flag;
-		}
-
-		public boolean isChecked() {
-			return this.checkBox.isChecked();
-		}
-
-		@Override
-		public void read(NBTTagCompound tag) {
-			super.read(tag);
-			this.checkBox.setIsChecked(this.value == 1);
-		}
-
-		public void setIsChecked(boolean isChecked) {
-			this.checkBox.setIsChecked(isChecked);
-		}
-
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static class GuiSettingTextbox extends GuiBasicWidget {
-
-		protected final GuiTextField textfield = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 100,
-				20);
-		private final Consumer<String> consumer;
-		private final String name;
-
-		public GuiSettingTextbox(final String name, final boolean autoSync) {
-			this(name, autoSync, (s) -> {
-			});
-		}
-
-		public GuiSettingTextbox(final String name, final boolean autoSync, final Consumer<String> consumer) {
-			super(autoSync);
-			this.consumer = consumer;
-			this.name = name;
-		}
-
-		public String getText() {
-			return textfield.getText();
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			textfield.drawTextBox();
-		}
-
-		@Override
-		public void updatePos(int x, int y) {
-			textfield.x = x;
-			textfield.y = y;
-		}
-
-		@Override
-		public void setWidth(int width) {
-			textfield.width = width;
-		}
-
-		@Override
-		public boolean keyTyped(char typedChar, int keyCode) {
-			boolean flag = textfield.textboxKeyTyped(typedChar, keyCode);
-			if (flag)
-				consumer.accept(textfield.getText());
-			return flag;
-		}
-
-		@Override
-		public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-			boolean b1 = super.mousePressed(mc, mouseX, mouseY);
-			boolean b2 = textfield.mouseClicked(mouseX, mouseY, 0);
-			return b1 || b2;
-		}
-
-		@Override
-		public void read(NBTTagCompound tag) {
-			this.textfield.setText(tag.getString(name));
-		}
-
-		@Override
-		public void write(NBTTagCompound tag) {
-			tag.setString(name, this.textfield.getText());
+			label.visible = visible;
 		}
 
 		@Override
 		public boolean isVisible() {
-			return visible;
+			return label.visible;
 		}
+
 	}
 
-	public static class GuiDoubleSelect extends GuiSettingTextbox {
+	public static class UIHBox extends UIComponent {
 
-		public double select;
-		private final DoubleConsumer selectcon;
-		private int ogY = 0;
-		public final String dname;
-		public GuiSelectionArrows arrows = new GuiSelectionArrows();
+		private int hGap = 0;
 
-		public GuiDoubleSelect(final String name, final boolean sync, final DoubleConsumer consumer) {
-			super(name, sync);
-			this.selectcon = consumer;
-			this.dname = name;
+		public UIHBox(final int hGap) {
+			this.hGap = hGap;
 		}
 
 		@Override
 		public void update() {
-			final int fheight = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT + 4;
-			x = this.textfield.x;
-			y = this.textfield.y;
-			ogY = y;
-			height += fheight;
-			y += fheight;
-			arrows.update(x, y, (int) Math.round(this.select * 100), -100, 100);
-			x += BUTTON_SIZE + OFFSET;
-			updatePos(x, y);
-		}
-
-		@Override
-		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-			if (!this.isVisible())
-				return;
-			mc.fontRenderer.drawStringWithShadow(dname, x, ogY, STRING_COLOR);
-			super.drawButton(mc, mouseX, mouseY, partialTicks);
-			final float mul = arrows.drawSelection(mc, mouseX, mouseY, partialTicks,
-					(int) Math.round(this.select * 100.0f), 100, -100);
-			if (mul != 0) {
-				this.selectcon.accept(this.select);
-				this.select = mul * 0.01f;
+			int x = 0;
+			for (final UIEntity entity : parent.children) {
+				entity.x = x;
+				x += entity.width + hGap;
 			}
 		}
 
 		@Override
-		public boolean keyTyped(char typedChar, int keyCode) {
-			boolean flag = super.keyTyped(typedChar, keyCode);
-			if (flag) {
-				try {
-					final String possibleValue = this.textfield.getText();
-					this.select = Double.parseDouble(possibleValue);
-					this.selectcon.accept(this.select);
-				} catch (Exception e) {
-				}
-			}
-			return flag;
+		public void onAdd(UIEntity entity) {
+			super.onAdd(entity);
+			update();
+		}
+
+		@Override
+		public void draw(int mouseX, int mouseY) {
 		}
 
 	}
 
+	public static class UIVBox extends UIComponent {
+
+		private int vGap = 0;
+
+		public UIVBox(final int vGap) {
+			this.vGap = vGap;
+		}
+
+		@Override
+		public void update() {
+			int y = 0;
+			for (final UIEntity entity : parent.children) {
+				entity.setPos(entity.getX(), y);
+				y += entity.height + vGap;
+				if(y >= parent.height)
+					break;
+			}
+		}
+
+		@Override
+		public void onAdd(UIEntity entity) {
+			super.onAdd(entity);
+			update();
+		}
+
+		@Override
+		public void draw(int mouseX, int mouseY) {
+		}
+
+	}
+
+	public static class UIGrid extends UIComponent {
+
+		private int vSize = 0;
+		private int vGap = 0;
+		private int hGap = 0;
+
+		public UIGrid(final int vSize, final int vGap, final int hGap) {
+			this.vGap = vGap;
+			this.hGap = hGap;
+			this.vSize = vSize;
+		}
+
+		@Override
+		public void draw(int mouseX, int mouseY) {
+		}
+
+		@Override
+		public void update() {
+			int pX = 0;
+			int pY = 0;
+			int lastMax = 0;
+			for (int i = 0; i < this.parent.children.size(); i++) {
+				final int rest = i % (this.vSize);
+				if (rest == 0) {
+					pY += lastMax + this.hGap;
+					lastMax = 0;
+					pX = 0;
+				}
+				final UIEntity entity = this.parent.children.get(i);
+				final int cheight = entity.getHeight();
+				if (lastMax < cheight)
+					lastMax = cheight;
+				entity.setPos(pX, pY);
+				pX += entity.getWidth() + this.vGap;
+			}
+		}
+
+		public int getvSize() {
+			return vSize;
+		}
+
+		public void setvSize(int vSize) {
+			this.vSize = vSize;
+		}
+
+		public int getvGap() {
+			return vGap;
+		}
+
+		public void setvGap(int vGap) {
+			this.vGap = vGap;
+		}
+
+		public int gethGap() {
+			return hGap;
+		}
+
+		public void sethGap(int hGap) {
+			this.hGap = hGap;
+		}
+
+	}
+
+	public static class UIClickable extends UIComponent {
+
+		private Consumer<UIEntity> callback;
+
+		public UIClickable(final Consumer<UIEntity> callback) {
+			this.callback = callback;
+		}
+
+		@Override
+		public void draw(int mouseX, int mouseY) {
+		}
+
+		@Override
+		public void update() {
+		}
+
+		@Override
+		public void mouseEvent(MouseEvent event) {
+			if (event.state == EnumMouseState.CLICKED && this.parent.isVisible()) {
+				final int x = this.parent.getX();
+				final int y = this.parent.getY();
+				final int width = this.parent.getWidth();
+				final int height = this.parent.getHeight();
+				if (event.x > x && event.x < x + width && event.y > y && event.y < y + height) {
+					callback.accept(this.parent);
+				}
+			}
+		}
+
+	}
+
+	public static class UICheckBox extends UIComponent implements UIAutoSync {
+		
+		private GuiCheckBox checkBox;
+		private String id;
+		private IntConsumer onChange;
+		
+		public UICheckBox(final String id) {
+			this.id = id;
+			checkBox = new GuiCheckBox(IDENTIFIER, 0, 0, "", false);
+			this.setVisible(true);
+		}
+		
+		@Override
+		public void update() {}
+		
+		@Override
+		public void draw(int mouseX, int mouseY) {
+			checkBox.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, 0);
+		}
+		
+		@Override
+		public boolean isVisible() {
+			return checkBox.visible;
+		}
+		
+		@Override
+		public void setVisible(boolean visible) {
+			checkBox.visible = visible;
+		}
+		
+		public boolean isChecked() {
+			return checkBox.isChecked();
+		}
+		
+		public void setChecked(boolean checked) {
+			checkBox.setIsChecked(checked);
+			this.onChange.accept(isChecked() ? 1:0);
+		}
+
+		@Override
+		public void write(NBTTagCompound compound) {
+			compound.setBoolean(id, isChecked());
+		}
+
+		@Override
+		public void read(NBTTagCompound compound) {
+			this.setChecked(compound.getBoolean(id));
+		}
+		
+		public String getText() {
+			return checkBox.displayString;
+		}
+		
+		public void setText(String text) {
+			checkBox.displayString = text;
+		}
+
+		public IntConsumer getOnChange() {
+			return onChange;
+		}
+
+		public void setOnChange(IntConsumer onChange) {
+			this.onChange = onChange;
+		}
+		
+	}
+
+	public static class UIEnumerable extends UIComponent implements UIAutoSync {
+
+		private IntConsumer onChange;
+		private int index;
+		private int max;
+		private int min;
+		private String id;
+		
+		public UIEnumerable(IntConsumer onChange, int max, String id) {
+			this.onChange = onChange;
+			this.max = max;
+			this.id = id;
+			this.min = 0;
+		}
+
+		@Override
+		public void draw(int mouseX, int mouseY) {}
+
+		@Override
+		public void update() {}
+		
+		public int getIndex() {
+			return index;
+		}
+
+		public void setIndex(int index) {
+			this.index = index;
+			this.onChange.accept(index);
+		}
+				
+		@Override
+		public void write(NBTTagCompound compound) {
+			compound.setInteger(id, index);
+		}
+
+		@Override
+		public void read(NBTTagCompound compound) {
+			this.setIndex(compound.getInteger(id));
+		}
+
+		public int getMax() {
+			return max;
+		}
+		
+		public int getMin() {
+			return min;
+		}
+
+		public void setMin(int min) {
+			this.min = min;
+		}
+
+		public void setMax(int max) {
+			this.max = max;
+		}
+
+		public IntConsumer getOnChange() {
+			return onChange;
+		}
+
+		public void setOnChange(IntConsumer onChange) {
+			this.onChange = onChange;
+		}
+
+	}
 }
