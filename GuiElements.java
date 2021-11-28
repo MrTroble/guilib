@@ -601,6 +601,7 @@ public class GuiElements {
 		public UICheckBox(final String id) {
 			this.id = id;
 			this.setVisible(true);
+			this.setEnabled(true);
 		}
 		
 		@Override
