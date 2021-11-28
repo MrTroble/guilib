@@ -713,4 +713,50 @@ public class GuiElements {
 		}
 
 	}
+
+	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer) {
+		final UIEntity middle = new UIEntity();
+		middle.setBounds(property.getMaxWidth(Minecraft.getMinecraft().fontRenderer), 20);
+
+		final UIButton middleButton = new UIButton(property.getNamedObj(0));
+		final UIEnumerable enumerable = new UIEnumerable(consumer, property.count(), property.getName());
+		enumerable.setOnChange(consumer.andThen(in -> middleButton.setText(property.getNamedObj(in))));
+		middle.add(middleButton);
+		middle.add(enumerable);
+
+		final UIEntity left = new UIEntity();
+		left.setBounds(20, 20);
+
+		final UIButton leftButton = new UIButton("<");
+		final UIClickable leftclickable = new UIClickable(e -> {
+			final int id = enumerable.getIndex();
+			final int min = enumerable.getMin();
+			if (id == min)
+				return;
+			enumerable.setIndex(id - 1);
+		});
+		left.add(leftButton);
+		left.add(leftclickable);
+
+		final UIEntity right = new UIEntity();
+		right.setBounds(20, 20);
+
+		final UIButton rightButton = new UIButton(">");
+		final UIClickable rightclickable = new UIClickable(e -> {
+			final int id = enumerable.getIndex();
+			final int min = enumerable.getMin();
+			if (id == min)
+				return;
+			enumerable.setIndex(id - 1);
+		});
+		right.add(rightButton);
+		right.add(rightclickable);
+
+		final UIEntity hbox = new UIEntity();
+		hbox.add(new UIHBox(1));
+		hbox.add(left);
+		hbox.add(middle);
+		hbox.add(right);
+		return hbox;
+	}
 }
