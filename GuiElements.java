@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class GuiElements {
@@ -157,6 +156,7 @@ public class GuiElements {
 		private int height;
 		private int worldY;
 		private int worldX;
+		private boolean hovered;
 
 		private ArrayList<UIEntity> children = new ArrayList<>();
 		private ArrayList<UIComponent> components = new ArrayList<>();
@@ -230,6 +230,9 @@ public class GuiElements {
 		@Override
 		public void draw(final int mouseX, final int mouseY) {
 			if (isVisible()) {
+	            final int wX = this.getWorldX();
+	            final int wY = this.getWorldY();
+	            this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + this.width && mouseY < wY + this.height;
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(this.x, this.y, 0);
 				GlStateManager.scale(this.scaleX, this.scaleY, 1);
@@ -317,6 +320,11 @@ public class GuiElements {
 			});
 		}
 
+		
+		public boolean isHovered() {
+			return hovered;
+		}
+
 	}
 
     public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
@@ -349,17 +357,13 @@ public class GuiElements {
 	        	final FontRenderer fontrenderer = mc.fontRenderer;
 	            mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
 	            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-	            final int wX = parent.getWorldX();
-	            final int wY = parent.getWorldY();
-
-	            final boolean hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + parent.width && mouseY < wY + parent.height;
-	            final int offsetV =  enabled ? (hovered ? 2:1):0;
+	            final int offsetV =  enabled ? (parent.isHovered() ? 2:1):0;
 	            GlStateManager.enableBlend();
 	            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 	            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 	            GuiUtils.drawTexturedModalRect(0, 0, 0, 46 + offsetV * 20, parent.width / 2, parent.height, 0);
 	            GuiUtils.drawTexturedModalRect(parent.width / 2, 0, 200 - parent.width / 2, 46 + offsetV * 20, parent.width / 2, parent.height, 0);
-	            final int colorUsed = enabled ? (hovered ? DEFAULT_HOVER_COLOR:DEFAULT_COLOR):DEFAULT_DISABLED_COLOR;
+	            final int colorUsed = enabled ? (parent.isHovered() ? DEFAULT_HOVER_COLOR:DEFAULT_COLOR):DEFAULT_DISABLED_COLOR;
 	            drawCenteredString(fontrenderer, this.text, parent.width / 2, (parent.height - 8) / 2, colorUsed);
 	        }
 		}
@@ -468,7 +472,7 @@ public class GuiElements {
 		public void update() {
 			int y = 0;
 			for (final UIEntity entity : parent.children) {
-				entity.setPos(entity.getX(), y);
+				entity.y = y;
 				y += entity.height + vGap;
 				if(y >= parent.height)
 					break;
@@ -569,11 +573,7 @@ public class GuiElements {
 		@Override
 		public void mouseEvent(MouseEvent event) {
 			if (event.state == EnumMouseState.CLICKED && this.parent.isVisible()) {
-				final int x = this.parent.getX();
-				final int y = this.parent.getY();
-				final int width = this.parent.getWidth();
-				final int height = this.parent.getHeight();
-				if (event.x > x && event.x < x + width && event.y > y && event.y < y + height) {
+				if (this.parent.isHovered()) {
 					callback.accept(this.parent);
 				}
 			}
@@ -583,43 +583,36 @@ public class GuiElements {
 
 	public static class UICheckBox extends UIComponent implements UIAutoSync {
 		
-		private GuiCheckBox checkBox;
+		public static final int BOX_WIDTH = 11;
+		
 		private String id;
+		private String text;
 		private IntConsumer onChange;
+		private boolean enabled;
+		private boolean checked;
 		
 		public UICheckBox(final String id) {
 			this.id = id;
-			checkBox = new GuiCheckBox(IDENTIFIER, 0, 0, "", false);
 			this.setVisible(true);
 		}
 		
 		@Override
-		public void update() {}
+		public void update() {
+			Minecraft mc = Minecraft.getMinecraft();
+			this.parent.width = BOX_WIDTH + 4 + mc.fontRenderer.getStringWidth(text);
+			this.parent.height = Math.max(BOX_WIDTH, mc.fontRenderer.FONT_HEIGHT) + 2;
+		}
 		
 		@Override
 		public void draw(int mouseX, int mouseY) {
-			checkBox.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, 0);
+			Minecraft mc = Minecraft.getMinecraft();
+            GuiUtils.drawContinuousTexturedBox(UIButton.BUTTON_TEXTURES, 0, 0, 0, 46, BOX_WIDTH, BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
+            int color = this.enabled ? UIButton.DEFAULT_COLOR:UIButton.DEFAULT_DISABLED_COLOR;
+            if (this.isChecked())
+                drawCenteredString(mc.fontRenderer, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
+            mc.fontRenderer.drawStringWithShadow(text, BOX_WIDTH + 2.0f, 2.0f, color);
 		}
 		
-		@Override
-		public boolean isVisible() {
-			return checkBox.visible;
-		}
-		
-		@Override
-		public void setVisible(boolean visible) {
-			checkBox.visible = visible;
-		}
-		
-		public boolean isChecked() {
-			return checkBox.isChecked();
-		}
-		
-		public void setChecked(boolean checked) {
-			checkBox.setIsChecked(checked);
-			this.onChange.accept(isChecked() ? 1:0);
-		}
-
 		@Override
 		public void write(NBTTagCompound compound) {
 			compound.setBoolean(id, isChecked());
@@ -630,14 +623,6 @@ public class GuiElements {
 			this.setChecked(compound.getBoolean(id));
 		}
 		
-		public String getText() {
-			return checkBox.displayString;
-		}
-		
-		public void setText(String text) {
-			checkBox.displayString = text;
-		}
-
 		public IntConsumer getOnChange() {
 			return onChange;
 		}
@@ -645,6 +630,30 @@ public class GuiElements {
 		public void setOnChange(IntConsumer onChange) {
 			this.onChange = onChange;
 		}
+
+		public String getText() {
+			return text;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public void setEnabled(boolean enabled) {
+			this.enabled = enabled;
+		}
+
+		public boolean isChecked() {
+			return checked;
+		}
+
+		public void setChecked(boolean checked) {
+			this.checked = checked;
+		}		
 		
 	}
 
