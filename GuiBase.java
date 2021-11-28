@@ -96,8 +96,8 @@ public class GuiBase extends GuiScreen {
 		this.guiLeft = (this.width - this.xSize) / 2;
 		this.guiTop = (this.height - this.ySize) / 2;
 		this.entity.read(compound);
-		this.entity.setBounds(this.xSize, this.ySize);
-		this.entity.setPos(this.guiLeft, this.guiTop + TOP_OFFSET);
+		this.entity.setBounds(this.xSize, this.ySize - GUI_INSET);
+		this.entity.setPos(this.guiLeft + RIGHT_INSET, this.guiTop + TOP_OFFSET);
 	}
 	
 	@Override

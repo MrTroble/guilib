@@ -7,6 +7,7 @@ import java.util.function.IntConsumer;
 
 import org.lwjgl.input.Keyboard;
 
+import eu.gir.girsignals.SEProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiLabel;
@@ -463,6 +464,7 @@ public class GuiElements {
 	public static class UIVBox extends UIComponent {
 
 		private int vGap = 0;
+		private int page = 0;
 
 		public UIVBox(final int vGap) {
 			this.vGap = vGap;
@@ -471,11 +473,16 @@ public class GuiElements {
 		@Override
 		public void update() {
 			int y = 0;
+			int cPage = 0;
 			for (final UIEntity entity : parent.children) {
 				entity.y = y;
 				y += entity.height + vGap;
-				if(y >= parent.height)
-					break;
+				if(y >= parent.height) {
+					entity.y = 0;
+					y = 0;
+					cPage++;
+				}
+			    entity.setVisible(cPage == page);
 			}
 		}
 
@@ -723,6 +730,16 @@ public class GuiElements {
 
 	}
 
+	public static UIEntity createBoolElement(SEProperty<?> property, IntConsumer consumer) {
+		final UIEntity middle = new UIEntity();
+		middle.setBounds(Minecraft.getMinecraft().fontRenderer.getStringWidth(property.getLocalizedName()) + 20, 20);
+
+		final UICheckBox middleButton = new UICheckBox(property.getNamedObj(0));
+		middleButton.setOnChange(consumer);
+		middle.add(middleButton);
+		return middle;
+	}
+	
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
 		middle.setBounds(property.getMaxWidth(Minecraft.getMinecraft().fontRenderer), 20);
@@ -766,6 +783,7 @@ public class GuiElements {
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
+		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth(), 20);
 		return hbox;
 	}
 }
