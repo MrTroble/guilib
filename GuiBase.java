@@ -9,6 +9,7 @@ import eu.gir.girsignals.guis.guilib.GuiElements.UIEntity;
 import eu.gir.girsignals.guis.guilib.GuiElements.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -56,7 +57,8 @@ public class GuiBase extends GuiScreen {
 		}
 		net.minecraftforge.common.MinecraftForge.EVENT_BUS
 				.post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Post(this, this.buttonList));
-		entity.updateEvent(new UpdateEvent(width, height));
+		ScaledResolution res = new ScaledResolution(mc);
+		entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor()));
 	}
 
 	@Override
@@ -98,6 +100,8 @@ public class GuiBase extends GuiScreen {
 		this.entity.read(compound);
 		this.entity.setBounds(this.xSize, this.ySize - GUI_INSET);
 		this.entity.setPos(this.guiLeft + RIGHT_INSET, this.guiTop + TOP_OFFSET);
+		ScaledResolution res = new ScaledResolution(mc);
+		this.entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor()));
 	}
 	
 	@Override
