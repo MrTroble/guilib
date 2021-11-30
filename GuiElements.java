@@ -262,6 +262,7 @@ public class GuiElements {
 		public void add(final UIEntity component) {
 			this.children.add(component);
 			component.onAdd(this);
+			component.scale = this.scale;
 			update();
 		}
 
