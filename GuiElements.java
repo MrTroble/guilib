@@ -218,7 +218,7 @@ public class GuiElements {
 			if (isVisible())
 				children.forEach(c -> c.postDraw(mouseX, mouseY));
 		}
-		
+
 		@Override
 		public void update() {
 			components.forEach(c -> c.update());
@@ -626,7 +626,7 @@ public class GuiElements {
 
 		@Override
 		public void mouseEvent(MouseEvent event) {
-			if (event.state == EnumMouseState.CLICKED && this.parent.isVisible()) {
+			if (event.state == EnumMouseState.RELEASE && this.parent.isVisible()) {
 				if (this.parent.isHovered()) {
 					callback.accept(this.parent);
 				}

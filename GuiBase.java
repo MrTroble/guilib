@@ -122,7 +122,7 @@ public class GuiBase extends GuiScreen {
 	
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, 0, EnumMouseState.CLICKED));
+		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, 0, EnumMouseState.RELEASE));
 	}
 	
 	@Override
