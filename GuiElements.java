@@ -221,7 +221,6 @@ public class GuiElements {
 		@Override
 		public void update() {
 			components.forEach(c -> c.update());
-			children.forEach(c -> c.update());
 			if (this.parent != null) {
 				this.worldX = (this.x * scale) + parent.getWorldX();
 				this.worldY = (this.y * scale) + parent.getWorldY();
@@ -229,6 +228,7 @@ public class GuiElements {
 				this.worldX = (this.x * scale);
 				this.worldY = (this.y * scale);
 			}
+			children.forEach(c -> c.update());
 		}
 
 		@Override
@@ -261,7 +261,7 @@ public class GuiElements {
 		public void add(final UIEntity component) {
 			this.children.add(component);
 			component.onAdd(this);
-			component.scale = this.scale;
+			component.internalUpdateScale(this.scale);
 			update();
 		}
 
@@ -343,6 +343,19 @@ public class GuiElements {
 
 		public boolean isHovered() {
 			return hovered;
+		}
+
+		public void clearChildren() {
+			@SuppressWarnings("unchecked")
+			final ArrayList<UIEntity> tmpChildren = (ArrayList<UIEntity>) this.children.clone();
+			this.children.clear();
+			tmpChildren.forEach(entity -> entity.onRemove(this));
+			this.update();
+		}
+
+		private void internalUpdateScale(int nScale) {
+			this.scale = nScale;
+			this.children.forEach(e -> e.internalUpdateScale(nScale));
 		}
 
 	}
@@ -505,6 +518,7 @@ public class GuiElements {
 
 		private int vGap = 0;
 		private int page = 0;
+		private int maxPages = 0;
 		private ArrayList<UIEntity> boundsUpdate = new ArrayList<>();
 
 		public UIVBox(final int vGap) {
@@ -547,6 +561,7 @@ public class GuiElements {
 				entity.setVisible(cPage == page);
 				entity.update();
 			}
+			maxPages = cPage + 1;
 		}
 
 		@Override
@@ -557,6 +572,19 @@ public class GuiElements {
 
 		@Override
 		public void draw(int mouseX, int mouseY) {
+		}
+
+		public int getPage() {
+			return page;
+		}
+
+		public void setPage(int page) {
+			this.page = page;
+			this.update();
+		}
+
+		public int getMaxPages() {
+			return maxPages;
 		}
 
 	}
@@ -757,7 +785,8 @@ public class GuiElements {
 		}
 
 		public void setIndex(int index) {
-			this.index = index;
+			if (index >= this.getMin() && index <= this.getMax())
+				this.index = index;
 			this.onChange.accept(index);
 		}
 
@@ -815,7 +844,7 @@ public class GuiElements {
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer) {
 		return createEnumElement(property, consumer, property.getMaxWidth(Minecraft.getMinecraft().fontRenderer) + 8);
 	}
-	
+
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer, int minWidth) {
 		final UIEntity middle = new UIEntity();
 		middle.setBounds(minWidth, 20);
@@ -839,7 +868,75 @@ public class GuiElements {
 
 		final UIEntity left = new UIEntity();
 		left.setBounds(20, 20);
+
+		final UIClickable leftclickable = new UIClickable(e -> {
+			final int id = enumerable.getIndex();
+			final int min = enumerable.getMin();
+			if (id <= min)
+				return;
+			enumerable.setIndex(id - 1);
+		});
+		left.add(leftButton);
+		left.add(leftclickable);
+
+		final UIEntity right = new UIEntity();
+		right.setBounds(20, 20);
+
+		final UIClickable rightclickable = new UIClickable(e -> {
+			final int id = enumerable.getIndex();
+			final int max = enumerable.getMax() - 1;
+			if (id >= max)
+				return;
+			enumerable.setIndex(id + 1);
+		});
+		right.add(rightButton);
+		right.add(rightclickable);
+
+		final UIEntity hbox = new UIEntity();
+		hbox.add(new UIHBox(1));
+		hbox.add(left);
+		hbox.add(middle);
+		hbox.add(right);
+		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth(), 20);
+		return hbox;
+	}
+
+
+	public static UIEntity createPageSelect(UIVBox vbox) {
+		final UIEntity middle = new UIEntity();
+		middle.setBounds(100, 20);
+
+		final UIButton leftButton = new UIButton("<");
+		final UIButton rightButton = new UIButton(">");
+
+		final UIButton middleButton = new UIButton("DDDD");
+		middle.add(middleButton);
 		
+		final UIEnumerable enumerable = new UIEnumerable(null, 0, "pageselect");
+		enumerable.setOnChange(in -> {
+			middleButton.setText("Page: " + in);
+			rightButton.setEnabled(true);
+			leftButton.setEnabled(true);
+			if (in <= enumerable.getMin())
+				leftButton.setEnabled(false);
+			if (in >= enumerable.getMax() - 1)
+				rightButton.setEnabled(false);
+			vbox.setPage(in);
+		});
+
+		vbox.parent.add(new UIOnUpdate(() -> {
+			final int max = vbox.getMaxPages();
+			if(max < 1)
+				return;
+			enumerable.setMax(max);
+			final int current = enumerable.getIndex();
+			enumerable.setIndex(current >= max ? max - 1:current);
+		}));
+		middle.add(enumerable);
+
+		final UIEntity left = new UIEntity();
+		left.setBounds(20, 20);
+
 		final UIClickable leftclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
 			final int min = enumerable.getMin();
