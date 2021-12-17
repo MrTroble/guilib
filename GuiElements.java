@@ -878,7 +878,7 @@ public class GuiElements {
 		final UIButton rightButton = new UIButton(">");
 
 		final UIButton middleButton = new UIButton(property.getNamedObj(0));
-		final UIEnumerable enumerable = new UIEnumerable(consumer, property.count(), property.getName());
+		final UIEnumerable enumerable = new UIEnumerable(null, property.count(), property.getName());
 		enumerable.setOnChange(consumer.andThen(in -> {
 			middleButton.setText(property.getNamedObj(in));
 			rightButton.setEnabled(true);
@@ -890,7 +890,7 @@ public class GuiElements {
 		}));
 		middle.add(middleButton);
 		middle.add(enumerable);
-
+		
 		final UIEntity left = new UIEntity();
 		left.setBounds(20, 20);
 
@@ -916,6 +916,8 @@ public class GuiElements {
 		});
 		right.add(rightButton);
 		right.add(rightclickable);
+		
+		enumerable.setIndex(0);
 
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIHBox(1));
