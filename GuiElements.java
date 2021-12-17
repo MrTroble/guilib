@@ -2,6 +2,7 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
@@ -351,6 +352,20 @@ public class GuiElements {
 			this.children.clear();
 			tmpChildren.forEach(entity -> entity.onRemove(this));
 			this.update();
+		}
+
+		public <T extends UIComponent> List<T> findRecursive(Class<T> c) {
+			return findRecursive(this, c);
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T extends UIComponent> List<T> findRecursive(UIEntity uiEntity, Class<T> c) {
+			final ArrayList<T> components = new ArrayList<>();
+			uiEntity.components.stream().filter(u -> u.getClass().equals(c)).forEach(f -> components.add((T) f));
+			for (UIEntity nextEntity : uiEntity.children) {
+				components.addAll(findRecursive(nextEntity, c));
+			}
+			return components;
 		}
 
 		private void internalUpdateScale(int nScale) {
@@ -755,6 +770,11 @@ public class GuiElements {
 			this.checked = checked;
 		}
 
+		
+		public String getId() {
+			return id;
+		}
+		
 	}
 
 	public static class UIEnumerable extends UIComponent implements UIAutoSync {
@@ -816,6 +836,10 @@ public class GuiElements {
 			this.max = max;
 		}
 
+		public String getId() {
+			return id;
+		}
+
 		public IntConsumer getOnChange() {
 			return onChange;
 		}
@@ -833,6 +857,7 @@ public class GuiElements {
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
 			middleButton.setChecked(!middleButton.isChecked());
+			consumer.accept(middleButton.isChecked() ? 1:0);
 		});
 		middleButton.setOnChange(consumer);
 		middleButton.setText(property.getLocalizedName());
@@ -901,7 +926,6 @@ public class GuiElements {
 		return hbox;
 	}
 
-
 	public static UIEntity createPageSelect(UIVBox vbox) {
 		final UIEntity middle = new UIEntity();
 		middle.setBounds(100, 20);
@@ -911,7 +935,7 @@ public class GuiElements {
 
 		final UIButton middleButton = new UIButton("DDDD");
 		middle.add(middleButton);
-		
+
 		final UIEnumerable enumerable = new UIEnumerable(null, 0, "pageselect");
 		enumerable.setOnChange(in -> {
 			middleButton.setText("Page: " + in);
@@ -926,11 +950,11 @@ public class GuiElements {
 
 		vbox.parent.add(new UIOnUpdate(() -> {
 			final int max = vbox.getMaxPages();
-			if(max < 1)
+			if (max < 1)
 				return;
 			enumerable.setMax(max);
 			final int current = enumerable.getIndex();
-			enumerable.setIndex(current >= max ? max - 1:current);
+			enumerable.setIndex(current >= max ? max - 1 : current);
 		}));
 		middle.add(enumerable);
 
