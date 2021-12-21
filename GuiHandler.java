@@ -29,11 +29,8 @@ public final class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		final BlockPos pos = new BlockPos(x, y, z);
-		for(GuiSupplier sup : guiContainer) {
-			final Object object = sup.get(player, world, pos);
-			if(object != null)
-				return object;
+		if (guiBases.size() > ID) {
+			return guiBases.get(ID).get(player, world, new BlockPos(x, y, z));
 		}
 		return null;
 	}
@@ -48,25 +45,22 @@ public final class GuiHandler implements IGuiHandler {
 	}
 
 	public static <T> void addGui(Class<T> clazz, GuiSupplier gui) {
-		addGui(clazz, gui, null);
+		addGui(clazz, gui, guiBases);
 	}
 
-	public static  void addServer(GuiSupplier gui) {
-		guiContainer.add(gui);
+	public static <T> void addServer(Class<T> clazz, GuiSupplier gui) {
+		addGui(clazz, gui, guiContainer);
 	}
 
-	public static <T> int addGui(Class<T> clazz, GuiSupplier gui, GuiSupplier container) {
+	public static <T> int addGui(Class<T> clazz, GuiSupplier gui, ArrayList<GuiSupplier> guiBases) {
 		if (guiIDS.containsKey(clazz)) {
 			int id = guiIDS.get(clazz);
-			if (container != null)
-				guiContainer.set(id, container);
 			if (gui != null)
 				guiBases.set(id, gui);
 			return id;
 		}
 		int size = guiBases.size();
 		guiBases.add(gui);
-		guiContainer.add(container);
 		guiIDS.put(clazz, size);
 		return size;
 	}
