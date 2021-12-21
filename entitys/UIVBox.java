@@ -2,6 +2,11 @@ package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.ArrayList;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+
 public class UIVBox extends UIComponent {
 
 	private int vGap = 0;

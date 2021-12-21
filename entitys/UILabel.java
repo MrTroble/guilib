@@ -3,6 +3,10 @@ package eu.gir.girsignals.guis.guilib.entitys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 
 public class UILabel extends UIComponent {
 

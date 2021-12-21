@@ -4,6 +4,10 @@ import java.util.function.IntConsumer;
 
 import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 
 public class UIEnumerable extends UIComponent implements UIAutoSync {
 
@@ -36,7 +40,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 		boolean isChanged = index != this.index;
 		if (index >= this.getMin() && index <= this.getMax())
 			this.index = index;
-		if(isChanged)
+		if (isChanged)
 			this.onChange.accept(index);
 	}
 

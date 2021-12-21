@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -20,20 +19,21 @@ public final class GuiHandler implements IGuiHandler {
 	private static String modid;
 
 	@FunctionalInterface
-	public static interface GuiSupplier<T> {
-		T get(EntityPlayer player, World world, BlockPos pos);
+	public static interface GuiSupplier {
+		Object get(EntityPlayer player, World world, BlockPos pos);
 	}
 
 	private static HashMap<Class<?>, Integer> guiIDS = new HashMap<>();
-	private static ArrayList<GuiSupplier<GuiBase>> guiBases = new ArrayList<>();
-	private static ArrayList<GuiSupplier<Container>> guiContainer = new ArrayList<>();
+	private static ArrayList<GuiSupplier> guiBases = new ArrayList<>();
+	private static ArrayList<GuiSupplier> guiContainer = new ArrayList<>();
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (guiContainer.size() > ID) {
-			final GuiSupplier<Container> supplier = guiContainer.get(ID);
-			if (supplier != null)
-				return supplier.get(player, world, new BlockPos(x, y, z));
+		final BlockPos pos = new BlockPos(x, y, z);
+		for(GuiSupplier sup : guiContainer) {
+			final Object object = sup.get(player, world, pos);
+			if(object != null)
+				return object;
 		}
 		return null;
 	}
@@ -47,19 +47,31 @@ public final class GuiHandler implements IGuiHandler {
 		return null;
 	}
 
-	public static <T extends GuiBase> void addGui(Class<T> clazz, GuiSupplier<GuiBase> gui) {
+	public static <T> void addGui(Class<T> clazz, GuiSupplier gui) {
 		addGui(clazz, gui, null);
 	}
 
-	public static <T extends GuiBase> void addGui(Class<T> clazz, GuiSupplier<GuiBase> gui,
-			GuiSupplier<Container> container) {
+	public static  void addServer(GuiSupplier gui) {
+		guiContainer.add(gui);
+	}
+
+	public static <T> int addGui(Class<T> clazz, GuiSupplier gui, GuiSupplier container) {
+		if (guiIDS.containsKey(clazz)) {
+			int id = guiIDS.get(clazz);
+			if (container != null)
+				guiContainer.set(id, container);
+			if (gui != null)
+				guiBases.set(id, gui);
+			return id;
+		}
 		int size = guiBases.size();
 		guiBases.add(gui);
 		guiContainer.add(container);
 		guiIDS.put(clazz, size);
+		return size;
 	}
 
-	public static <T extends GuiBase> void invokeGui(Class<T> clazz, EntityPlayer player, World world, BlockPos pos) {
+	public static <T> void invokeGui(Class<T> clazz, EntityPlayer player, World world, BlockPos pos) {
 		player.openGui(modid, guiIDS.get(clazz), world, pos.getX(), pos.getY(), pos.getZ());
 	}
 

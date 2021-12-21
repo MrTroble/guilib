@@ -7,7 +7,10 @@ import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class UICheckBox extends UIComponent implements UIAutoSync {
 
 	public static final int BOX_WIDTH = 11;

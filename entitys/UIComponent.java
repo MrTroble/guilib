@@ -3,6 +3,10 @@ package eu.gir.girsignals.guis.guilib.entitys;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.KeyEvent;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.UpdateEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 
 public abstract class UIComponent {
 

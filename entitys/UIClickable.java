@@ -4,6 +4,10 @@ import java.util.function.Consumer;
 
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.EnumMouseState;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 
 public class UIClickable extends UIComponent {
 

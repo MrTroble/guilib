@@ -13,6 +13,10 @@ import eu.gir.girsignals.guis.guilib.entitys.UIOnUpdate;
 import eu.gir.girsignals.guis.guilib.entitys.UIToolTip;
 import eu.gir.girsignals.guis.guilib.entitys.UIVBox;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 
 public class GuiElements {
 
