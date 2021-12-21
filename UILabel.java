@@ -10,7 +10,9 @@ public class UILabel extends UIComponent {
 	private String string;
 	private int stringColor;
 	private FontRenderer renderer;
-
+	private int restHeight = 0;
+	private int restWidth = 0;
+	
 	public UILabel(String text) {
 		this.string = text;
 		this.stringColor = DEFAULT_STRING_COLOR;
@@ -24,14 +26,21 @@ public class UILabel extends UIComponent {
 			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
 					GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
 					GlStateManager.DestFactor.ZERO);
-			renderer.drawString(string, 0, 0, stringColor);
+			renderer.drawString(string, restWidth, restHeight, stringColor);
 		}
 	}
 
 	@Override
 	public void update() {
-		this.parent.height = renderer.FONT_HEIGHT;
-		this.parent.width = renderer.getStringWidth(string);
+		if (this.parent.inheritsBounds()) {
+			this.parent.height = renderer.FONT_HEIGHT;
+			this.parent.width = renderer.getStringWidth(string);
+			this.restHeight = 0;
+			this.restWidth = 0;
+		} else {
+			this.restHeight = (this.parent.getHeight() - renderer.FONT_HEIGHT) / 2;
+			this.restWidth = (this.parent.getWidth() - renderer.getStringWidth(string)) / 2;
+		}
 	}
 
 	public String getText() {

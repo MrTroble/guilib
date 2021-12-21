@@ -43,7 +43,7 @@ public class UIVBox extends UIComponent {
 			y += entity.height + vGap;
 			if (y >= parent.height) {
 				entity.y = 0;
-				y = 0;
+				y = entity.height + vGap;
 				cPage++;
 			}
 			entity.setVisible(cPage == page);

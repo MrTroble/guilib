@@ -19,6 +19,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	private boolean hovered;
 	private boolean inheritBounds;
 	private int scale;
+	protected GuiBase base;
 
 	protected ArrayList<UIEntity> children = new ArrayList<>();
 	protected ArrayList<UIComponent> components = new ArrayList<>();
@@ -73,8 +74,10 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 
 	@Override
 	public void postDraw(final int mouseX, final int mouseY) {
-		if (isVisible())
+		if (isVisible()) {
 			children.forEach(c -> c.postDraw(mouseX, mouseY));
+			components.forEach(c -> c.postDraw(mouseX, mouseY));
+		}
 	}
 
 	@Override
@@ -119,6 +122,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 
 	public void add(final UIEntity component) {
 		this.children.add(component);
+		component.base = this.base;
 		component.onAdd(this);
 		component.internalUpdateScale(this.scale);
 		update();
@@ -229,6 +233,10 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	private void internalUpdateScale(int nScale) {
 		this.scale = nScale;
 		this.children.forEach(e -> e.internalUpdateScale(nScale));
+	}
+
+	public GuiBase getBase() {
+		return base;
 	}
 
 	public static enum EnumMouseState {

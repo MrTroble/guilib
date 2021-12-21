@@ -40,6 +40,7 @@ public class GuiBase extends GuiScreen {
 	public GuiBase(final String name) {
 		this.name = name;
 		this.entity = new UIEntity();
+		this.entity.base = this;
 		this.compound = new NBTTagCompound();
 	}
 	
@@ -85,7 +86,13 @@ public class GuiBase extends GuiScreen {
 		this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
 		GlStateManager.popMatrix();
 
+		this.draw(mouseX, mouseY, partialTicks);
+		
 		entity.postDraw(mouseX, mouseY);
+	}
+	
+	public void draw(int mouseX, int mouseY, float partialTicks) {
+		
 	}
 
 	@Override

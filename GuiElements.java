@@ -19,6 +19,7 @@ public class GuiElements {
 		middleButton.setText(property.getLocalizedName());
 		middle.add(middleButton);
 		middle.add(clickable);
+		middle.add(new UIToolTip(property.getDescription()));
 		return middle;
 	}
 
@@ -77,6 +78,7 @@ public class GuiElements {
 
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIHBox(1));
+		hbox.add(new UIToolTip(property.getDescription()));
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
@@ -85,18 +87,20 @@ public class GuiElements {
 	}
 
 	public static UIEntity createPageSelect(UIVBox vbox) {
+		final UIEntity hbox = new UIEntity();
+
 		final UIEntity middle = new UIEntity();
 		middle.setBounds(100, 20);
 
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
 
-		final UIButton middleButton = new UIButton("DDDD");
+		final UILabel middleButton = new UILabel("DDDD");
 		middle.add(middleButton);
 
 		final UIEnumerable enumerable = new UIEnumerable(null, 0, "pageselect");
 		enumerable.setOnChange(in -> {
-			middleButton.setText("Page: " + in);
+			middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
 			rightButton.setEnabled(true);
 			leftButton.setEnabled(true);
 			if (in <= enumerable.getMin())
@@ -110,6 +114,7 @@ public class GuiElements {
 			final int max = vbox.getMaxPages();
 			if (max < 1)
 				return;
+			hbox.setVisible(max != 1);
 			enumerable.setMax(max);
 			final int current = enumerable.getIndex();
 			enumerable.setIndex(current >= max ? max - 1 : current);
@@ -142,7 +147,6 @@ public class GuiElements {
 		right.add(rightButton);
 		right.add(rightclickable);
 
-		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIHBox(1));
 		hbox.add(left);
 		hbox.add(middle);
