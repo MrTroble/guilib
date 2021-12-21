@@ -8,4 +8,3 @@ public interface UIAutoSync {
 
 	public void read(final NBTTagCompound compound);
 }
-

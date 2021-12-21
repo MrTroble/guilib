@@ -23,7 +23,7 @@ public class GuiElements {
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
 			middleButton.setChecked(!middleButton.isChecked());
-			consumer.accept(middleButton.isChecked() ? 1:0);
+			consumer.accept(middleButton.isChecked() ? 1 : 0);
 		});
 		middleButton.setOnChange(consumer);
 		middleButton.setText(property.getLocalizedName());
@@ -57,7 +57,7 @@ public class GuiElements {
 		}));
 		middle.add(middleButton);
 		middle.add(enumerable);
-		
+
 		final UIEntity left = new UIEntity();
 		left.setBounds(20, 20);
 
@@ -83,13 +83,13 @@ public class GuiElements {
 		});
 		right.add(rightButton);
 		right.add(rightclickable);
-		
+
 		enumerable.setIndex(0);
 
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIHBox(1));
 		final String desc = property.getDescription();
-		if(desc != null)
+		if (desc != null)
 			hbox.add(new UIToolTip(desc));
 		hbox.add(left);
 		hbox.add(middle);

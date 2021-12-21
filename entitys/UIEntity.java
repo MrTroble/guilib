@@ -222,7 +222,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		this.base = base;
 		children.forEach(e -> e.setBase(base));
 	}
-	
+
 	public <T extends UIComponent> List<T> findRecursive(Class<T> c) {
 		return findRecursive(this, c);
 	}

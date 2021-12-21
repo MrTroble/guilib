@@ -25,8 +25,8 @@ public class UIToolTip extends UIComponent {
 			final String desc = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? this.descripton
 					: I18n.format("gui.keyprompt");
 			final GuiBase base = parent.getBase();
-			GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())), mouseX, mouseY, base.width, base.height,
-					-1, font);
+			GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())), mouseX, mouseY, base.width,
+					base.height, -1, font);
 		}
 	}
 

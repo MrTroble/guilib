@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 public class UIInit {
 
 	private static FMLEventChannel channel;
-	
+
 	public static FMLEventChannel getChannel() {
 		return channel;
 	}
@@ -18,5 +18,5 @@ public class UIInit {
 		channel.register(new GuiSyncNetwork());
 		NetworkRegistry.INSTANCE.registerGuiHandler(modid, GuiHandler.getInstance(modid));
 	}
-	
+
 }

@@ -44,7 +44,7 @@ public class GuiBase extends GuiScreen {
 		this.entity.setBase(this);
 		this.compound = new NBTTagCompound();
 	}
-	
+
 	@Override
 	public void setWorldAndResolution(Minecraft mc, int width, int height) {
 		this.mc = mc;
@@ -88,12 +88,12 @@ public class GuiBase extends GuiScreen {
 		GlStateManager.popMatrix();
 
 		this.draw(mouseX, mouseY, partialTicks);
-		
+
 		entity.postDraw(mouseX, mouseY);
 	}
-	
+
 	public void draw(int mouseX, int mouseY, float partialTicks) {
-		
+
 	}
 
 	@Override
@@ -110,28 +110,28 @@ public class GuiBase extends GuiScreen {
 		ScaledResolution res = new ScaledResolution(mc);
 		this.entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor()));
 	}
-	
+
 	@Override
 	public void onGuiClosed() {
 		this.entity.write(this.compound);
 	}
-	
+
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		super.keyTyped(typedChar, keyCode);
 		this.entity.keyEvent(new KeyEvent(keyCode));
 	}
-	
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
 	}
-	
+
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, 0, EnumMouseState.RELEASE));
 	}
-	
+
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));

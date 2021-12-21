@@ -12,7 +12,7 @@ public class UILabel extends UIComponent {
 	private FontRenderer renderer;
 	private int restHeight = 0;
 	private int restWidth = 0;
-	
+
 	public UILabel(String text) {
 		this.string = text;
 		this.stringColor = DEFAULT_STRING_COLOR;

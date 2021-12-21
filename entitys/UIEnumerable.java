@@ -77,4 +77,3 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	}
 
 }
-

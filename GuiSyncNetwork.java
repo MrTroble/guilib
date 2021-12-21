@@ -77,7 +77,7 @@ public class GuiSyncNetwork {
 		final CPacketCustomPayload payload = new CPacketCustomPayload(UIInit.CHANNELNAME, packet);
 		UIInit.getChannel().sendToServer(new FMLProxyPacket(payload));
 	}
-	
+
 	public static void sendToPosServer(NBTTagCompound compound, BlockPos pos) {
 		final ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(SEND_TO_ITEM);
@@ -89,5 +89,5 @@ public class GuiSyncNetwork {
 		final CPacketCustomPayload payload = new CPacketCustomPayload(UIInit.CHANNELNAME, packet);
 		UIInit.getChannel().sendToServer(new FMLProxyPacket(payload));
 	}
-	
+
 }

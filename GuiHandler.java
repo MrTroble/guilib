@@ -13,7 +13,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class GuiHandler implements IGuiHandler {
 
-	private GuiHandler() {}
+	private GuiHandler() {
+	}
+
 	private static final GuiHandler INSTANCE = new GuiHandler();
 	private static String modid;
 
@@ -21,16 +23,16 @@ public final class GuiHandler implements IGuiHandler {
 	public static interface GuiSupplier<T> {
 		T get(EntityPlayer player, World world, BlockPos pos);
 	}
-	
+
 	private static HashMap<Class<?>, Integer> guiIDS = new HashMap<>();
 	private static ArrayList<GuiSupplier<GuiBase>> guiBases = new ArrayList<>();
 	private static ArrayList<GuiSupplier<Container>> guiContainer = new ArrayList<>();
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if(guiContainer.size() > ID) {
+		if (guiContainer.size() > ID) {
 			final GuiSupplier<Container> supplier = guiContainer.get(ID);
-			if(supplier != null)
+			if (supplier != null)
 				return supplier.get(player, world, new BlockPos(x, y, z));
 		}
 		return null;
@@ -44,18 +46,19 @@ public final class GuiHandler implements IGuiHandler {
 		}
 		return null;
 	}
-	
+
 	public static <T extends GuiBase> void addGui(Class<T> clazz, GuiSupplier<GuiBase> gui) {
 		addGui(clazz, gui, null);
 	}
-	
-	public static <T extends GuiBase> void addGui(Class<T> clazz, GuiSupplier<GuiBase> gui, GuiSupplier<Container> container) {
+
+	public static <T extends GuiBase> void addGui(Class<T> clazz, GuiSupplier<GuiBase> gui,
+			GuiSupplier<Container> container) {
 		int size = guiBases.size();
 		guiBases.add(gui);
 		guiContainer.add(container);
 		guiIDS.put(clazz, size);
 	}
-	
+
 	public static <T extends GuiBase> void invokeGui(Class<T> clazz, EntityPlayer player, World world, BlockPos pos) {
 		player.openGui(modid, guiIDS.get(clazz), world, pos.getX(), pos.getY(), pos.getZ());
 	}

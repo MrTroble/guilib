@@ -76,4 +76,3 @@ public class UIVBox extends UIComponent {
 	}
 
 }
-
