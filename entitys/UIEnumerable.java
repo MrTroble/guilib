@@ -33,9 +33,11 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	}
 
 	public void setIndex(int index) {
+		boolean isChanged = index != this.index;
 		if (index >= this.getMin() && index <= this.getMax())
 			this.index = index;
-		this.onChange.accept(index);
+		if(isChanged)
+			this.onChange.accept(index);
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	@Override
 	public void read(NBTTagCompound compound) {
 		this.setIndex(compound.getInteger(id));
+		this.onChange.accept(this.index);
 	}
 
 	public int getMax() {

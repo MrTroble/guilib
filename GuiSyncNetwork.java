@@ -80,7 +80,7 @@ public class GuiSyncNetwork {
 
 	public static void sendToPosServer(NBTTagCompound compound, BlockPos pos) {
 		final ByteBuf buffer = Unpooled.buffer();
-		buffer.writeByte(SEND_TO_ITEM);
+		buffer.writeByte(SEND_TO_POS);
 		buffer.writeInt(pos.getX());
 		buffer.writeInt(pos.getY());
 		buffer.writeInt(pos.getZ());

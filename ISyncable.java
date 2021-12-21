@@ -6,4 +6,5 @@ public interface ISyncable {
 
 	public void updateTag(NBTTagCompound compound);
 
+	public NBTTagCompound getTag();
 }
