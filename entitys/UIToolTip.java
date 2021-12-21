@@ -1,9 +1,10 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.Arrays;
 
 import org.lwjgl.input.Keyboard;
 
+import eu.gir.girsignals.guis.guilib.GuiBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;

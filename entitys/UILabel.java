@@ -1,4 +1,4 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;

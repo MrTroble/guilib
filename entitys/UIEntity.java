@@ -1,8 +1,10 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.gir.girsignals.guis.guilib.GuiBase;
+import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -122,7 +124,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 
 	public void add(final UIEntity component) {
 		this.children.add(component);
-		component.base = this.base;
+		component.setBase(base);
 		component.onAdd(this);
 		component.internalUpdateScale(this.scale);
 		update();
@@ -216,6 +218,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		this.update();
 	}
 
+	public void setBase(GuiBase base) {
+		this.base = base;
+		children.forEach(e -> e.setBase(base));
+	}
+	
 	public <T extends UIComponent> List<T> findRecursive(Class<T> c) {
 		return findRecursive(this, c);
 	}

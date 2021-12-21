@@ -2,6 +2,16 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.function.IntConsumer;
 
+import eu.gir.girsignals.guis.guilib.entitys.UIButton;
+import eu.gir.girsignals.guis.guilib.entitys.UICheckBox;
+import eu.gir.girsignals.guis.guilib.entitys.UIClickable;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
+import eu.gir.girsignals.guis.guilib.entitys.UIEnumerable;
+import eu.gir.girsignals.guis.guilib.entitys.UIHBox;
+import eu.gir.girsignals.guis.guilib.entitys.UILabel;
+import eu.gir.girsignals.guis.guilib.entitys.UIOnUpdate;
+import eu.gir.girsignals.guis.guilib.entitys.UIToolTip;
+import eu.gir.girsignals.guis.guilib.entitys.UIVBox;
 import net.minecraft.client.Minecraft;
 
 public class GuiElements {
@@ -78,7 +88,9 @@ public class GuiElements {
 
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIHBox(1));
-		hbox.add(new UIToolTip(property.getDescription()));
+		final String desc = property.getDescription();
+		if(desc != null)
+			hbox.add(new UIToolTip(desc));
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
@@ -90,7 +102,7 @@ public class GuiElements {
 		final UIEntity hbox = new UIEntity();
 
 		final UIEntity middle = new UIEntity();
-		middle.setBounds(100, 20);
+		middle.setBounds(150, 20);
 
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
@@ -110,7 +122,7 @@ public class GuiElements {
 			vbox.setPage(in);
 		});
 
-		vbox.parent.add(new UIOnUpdate(() -> {
+		vbox.getParent().add(new UIOnUpdate(() -> {
 			final int max = vbox.getMaxPages();
 			if (max < 1)
 				return;

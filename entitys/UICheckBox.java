@@ -1,7 +1,9 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.function.IntConsumer;
 
+import eu.gir.girsignals.guis.guilib.DrawUtil;
+import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.client.config.GuiUtils;

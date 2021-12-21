@@ -1,4 +1,4 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.ArrayList;
 

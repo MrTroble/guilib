@@ -1,9 +1,9 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.function.Consumer;
 
-import eu.gir.girsignals.guis.guilib.UIEntity.EnumMouseState;
-import eu.gir.girsignals.guis.guilib.UIEntity.MouseEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.EnumMouseState;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
 
 public class UIClickable extends UIComponent {
 

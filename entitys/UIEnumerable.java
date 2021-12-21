@@ -1,7 +1,8 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.function.IntConsumer;
 
+import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class UIEnumerable extends UIComponent implements UIAutoSync {

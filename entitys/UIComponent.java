@@ -1,8 +1,8 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
-import eu.gir.girsignals.guis.guilib.UIEntity.KeyEvent;
-import eu.gir.girsignals.guis.guilib.UIEntity.MouseEvent;
-import eu.gir.girsignals.guis.guilib.UIEntity.UpdateEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.KeyEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.UpdateEvent;
 
 public abstract class UIComponent {
 
@@ -48,5 +48,8 @@ public abstract class UIComponent {
 		this.visible = visible;
 	}
 
+	public UIEntity getParent() {
+		return parent;
+	}
 }
 

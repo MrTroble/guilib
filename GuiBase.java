@@ -2,10 +2,11 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.io.IOException;
 
-import eu.gir.girsignals.guis.guilib.UIEntity.EnumMouseState;
-import eu.gir.girsignals.guis.guilib.UIEntity.KeyEvent;
-import eu.gir.girsignals.guis.guilib.UIEntity.MouseEvent;
-import eu.gir.girsignals.guis.guilib.UIEntity.UpdateEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.EnumMouseState;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.KeyEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -40,7 +41,7 @@ public class GuiBase extends GuiScreen {
 	public GuiBase(final String name) {
 		this.name = name;
 		this.entity = new UIEntity();
-		this.entity.base = this;
+		this.entity.setBase(this);
 		this.compound = new NBTTagCompound();
 	}
 	

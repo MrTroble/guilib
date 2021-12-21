@@ -1,6 +1,7 @@
-package eu.gir.girsignals.guis.guilib;
+package eu.gir.girsignals.guis.guilib.entitys;
 
-import eu.gir.girsignals.guis.guilib.UIEntity.MouseEvent;
+import eu.gir.girsignals.guis.guilib.DrawUtil;
+import eu.gir.girsignals.guis.guilib.entitys.UIEntity.MouseEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
