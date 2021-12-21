@@ -1,7 +1,5 @@
 package eu.gir.girsignals.guis.guilib;
 
-import eu.gir.girsignals.guis.guilib.GuiElements.UIComponent;
-
 public class UIOnUpdate extends UIComponent {
 
 	private Runnable onUpdate;
