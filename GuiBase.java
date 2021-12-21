@@ -2,11 +2,10 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.io.IOException;
 
-import eu.gir.girsignals.guis.guilib.GuiElements.EnumMouseState;
-import eu.gir.girsignals.guis.guilib.GuiElements.KeyEvent;
-import eu.gir.girsignals.guis.guilib.GuiElements.MouseEvent;
-import eu.gir.girsignals.guis.guilib.GuiElements.UIEntity;
-import eu.gir.girsignals.guis.guilib.GuiElements.UpdateEvent;
+import eu.gir.girsignals.guis.guilib.UIEntity.EnumMouseState;
+import eu.gir.girsignals.guis.guilib.UIEntity.KeyEvent;
+import eu.gir.girsignals.guis.guilib.UIEntity.MouseEvent;
+import eu.gir.girsignals.guis.guilib.UIEntity.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -16,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiBase extends GuiScreen {
 
+	private static final int STRING_COLOR = 4210752;
 	private static final int TOP_STRING_OFFSET = 15;
 	private static final float STRING_SCALE = 1.5f;
-	private static final int STRING_COLOR = 4210752;
 	private static final int LEFT_OFFSET = 20;
 	private static final int GUI_MIN_WIDTH = 150;
 	private static final int GUI_MAX_HEIGHT = 320;
@@ -41,6 +40,7 @@ public class GuiBase extends GuiScreen {
 	public GuiBase(final String name) {
 		this.name = name;
 		this.entity = new UIEntity();
+		this.entity.base = this;
 		this.compound = new NBTTagCompound();
 	}
 	
@@ -86,7 +86,13 @@ public class GuiBase extends GuiScreen {
 		this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
 		GlStateManager.popMatrix();
 
+		this.draw(mouseX, mouseY, partialTicks);
+		
 		entity.postDraw(mouseX, mouseY);
+	}
+	
+	public void draw(int mouseX, int mouseY, float partialTicks) {
+		
 	}
 
 	@Override

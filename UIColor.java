@@ -1,6 +1,5 @@
 package eu.gir.girsignals.guis.guilib;
 
-import eu.gir.girsignals.guis.guilib.GuiElements.UIComponent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class UIColor extends UIComponent {

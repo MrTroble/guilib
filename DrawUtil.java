@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -52,23 +53,23 @@ public class DrawUtil {
 			return t.getSimpleName().toLowerCase();
 		}
 	}
-	
+
 	public static class NamedEnumIntegerable<T extends Enum<T>> extends EnumIntegerable<T> {
 
 		private final String name;
-		
+
 		public NamedEnumIntegerable(final String name, Class<T> t) {
 			super(t);
 			this.name = name;
 		}
-		
+
 		@Override
 		public String getName() {
 			return name;
 		}
-		
+
 	}
-	
+
 	public interface ObjGetter<D> {
 		D getObjFrom(int x);
 	}
@@ -123,7 +124,7 @@ public class DrawUtil {
 		}
 
 	}
-	
+
 	public static void drawBack(GuiScreen gui, final int xLeft, final int xRight, final int yTop, final int yBottom) {
 		gui.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
 
@@ -185,4 +186,8 @@ public class DrawUtil {
 		}
 	}
 
+	public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color) {
+		fontRendererIn.drawStringWithShadow(text, (float) (x - fontRendererIn.getStringWidth(text) / 2), (float) y,
+				color);
+	}
 }
