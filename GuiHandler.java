@@ -45,22 +45,23 @@ public final class GuiHandler implements IGuiHandler {
 	}
 
 	public static <T> void addGui(Class<T> clazz, GuiSupplier gui) {
-		addGui(clazz, gui, guiBases);
+		addGui(clazz, gui, guiBases, guiContainer);
 	}
 
 	public static <T> void addServer(Class<T> clazz, GuiSupplier gui) {
-		addGui(clazz, gui, guiContainer);
+		addGui(clazz, gui, guiContainer, guiBases);
 	}
 
-	public static <T> int addGui(Class<T> clazz, GuiSupplier gui, ArrayList<GuiSupplier> guiBases) {
+	private static <T> int addGui(Class<T> clazz, GuiSupplier gui, ArrayList<GuiSupplier> base, ArrayList<GuiSupplier> container) {
 		if (guiIDS.containsKey(clazz)) {
 			int id = guiIDS.get(clazz);
 			if (gui != null)
-				guiBases.set(id, gui);
+				base.set(id, gui);
 			return id;
 		}
 		int size = guiBases.size();
-		guiBases.add(gui);
+		base.add(gui);
+		container.add((p, w, d) -> null);
 		guiIDS.put(clazz, size);
 		return size;
 	}
