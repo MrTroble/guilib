@@ -29,8 +29,8 @@ public final class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (guiBases.size() > ID) {
-			return guiBases.get(ID).get(player, world, new BlockPos(x, y, z));
+		if (guiContainer.size() > ID) {
+			return guiContainer.get(ID).get(player, world, new BlockPos(x, y, z));
 		}
 		return null;
 	}
