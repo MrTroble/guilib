@@ -2,16 +2,15 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.util.function.IntConsumer;
 
+import eu.gir.girsignals.guis.guilib.entitys.UIBox;
 import eu.gir.girsignals.guis.guilib.entitys.UIButton;
 import eu.gir.girsignals.guis.guilib.entitys.UICheckBox;
 import eu.gir.girsignals.guis.guilib.entitys.UIClickable;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
 import eu.gir.girsignals.guis.guilib.entitys.UIEnumerable;
-import eu.gir.girsignals.guis.guilib.entitys.UIHBox;
 import eu.gir.girsignals.guis.guilib.entitys.UILabel;
 import eu.gir.girsignals.guis.guilib.entitys.UIOnUpdate;
 import eu.gir.girsignals.guis.guilib.entitys.UIToolTip;
-import eu.gir.girsignals.guis.guilib.entitys.UIVBox;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -90,19 +89,22 @@ public class GuiElements {
 
 		enumerable.setIndex(0);
 
+		middle.setInheritWidth(true);
+		
 		final UIEntity hbox = new UIEntity();
-		hbox.add(new UIHBox(1));
+		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
 		final String desc = property.getDescription();
 		if (desc != null)
 			hbox.add(new UIToolTip(desc));
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
-		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth(), 20);
+		hbox.setInheritWidth(true);
+		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth() + 2, 20);
 		return hbox;
 	}
 
-	public static UIEntity createPageSelect(UIVBox vbox) {
+	public static UIEntity createPageSelect(UIPagable vbox) {
 		final UIEntity hbox = new UIEntity();
 
 		final UIEntity middle = new UIEntity();
@@ -163,11 +165,13 @@ public class GuiElements {
 		right.add(rightButton);
 		right.add(rightclickable);
 
-		hbox.add(new UIHBox(1));
+		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
-		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth(), 20);
+		middle.setInheritWidth(true);
+		hbox.setInheritWidth(true);
+		hbox.setBounds(0, 20);
 		return hbox;
 	}
 }

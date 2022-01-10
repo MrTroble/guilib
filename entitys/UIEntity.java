@@ -23,9 +23,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	private int worldY;
 	private int worldX;
 	private boolean hovered;
-	private boolean inheritBounds;
+	private boolean inheritHeight;
+	private boolean inheritWidth;
 	private int scale;
 	protected GuiBase base;
+	private int minWidth;
 
 	protected ArrayList<UIEntity> children = new ArrayList<>();
 	protected ArrayList<UIComponent> components = new ArrayList<>();
@@ -34,18 +36,28 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		this.setPos(0, 0);
 		this.setScale(1, 1);
 		this.setVisible(true);
-		this.setInheritBounds(false);
+		this.setInheritHeight(false);
+		this.setInheritWidth(false);
 	}
 
 	public UIEntity(final int x, final int y, final int scaleX, final int scaleY) {
 		this.setPos(x, y);
 		this.setScale(scaleX, scaleY);
+		this.setMinWidth(20);
 	}
 
 	public void setPos(final int x, final int y) {
 		this.x = x;
 		this.y = y;
 		update();
+	}
+
+	public void setX(final int x) {
+		this.x = x;
+	}
+
+	public void setY(final int y) {
+		this.y = y;
 	}
 
 	public void setScale(final int scaleX, final int scaleY) {
@@ -60,6 +72,14 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 
 	public int getY() {
 		return y;
+	}
+
+	public int getMinWidth() {
+		return minWidth;
+	}
+
+	public void setMinWidth(int minWidth) {
+		this.minWidth = minWidth;
 	}
 
 	public int getScaleX() {
@@ -183,13 +203,12 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		this.update();
 	}
 
-	public boolean inheritsBounds() {
-		return inheritBounds;
+	public void setHeight(int height) {
+		this.height = height;
 	}
 
-	public void setInheritBounds(boolean inheritBounds) {
-		this.inheritBounds = inheritBounds;
-		this.update();
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 	@Override
@@ -248,6 +267,22 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 
 	public GuiBase getBase() {
 		return base;
+	}
+
+	public boolean inheritHeight() {
+		return inheritHeight;
+	}
+
+	public void setInheritHeight(boolean inheritHeight) {
+		this.inheritHeight = inheritHeight;
+	}
+
+	public boolean inheritWidth() {
+		return inheritWidth;
+	}
+
+	public void setInheritWidth(boolean inheritWidth) {
+		this.inheritWidth = inheritWidth;
 	}
 
 	public static enum EnumMouseState {

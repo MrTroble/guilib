@@ -36,15 +36,14 @@ public class UILabel extends UIComponent {
 
 	@Override
 	public void update() {
-		if (this.parent.inheritsBounds()) {
-			this.parent.height = renderer.FONT_HEIGHT;
-			this.parent.width = renderer.getStringWidth(string);
-			this.restHeight = 0;
-			this.restWidth = 0;
-		} else {
-			this.restHeight = (this.parent.getHeight() - renderer.FONT_HEIGHT) / 2;
-			this.restWidth = (this.parent.getWidth() - renderer.getStringWidth(string)) / 2;
+		if (this.parent.inheritHeight()) {
+			this.parent.height =  renderer.FONT_HEIGHT;
 		}
+		this.restHeight = (this.parent.getHeight() - renderer.FONT_HEIGHT) / 2;
+		if (this.parent.inheritWidth()) {
+			this.parent.width = Math.max(renderer.getStringWidth(string), parent.getWidth());
+		}
+		this.restWidth = (this.parent.getWidth() - renderer.getStringWidth(string)) / 2;
 	}
 
 	public String getText() {
