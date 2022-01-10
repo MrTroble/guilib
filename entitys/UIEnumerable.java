@@ -8,7 +8,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class UIEnumerable extends UIComponent implements UIAutoSync {
 
 	private IntConsumer onChange;
@@ -30,6 +29,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 
 	@Override
 	public void update() {
+		this.onChange.accept(index);
 	}
 
 	public int getIndex() {
@@ -65,10 +65,12 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 
 	public void setMin(int min) {
 		this.min = min;
+		this.update();
 	}
 
 	public void setMax(int max) {
 		this.max = max;
+		this.update();
 	}
 
 	public String getId() {
