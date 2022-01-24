@@ -30,8 +30,8 @@ public class UICheckBox extends UIComponent implements UIAutoSync {
 	@Override
 	public void update() {
 		Minecraft mc = Minecraft.getMinecraft();
-		this.parent.width = BOX_WIDTH + 4 + mc.fontRenderer.getStringWidth(text);
-		this.parent.height = Math.max(BOX_WIDTH, mc.fontRenderer.FONT_HEIGHT) + 2;
+		this.parent.setWidth(BOX_WIDTH + 4 + mc.fontRenderer.getStringWidth(text));
+		this.parent.setHeight(Math.max(BOX_WIDTH, mc.fontRenderer.FONT_HEIGHT) + 2);
 	}
 
 	@Override

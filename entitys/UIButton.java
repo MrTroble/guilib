@@ -42,12 +42,12 @@ public class UIButton extends UIComponent {
 					GlStateManager.DestFactor.ZERO);
 			GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
 					GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			GuiUtils.drawTexturedModalRect(0, 0, 0, 46 + offsetV * 20, parent.width / 2, parent.height, 0);
-			GuiUtils.drawTexturedModalRect(parent.width / 2, 0, 200 - parent.width / 2, 46 + offsetV * 20,
-					parent.width / 2, parent.height, 0);
+			GuiUtils.drawTexturedModalRect(0, 0, 0, 46 + offsetV * 20, parent.getWidth() / 2, parent.getHeight(), 0);
+			GuiUtils.drawTexturedModalRect(parent.getWidth() / 2, 0, 200 - parent.getWidth() / 2, 46 + offsetV * 20,
+					parent.getWidth() / 2, parent.getHeight(), 0);
 			final int colorUsed = enabled ? (parent.isHovered() ? DEFAULT_HOVER_COLOR : DEFAULT_COLOR)
 					: DEFAULT_DISABLED_COLOR;
-			DrawUtil.drawCenteredString(fontrenderer, this.text, parent.width / 2, (parent.height - 8) / 2, colorUsed);
+			DrawUtil.drawCenteredString(fontrenderer, this.text, parent.getWidth() / 2, (parent.getHeight() - 8) / 2, colorUsed);
 		}
 	}
 

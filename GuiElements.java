@@ -21,7 +21,8 @@ public class GuiElements {
 
 	public static UIEntity createBoolElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
-		middle.setBounds(Minecraft.getMinecraft().fontRenderer.getStringWidth(property.getLocalizedName()) + 20, 20);
+		middle.setHeight(20);
+		middle.setInheritWidth(true);
 
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
@@ -30,6 +31,7 @@ public class GuiElements {
 		});
 		middleButton.setOnChange(consumer);
 		middleButton.setText(property.getLocalizedName());
+		
 		middle.add(middleButton);
 		middle.add(clickable);
 		middle.add(new UIToolTip(property.getDescription()));
@@ -42,7 +44,8 @@ public class GuiElements {
 
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer, int minWidth) {
 		final UIEntity middle = new UIEntity();
-		middle.setBounds(minWidth, 20);
+		middle.setInheritWidth(true);
+		middle.setInheritHeight(true);
 
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
@@ -62,7 +65,8 @@ public class GuiElements {
 		middle.add(enumerable);
 
 		final UIEntity left = new UIEntity();
-		left.setBounds(20, 20);
+		left.setWidth(20);
+		left.setHeight(20);
 
 		final UIClickable leftclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
@@ -75,7 +79,8 @@ public class GuiElements {
 		left.add(leftclickable);
 
 		final UIEntity right = new UIEntity();
-		right.setBounds(20, 20);
+		right.setWidth(20);
+		right.setHeight(20);
 
 		final UIClickable rightclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
@@ -88,8 +93,6 @@ public class GuiElements {
 		right.add(rightclickable);
 
 		enumerable.setIndex(0);
-
-		middle.setInheritWidth(true);
 		
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
@@ -100,7 +103,7 @@ public class GuiElements {
 		hbox.add(middle);
 		hbox.add(right);
 		hbox.setInheritWidth(true);
-		hbox.setBounds(left.getWidth() + middle.getWidth() + right.getWidth() + 2, 20);
+		hbox.setHeight(20);
 		return hbox;
 	}
 
@@ -108,7 +111,8 @@ public class GuiElements {
 		final UIEntity hbox = new UIEntity();
 
 		final UIEntity middle = new UIEntity();
-		middle.setBounds(150, 20);
+		middle.setInheritWidth(true);
+		middle.setInheritHeight(true);
 
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
@@ -140,7 +144,8 @@ public class GuiElements {
 		middle.add(enumerable);
 
 		final UIEntity left = new UIEntity();
-		left.setBounds(20, 20);
+		left.setWidth(20);
+		left.setHeight(20);
 
 		final UIClickable leftclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
@@ -153,7 +158,8 @@ public class GuiElements {
 		left.add(leftclickable);
 
 		final UIEntity right = new UIEntity();
-		right.setBounds(20, 20);
+		right.setWidth(20);
+		right.setHeight(20);
 
 		final UIClickable rightclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
@@ -169,9 +175,8 @@ public class GuiElements {
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);
-		middle.setInheritWidth(true);
 		hbox.setInheritWidth(true);
-		hbox.setBounds(0, 20);
+		hbox.setHeight(20);
 		return hbox;
 	}
 }

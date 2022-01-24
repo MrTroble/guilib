@@ -23,6 +23,8 @@ public class UIBox extends UIComponent implements UIPagable {
 		boolean inheritsBounds(UIEntity entity);
 		
 		void post(UIEntity entity);
+		
+		default int getMin(UIEntity entity) { return 20; }
 	}
 
 	public static class VBoxMode implements IBoxMode {
@@ -118,7 +120,7 @@ public class UIBox extends UIComponent implements UIPagable {
 			}
 			if (y > parentValue) {
 				if (!boundsUpdate.isEmpty()) {
-					boundsUpdate.forEach(e -> mode.setBounds(e, e.getMinWidth()));
+					boundsUpdate.forEach(e -> mode.setBounds(e, this.mode.getMin(e)));
 					boundsUpdate.clear();
 				}
 				y = 0;
@@ -146,7 +148,6 @@ public class UIBox extends UIComponent implements UIPagable {
 			}
 			y += gap;
 			entity.setVisible(cPage == page);
-			entity.update();
 		}
 		maxPages = cPage + 1;
 	}

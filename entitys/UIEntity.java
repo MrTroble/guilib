@@ -3,7 +3,9 @@ package eu.gir.girsignals.guis.guilib.entitys;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.gir.girsignals.guis.guilib.GuiBase;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.Rectangle;
+
 import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,91 +15,105 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 
 public final class UIEntity extends UIComponent implements UIAutoSync {
-
-	protected int x;
-	protected int y;
-	private int scaleX;
-	private int scaleY;
-	protected int width;
-	protected int height;
+	
+	private int x;
+	private int y;
+	private float scaleX, scaleY, scaleZ;
+	private float rotateX, rotateY, rotateZ;
+	private int width;
+	private int height;
 	private int worldY;
 	private int worldX;
 	private boolean hovered;
 	private boolean inheritHeight;
 	private boolean inheritWidth;
-	private int scale;
-	protected GuiBase base;
-	private int minWidth;
-
+	private UpdateEvent lastUpdateEvent;
+	private Rectangle scissor;
+	
 	protected ArrayList<UIEntity> children = new ArrayList<>();
 	protected ArrayList<UIComponent> components = new ArrayList<>();
-
+	
 	public UIEntity() {
-		this.setPos(0, 0);
-		this.setScale(1, 1);
 		this.setVisible(true);
 		this.setInheritHeight(false);
 		this.setInheritWidth(false);
+		this.scaleX = 1;
+		this.scaleY = 1;
+		this.scaleZ = 1;
 	}
-
-	public UIEntity(final int x, final int y, final int scaleX, final int scaleY) {
-		this.setPos(x, y);
-		this.setScale(scaleX, scaleY);
-		this.setMinWidth(20);
+	
+	public float getScaleX() {
+		return scaleX;
 	}
-
-	public void setPos(final int x, final int y) {
-		this.x = x;
-		this.y = y;
-		update();
+	
+	public void setScaleX(float scaleX) {
+		this.scaleX = scaleX;
 	}
-
+	
+	public float getScaleY() {
+		return scaleY;
+	}
+	
+	public void setScaleY(float scaleY) {
+		this.scaleY = scaleY;
+	}
+	
+	public float getScaleZ() {
+		return scaleZ;
+	}
+	
+	public void setScaleZ(float scaleZ) {
+		this.scaleZ = scaleZ;
+	}
+	
+	public float getRotateX() {
+		return rotateX;
+	}
+	
+	public void setRotateX(float rotateX) {
+		this.rotateX = rotateX;
+	}
+	
+	public float getRotateY() {
+		return rotateY;
+	}
+	
+	public void setRotateY(float rotateY) {
+		this.rotateY = rotateY;
+	}
+	
+	public float getRotateZ() {
+		return rotateZ;
+	}
+	
+	public void setRotateZ(float rotateZ) {
+		this.rotateZ = rotateZ;
+	}
+	
 	public void setX(final int x) {
 		this.x = x;
 	}
-
+	
 	public void setY(final int y) {
 		this.y = y;
 	}
-
-	public void setScale(final int scaleX, final int scaleY) {
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
-		update();
-	}
-
+	
 	public int getX() {
 		return x;
 	}
-
+	
 	public int getY() {
 		return y;
 	}
-
-	public int getMinWidth() {
-		return minWidth;
-	}
-
-	public void setMinWidth(int minWidth) {
-		this.minWidth = minWidth;
-	}
-
-	public int getScaleX() {
-		return scaleX;
-	}
-
-	public int getScaleY() {
-		return scaleY;
-	}
-
+	
 	public int getWorldY() {
 		return worldY;
 	}
-
+	
 	public int getWorldX() {
 		return worldX;
 	}
-
+	
 	@Override
 	public void postDraw(final int mouseX, final int mouseY) {
 		if (isVisible()) {
@@ -105,20 +121,27 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			components.forEach(c -> c.postDraw(mouseX, mouseY));
 		}
 	}
-
+	
 	@Override
 	public void update() {
-		components.forEach(c -> c.update());
-		if (this.parent != null) {
-			this.worldX = (this.x * scale) + parent.getWorldX();
-			this.worldY = (this.y * scale) + parent.getWorldY();
-		} else {
-			this.worldX = (this.x * scale);
-			this.worldY = (this.y * scale);
-		}
-		children.forEach(c -> c.update());
+		if (lastUpdateEvent != null) {
+			components.forEach(c -> c.update());
+			if (this.parent != null) {
+				this.worldX = (this.x * lastUpdateEvent.guiScale) + parent.getWorldX();
+				this.worldY = (this.y * lastUpdateEvent.guiScale) + parent.getWorldY();
+			} else {
+				this.worldX = (this.x * lastUpdateEvent.guiScale);
+				this.worldY = (this.y * lastUpdateEvent.guiScale);
+			}
+			final int sHeight = this.height * lastUpdateEvent.scaleFactor;
+			final int sWidth = this.width * lastUpdateEvent.scaleFactor;
+			final int sX = this.worldX * lastUpdateEvent.scaleFactor;
+			final int sY = (lastUpdateEvent.height - this.worldY - this.height) * lastUpdateEvent.scaleFactor;
+			this.scissor = new Rectangle(sX, sY, sWidth, sHeight);
+			children.forEach(c -> c.update());
+		}		
 	}
-
+	
 	@Override
 	public void draw(final int mouseX, final int mouseY) {
 		if (isVisible()) {
@@ -127,44 +150,50 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + this.width && mouseY < wY + this.height;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(this.x, this.y, 0);
-			GlStateManager.scale(this.scaleX, this.scaleY, 1);
+			GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
+			GlStateManager.rotate(this.rotateX, 1, 0, 0);
+			GlStateManager.rotate(this.rotateY, 0, 1, 0);
+			GlStateManager.rotate(this.rotateZ, 0, 0, 1);
+			if (this.scissor != null) {
+				GL11.glEnable(GL11.GL_SCISSOR_TEST);
+				GL11.glScissor(this.scissor.getX(), this.scissor.getY(), this.scissor.getWidth(), this.scissor.getHeight());
+			}
 			children.forEach(c -> c.draw(mouseX, mouseY));
 			components.forEach(c -> c.draw(mouseX, mouseY));
+			GL11.glDisable(GL11.GL_SCISSOR_TEST);
 			GlStateManager.popMatrix();
 		}
 	}
-
+	
 	public void add(final UIComponent component) {
 		this.components.add(component);
 		component.onAdd(this);
-		update();
+		this.updateEvent(lastUpdateEvent);
 	}
-
+	
 	public void remove(final UIComponent component) {
 		this.components.remove(component);
 		component.onRemove(this);
 		update();
 	}
-
+	
 	public void add(final UIEntity component) {
 		this.children.add(component);
-		component.setBase(base);
 		component.onAdd(this);
-		component.internalUpdateScale(this.scale);
-		update();
+		this.updateEvent(lastUpdateEvent);
 	}
-
+	
 	public void remove(final UIEntity component) {
 		this.children.remove(component);
 		component.onRemove(this);
 		update();
 	}
-
+	
 	@Override
 	public void onClosed() {
 		children.forEach(c -> c.onClosed());
 	}
-
+	
 	@Override
 	public void mouseEvent(final MouseEvent event) {
 		if (isVisible()) {
@@ -172,7 +201,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.components.forEach(c -> c.mouseEvent(event));
 		}
 	}
-
+	
 	@Override
 	public void keyEvent(final KeyEvent event) {
 		if (isVisible()) {
@@ -180,37 +209,31 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.components.forEach(c -> c.keyEvent(event));
 		}
 	}
-
+	
 	@Override
 	public void updateEvent(final UpdateEvent event) {
+		this.lastUpdateEvent = event;
 		this.children.forEach(c -> c.updateEvent(event));
 		this.components.forEach(c -> c.updateEvent(event));
-		this.scale = Math.max(event.width / event.height, event.height / event.width);
 		update();
 	}
-
+	
 	public int getHeight() {
 		return height;
 	}
-
+	
 	public int getWidth() {
 		return width;
 	}
-
-	public void setBounds(int width, int height) {
-		this.height = height;
-		this.width = width;
-		this.update();
-	}
-
+	
 	public void setHeight(int height) {
 		this.height = height;
 	}
-
+	
 	public void setWidth(int width) {
 		this.width = width;
 	}
-
+	
 	@Override
 	public void read(NBTTagCompound compound) {
 		children.forEach(e -> e.read(compound));
@@ -219,7 +242,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 				((UIAutoSync) c).read(compound);
 		});
 	}
-
+	
 	@Override
 	public void write(NBTTagCompound compound) {
 		children.forEach(e -> e.write(compound));
@@ -228,11 +251,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 				((UIAutoSync) c).write(compound);
 		});
 	}
-
+	
 	public boolean isHovered() {
 		return hovered;
 	}
-
+	
 	public void clearChildren() {
 		@SuppressWarnings("unchecked")
 		final ArrayList<UIEntity> tmpChildren = (ArrayList<UIEntity>) this.children.clone();
@@ -240,16 +263,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		tmpChildren.forEach(entity -> entity.onRemove(this));
 		this.update();
 	}
-
-	public void setBase(GuiBase base) {
-		this.base = base;
-		children.forEach(e -> e.setBase(base));
-	}
-
+	
 	public <T extends UIComponent> List<T> findRecursive(Class<T> c) {
 		return findRecursive(this, c);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public <T extends UIComponent> List<T> findRecursive(UIEntity uiEntity, Class<T> c) {
 		final ArrayList<T> components = new ArrayList<>();
@@ -259,62 +277,64 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		}
 		return components;
 	}
-
-	private void internalUpdateScale(int nScale) {
-		this.scale = nScale;
-		this.children.forEach(e -> e.internalUpdateScale(nScale));
-	}
-
-	public GuiBase getBase() {
-		return base;
-	}
-
+	
 	public boolean inheritHeight() {
 		return inheritHeight;
 	}
-
+	
 	public void setInheritHeight(boolean inheritHeight) {
 		this.inheritHeight = inheritHeight;
 	}
-
+	
 	public boolean inheritWidth() {
 		return inheritWidth;
 	}
-
+	
 	public void setInheritWidth(boolean inheritWidth) {
 		this.inheritWidth = inheritWidth;
 	}
-
-	public static enum EnumMouseState {
-		CLICKED, RELEASE, MOVE
+	
+	public UpdateEvent getLastUpdateEvent() {
+		return lastUpdateEvent;
 	}
-
+	
+	public static enum EnumMouseState {
+		CLICKED,
+		RELEASE,
+		MOVE
+	}
+	
 	public static final class UpdateEvent {
+		
 		public final int width;
 		public final int height;
 		public final int scaleFactor;
-
-		public UpdateEvent(final int width, final int height, final int scaleFactor) {
+		public final int guiScale;
+		
+		public UpdateEvent(final int width, final int height, final int scaleFactor, int guiScale) {
 			this.width = width;
 			this.height = height;
 			this.scaleFactor = scaleFactor;
+			this.guiScale = guiScale;
 		}
 	}
-
+	
 	public static final class KeyEvent {
+		
 		public final int keyCode;
-
+		
 		public KeyEvent(final int keyCode) {
 			this.keyCode = keyCode;
 		}
 	}
-
+	
 	public static final class MouseEvent {
+		
 		public final int x;
 		public final int y;
 		public final int key;
 		public final EnumMouseState state;
-
+		
 		public MouseEvent(final int x, final int y, final int key, final EnumMouseState enumState) {
 			this.x = x;
 			this.y = y;
@@ -322,5 +342,5 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.state = enumState;
 		}
 	}
-
+	
 }
