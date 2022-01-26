@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.Rectangle;
 
 import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,13 +12,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public final class UIEntity extends UIComponent implements UIAutoSync {
 	
 	private int x;
 	private int y;
-	private float scaleX, scaleY, scaleZ;
-	private float rotateX, rotateY, rotateZ;
 	private int width;
 	private int height;
 	private int worldY;
@@ -28,7 +24,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	private boolean inheritHeight;
 	private boolean inheritWidth;
 	private UpdateEvent lastUpdateEvent;
-	private Rectangle scissor;
 	
 	protected ArrayList<UIEntity> children = new ArrayList<>();
 	protected ArrayList<UIComponent> components = new ArrayList<>();
@@ -37,57 +32,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		this.setVisible(true);
 		this.setInheritHeight(false);
 		this.setInheritWidth(false);
-		this.scaleX = 1;
-		this.scaleY = 1;
-		this.scaleZ = 1;
-	}
-	
-	public float getScaleX() {
-		return scaleX;
-	}
-	
-	public void setScaleX(float scaleX) {
-		this.scaleX = scaleX;
-	}
-	
-	public float getScaleY() {
-		return scaleY;
-	}
-	
-	public void setScaleY(float scaleY) {
-		this.scaleY = scaleY;
-	}
-	
-	public float getScaleZ() {
-		return scaleZ;
-	}
-	
-	public void setScaleZ(float scaleZ) {
-		this.scaleZ = scaleZ;
-	}
-	
-	public float getRotateX() {
-		return rotateX;
-	}
-	
-	public void setRotateX(float rotateX) {
-		this.rotateX = rotateX;
-	}
-	
-	public float getRotateY() {
-		return rotateY;
-	}
-	
-	public void setRotateY(float rotateY) {
-		this.rotateY = rotateY;
-	}
-	
-	public float getRotateZ() {
-		return rotateZ;
-	}
-	
-	public void setRotateZ(float rotateZ) {
-		this.rotateZ = rotateZ;
 	}
 	
 	public void setX(final int x) {
@@ -125,7 +69,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	@Override
 	public void update() {
 		if (lastUpdateEvent != null) {
-			components.forEach(c -> c.update());
 			if (this.parent != null) {
 				this.worldX = (this.x * lastUpdateEvent.guiScale) + parent.getWorldX();
 				this.worldY = (this.y * lastUpdateEvent.guiScale) + parent.getWorldY();
@@ -133,13 +76,9 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 				this.worldX = (this.x * lastUpdateEvent.guiScale);
 				this.worldY = (this.y * lastUpdateEvent.guiScale);
 			}
-			final int sHeight = this.height * lastUpdateEvent.scaleFactor;
-			final int sWidth = this.width * lastUpdateEvent.scaleFactor;
-			final int sX = this.worldX * lastUpdateEvent.scaleFactor;
-			final int sY = (lastUpdateEvent.height - this.worldY - this.height) * lastUpdateEvent.scaleFactor;
-			this.scissor = new Rectangle(sX, sY, sWidth, sHeight);
+			components.forEach(c -> c.update());
 			children.forEach(c -> c.update());
-		}		
+		}
 	}
 	
 	@Override
@@ -150,14 +89,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + this.width && mouseY < wY + this.height;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(this.x, this.y, 0);
-			GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
-			GlStateManager.rotate(this.rotateX, 1, 0, 0);
-			GlStateManager.rotate(this.rotateY, 0, 1, 0);
-			GlStateManager.rotate(this.rotateZ, 0, 0, 1);
-			if (this.scissor != null) {
-				GL11.glEnable(GL11.GL_SCISSOR_TEST);
-				GL11.glScissor(this.scissor.getX(), this.scissor.getY(), this.scissor.getWidth(), this.scissor.getHeight());
-			}
 			children.forEach(c -> c.draw(mouseX, mouseY));
 			components.forEach(c -> c.draw(mouseX, mouseY));
 			GL11.glDisable(GL11.GL_SCISSOR_TEST);

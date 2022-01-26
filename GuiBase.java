@@ -2,8 +2,6 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.io.IOException;
 
-import org.lwjgl.opengl.GL11;
-
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.EnumMouseState;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.KeyEvent;
@@ -98,17 +96,15 @@ public class GuiBase extends GuiScreen {
 	
 	@Override
 	public void initGui() {
-		int maxWidth = 0;
-		maxWidth = Math.max(GUI_MIN_WIDTH, maxWidth) + 20;
 		this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET);
-		this.xSize = maxWidth + SIGNAL_RENDER_WIDTH_AND_INSET + RIGHT_INSET;
+		this.xSize = GUI_MIN_WIDTH + 20 + SIGNAL_RENDER_WIDTH_AND_INSET + RIGHT_INSET;
 		this.guiLeft = (this.width - this.xSize) / 2;
 		this.guiTop = (this.height - this.ySize) / 2;
 		this.entity.setWidth(this.xSize - RIGHT_INSET * 2);
 		this.entity.setHeight(this.ySize - GUI_INSET);
 		this.entity.setX(this.guiLeft + RIGHT_INSET);
 		this.entity.setY(this.guiTop + TOP_OFFSET);
-		ScaledResolution res = new ScaledResolution(mc);
+		final ScaledResolution res = new ScaledResolution(mc);
 		this.entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor(), Math.max(this.width / this.height, this.height / this.width)));
 	}
 	

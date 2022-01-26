@@ -51,8 +51,8 @@ public class GuiElements {
 		final UIButton rightButton = new UIButton(">");
 
 		final UIButton middleButton = new UIButton(property.getNamedObj(0));
-		final UIEnumerable enumerable = new UIEnumerable(null, property.count(), property.getName());
-		enumerable.setOnChange(consumer.andThen(in -> {
+		final UIEnumerable enumerable = new UIEnumerable(property.count(), property.getName());
+		final IntConsumer acceptOr = in -> {
 			middleButton.setText(property.getNamedObj(in));
 			rightButton.setEnabled(true);
 			leftButton.setEnabled(true);
@@ -60,7 +60,9 @@ public class GuiElements {
 				leftButton.setEnabled(false);
 			if (in >= enumerable.getMax() - 1)
 				rightButton.setEnabled(false);
-		}));
+		};
+		enumerable.setOnChange(consumer.andThen(acceptOr));
+		middle.add(new UIOnUpdate(() -> acceptOr.accept(enumerable.getIndex())));
 		middle.add(middleButton);
 		middle.add(enumerable);
 
@@ -92,7 +94,7 @@ public class GuiElements {
 		right.add(rightButton);
 		right.add(rightclickable);
 
-		enumerable.setIndex(0);
+		acceptOr.accept(0);
 		
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
@@ -120,8 +122,8 @@ public class GuiElements {
 		final UILabel middleButton = new UILabel("DDDD");
 		middle.add(middleButton);
 
-		final UIEnumerable enumerable = new UIEnumerable(null, 0, "pageselect");
-		enumerable.setOnChange(in -> {
+		final UIEnumerable enumerable = new UIEnumerable(0, "pageselect");
+		final IntConsumer acceptOn = in -> {
 			middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
 			rightButton.setEnabled(true);
 			leftButton.setEnabled(true);
@@ -130,16 +132,19 @@ public class GuiElements {
 			if (in >= enumerable.getMax() - 1)
 				rightButton.setEnabled(false);
 			vbox.setPage(in);
-		});
+		};
+		enumerable.setOnChange(acceptOn);
 
 		vbox.getParent().add(new UIOnUpdate(() -> {
 			final int max = vbox.getMaxPages();
-			if (max < 1)
+			if (max < 1) {
 				return;
+			}
 			hbox.setVisible(max != 1);
 			enumerable.setMax(max);
 			final int current = enumerable.getIndex();
 			enumerable.setIndex(current >= max ? max - 1 : current);
+			acceptOn.accept(enumerable.getIndex());
 		}));
 		middle.add(enumerable);
 

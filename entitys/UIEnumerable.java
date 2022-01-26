@@ -16,8 +16,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	private int min;
 	private String id;
 
-	public UIEnumerable(IntConsumer onChange, int max, String id) {
-		this.onChange = onChange;
+	public UIEnumerable(int max, String id) {
 		this.max = max;
 		this.id = id;
 		this.min = 0;
@@ -28,9 +27,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	}
 
 	@Override
-	public void update() {
-		this.onChange.accept(index);
-	}
+	public void update() {}
 
 	public int getIndex() {
 		return index;
