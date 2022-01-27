@@ -116,7 +116,7 @@ public class GuiBase extends GuiScreen {
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		super.keyTyped(typedChar, keyCode);
-		this.entity.keyEvent(new KeyEvent(keyCode));
+		this.entity.keyEvent(new KeyEvent(keyCode, typedChar));
 	}
 	
 	@Override

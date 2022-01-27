@@ -10,15 +10,29 @@ import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
 import eu.gir.girsignals.guis.guilib.entitys.UIEnumerable;
 import eu.gir.girsignals.guis.guilib.entitys.UILabel;
 import eu.gir.girsignals.guis.guilib.entitys.UIOnUpdate;
+import eu.gir.girsignals.guis.guilib.entitys.UITextInput;
 import eu.gir.girsignals.guis.guilib.entitys.UIToolTip;
+import eu.gir.girsignals.tileentitys.SignalTileEnity;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class GuiElements {
 
+	public static UIEntity createInputElement(IIntegerable<?> property, IntConsumer consumer) {
+		final UIEntity middle = new UIEntity();
+		middle.setHeight(20);
+		middle.setInheritWidth(true);
+		
+		final UITextInput textInput = new UITextInput(SignalTileEnity.CUSTOMNAME);
+		textInput.setOnTextUpdate(str -> consumer.accept(str.length()));
+		
+		middle.add(textInput);
+		middle.add(new UIToolTip(property.getDescription()));
+		return middle;
+	}
+	
 	public static UIEntity createBoolElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
 		middle.setHeight(20);

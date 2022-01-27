@@ -253,9 +253,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	public static final class KeyEvent {
 		
 		public final int keyCode;
+		public final char typed;
 		
-		public KeyEvent(final int keyCode) {
+		public KeyEvent(final int keyCode, char typed) {
 			this.keyCode = keyCode;
+			this.typed = typed;
 		}
 	}
 	
