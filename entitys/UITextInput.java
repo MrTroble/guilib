@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class UITextInput extends UIComponent implements UIAutoSync {
-
+	
 	private final GuiTextField textInput;
 	private final String id;
 	private Consumer<String> onTextUpdate;
@@ -25,26 +25,26 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 		this.id = id;
 		this.textInput = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 0, 0);
 	}
-
+	
 	@Override
 	public void draw(int mouseX, int mouseY) {
 		textInput.drawTextBox();
 	}
-
+	
 	@Override
 	public void update() {
 		textInput.width = this.parent.getWidth();
 		textInput.height = this.parent.getHeight();
 	}
-
+	
 	@Override
 	public void write(NBTTagCompound compound) {
 		compound.setString(id, this.textInput.getText());
 	}
-
+	
 	@Override
 	public void read(NBTTagCompound compound) {
-		if(compound.hasKey(id))
+		if (compound.hasKey(id))
 			this.textInput.setText(compound.getString(id));
 	}
 	
@@ -61,22 +61,22 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	
 	@Override
 	public void mouseEvent(MouseEvent event) {
-		if(event.state.equals(EnumMouseState.CLICKED) && this.parent.isHovered())
+		if (event.state.equals(EnumMouseState.CLICKED) && this.parent.isHovered())
 			this.textInput.mouseClicked(event.x, event.y, event.key);
 	}
 	
 	public Consumer<String> getOnTextUpdate() {
 		return onTextUpdate;
 	}
-
+	
 	public void setOnTextUpdate(Consumer<String> onTextUpdate) {
 		this.onTextUpdate = onTextUpdate;
 	}
-
+	
 	public Predicate<String> getValidator() {
 		return validator;
 	}
-
+	
 	public void setValidator(Predicate<String> validator) {
 		this.validator = validator;
 		this.textInput.setValidator(validator::test);

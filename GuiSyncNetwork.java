@@ -21,10 +21,10 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketE
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 public class GuiSyncNetwork {
-
+	
 	public static final byte SEND_TO_ITEM = 0;
 	public static final byte SEND_TO_POS = 1;
-
+	
 	@SubscribeEvent
 	public void onCustomPacket(ServerCustomPacketEvent event) {
 		FMLProxyPacket packet = event.getPacket();
@@ -43,7 +43,7 @@ public class GuiSyncNetwork {
 			throw new IllegalArgumentException("Wrong packet ID in network recive!");
 		}
 	}
-
+	
 	private static void readFromPos(final PacketBuffer payBuf, final World world) {
 		final BlockPos pos = new BlockPos(payBuf.readInt(), payBuf.readInt(), payBuf.readInt());
 		final TileEntity tile = world.getTileEntity(pos);
@@ -56,7 +56,7 @@ public class GuiSyncNetwork {
 			}
 		}
 	}
-
+	
 	private static void readItemNBTSET(PacketBuffer payBuf, EntityPlayer player) {
 		try {
 			final NBTTagCompound tagCompound = payBuf.readCompoundTag();
@@ -68,7 +68,7 @@ public class GuiSyncNetwork {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void sendToItemServer(NBTTagCompound compound) {
 		final ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(SEND_TO_ITEM);
@@ -77,7 +77,7 @@ public class GuiSyncNetwork {
 		final CPacketCustomPayload payload = new CPacketCustomPayload(UIInit.CHANNELNAME, packet);
 		UIInit.getChannel().sendToServer(new FMLProxyPacket(payload));
 	}
-
+	
 	public static void sendToPosServer(NBTTagCompound compound, BlockPos pos) {
 		final ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(SEND_TO_POS);
@@ -89,5 +89,5 @@ public class GuiSyncNetwork {
 		final CPacketCustomPayload payload = new CPacketCustomPayload(UIInit.CHANNELNAME, packet);
 		UIInit.getChannel().sendToServer(new FMLProxyPacket(payload));
 	}
-
+	
 }

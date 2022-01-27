@@ -42,5 +42,5 @@ public class UIBlockRender extends UIComponent {
 		DrawUtil.addToBuffer(builder, shapes, state);
 		builder.finishDrawing();
 	}
-		
+	
 }

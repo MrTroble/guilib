@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElements {
-
+	
 	public static UIEntity createInputElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
 		middle.setHeight(20);
@@ -37,7 +37,7 @@ public class GuiElements {
 		final UIEntity middle = new UIEntity();
 		middle.setHeight(20);
 		middle.setInheritWidth(true);
-
+		
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
 			middleButton.setChecked(!middleButton.isChecked());
@@ -51,19 +51,19 @@ public class GuiElements {
 		middle.add(new UIToolTip(property.getDescription()));
 		return middle;
 	}
-
+	
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer) {
 		return createEnumElement(property, consumer, property.getMaxWidth(Minecraft.getMinecraft().fontRenderer) + 8);
 	}
-
+	
 	public static UIEntity createEnumElement(IIntegerable<?> property, IntConsumer consumer, int minWidth) {
 		final UIEntity middle = new UIEntity();
 		middle.setInheritWidth(true);
 		middle.setInheritHeight(true);
-
+		
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
-
+		
 		final UIButton middleButton = new UIButton(property.getNamedObj(0));
 		final UIEnumerable enumerable = new UIEnumerable(property.count(), property.getName());
 		final IntConsumer acceptOr = in -> {
@@ -79,11 +79,11 @@ public class GuiElements {
 		middle.add(new UIOnUpdate(() -> acceptOr.accept(enumerable.getIndex())));
 		middle.add(middleButton);
 		middle.add(enumerable);
-
+		
 		final UIEntity left = new UIEntity();
 		left.setWidth(20);
 		left.setHeight(20);
-
+		
 		final UIClickable leftclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
 			final int min = enumerable.getMin();
@@ -93,11 +93,11 @@ public class GuiElements {
 		});
 		left.add(leftButton);
 		left.add(leftclickable);
-
+		
 		final UIEntity right = new UIEntity();
 		right.setWidth(20);
 		right.setHeight(20);
-
+		
 		final UIClickable rightclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
 			final int max = enumerable.getMax() - 1;
@@ -107,7 +107,7 @@ public class GuiElements {
 		});
 		right.add(rightButton);
 		right.add(rightclickable);
-
+		
 		acceptOr.accept(0);
 		
 		final UIEntity hbox = new UIEntity();
@@ -122,20 +122,20 @@ public class GuiElements {
 		hbox.setHeight(20);
 		return hbox;
 	}
-
+	
 	public static UIEntity createPageSelect(UIPagable vbox) {
 		final UIEntity hbox = new UIEntity();
-
+		
 		final UIEntity middle = new UIEntity();
 		middle.setInheritWidth(true);
 		middle.setInheritHeight(true);
-
+		
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
-
+		
 		final UILabel middleButton = new UILabel("DDDD");
 		middle.add(middleButton);
-
+		
 		final UIEnumerable enumerable = new UIEnumerable(0, "pageselect");
 		final IntConsumer acceptOn = in -> {
 			middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
@@ -148,7 +148,7 @@ public class GuiElements {
 			vbox.setPage(in);
 		};
 		enumerable.setOnChange(acceptOn);
-
+		
 		vbox.getParent().add(new UIOnUpdate(() -> {
 			final int max = vbox.getMaxPages();
 			if (max < 1) {
@@ -161,11 +161,11 @@ public class GuiElements {
 			acceptOn.accept(enumerable.getIndex());
 		}));
 		middle.add(enumerable);
-
+		
 		final UIEntity left = new UIEntity();
 		left.setWidth(20);
 		left.setHeight(20);
-
+		
 		final UIClickable leftclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
 			final int min = enumerable.getMin();
@@ -175,11 +175,11 @@ public class GuiElements {
 		});
 		left.add(leftButton);
 		left.add(leftclickable);
-
+		
 		final UIEntity right = new UIEntity();
 		right.setWidth(20);
 		right.setHeight(20);
-
+		
 		final UIClickable rightclickable = new UIClickable(e -> {
 			final int id = enumerable.getIndex();
 			final int max = enumerable.getMax() - 1;
@@ -189,7 +189,7 @@ public class GuiElements {
 		});
 		right.add(rightButton);
 		right.add(rightclickable);
-
+		
 		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
 		hbox.add(left);
 		hbox.add(middle);

@@ -3,7 +3,7 @@ package eu.gir.girsignals.guis.guilib.entitys;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class UIRotate extends UIComponent {
-
+	
 	private float rotateX, rotateY, rotateZ;
 	
 	@Override
@@ -12,9 +12,10 @@ public class UIRotate extends UIComponent {
 		GlStateManager.rotate(this.rotateY, 0, 1, 0);
 		GlStateManager.rotate(this.rotateZ, 0, 0, 1);
 	}
-
+	
 	@Override
-	public void update() {}
+	public void update() {
+	}
 	
 	public float getRotateX() {
 		return rotateX;

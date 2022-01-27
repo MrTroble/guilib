@@ -57,7 +57,7 @@ public class UILabel extends UIComponent {
 	public int getTextX() {
 		return restHeight;
 	}
-		
+	
 	public int getTextY() {
 		return restWidth;
 	}

@@ -12,16 +12,17 @@ public class UIDrag extends UIComponent {
 	private boolean drag = false;
 	private int oldX = 0;
 	private int oldY = 0;
-
+	
 	private BiIntConsumer consumer;
-		
+	
 	public UIDrag(BiIntConsumer consumer) {
 		this.consumer = consumer;
 	}
-
+	
 	@Override
-	public void draw(int mouseX, int mouseY) {}
-
+	public void draw(int mouseX, int mouseY) {
+	}
+	
 	@Override
 	public void update() {
 		
@@ -29,12 +30,12 @@ public class UIDrag extends UIComponent {
 	
 	@Override
 	public void mouseEvent(MouseEvent event) {
-		if(drag) {
+		if (drag) {
 			this.consumer.accept(event.x - oldX, event.y - oldY);
 		}
-		if(event.state.equals(EnumMouseState.CLICKED) && this.parent.isHovered())
+		if (event.state.equals(EnumMouseState.CLICKED) && this.parent.isHovered())
 			drag = true;
-		if(event.state.equals(EnumMouseState.RELEASE))
+		if (event.state.equals(EnumMouseState.RELEASE))
 			drag = false;
 		oldX = event.x;
 		oldY = event.y;

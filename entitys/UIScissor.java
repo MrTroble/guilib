@@ -8,18 +8,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class UIScissor extends UIComponent {
-
+	
 	private int x;
 	private int y;
 	private int width;
 	private int height;
-
+	
 	@Override
 	public void draw(int mouseX, int mouseY) {
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glScissor(x, y, width, height);
 	}
-
+	
 	@Override
 	public void update() {
 		final UpdateEvent lastUpdateEvent = parent.getLastUpdateEvent();

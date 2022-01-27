@@ -11,22 +11,23 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class GuiHandler implements IGuiHandler {
-
+	
 	private GuiHandler() {
 	}
-
+	
 	private static final GuiHandler INSTANCE = new GuiHandler();
 	private static String modid;
-
+	
 	@FunctionalInterface
 	public static interface GuiSupplier {
+		
 		Object get(EntityPlayer player, World world, BlockPos pos);
 	}
-
+	
 	private static HashMap<Class<?>, Integer> guiIDS = new HashMap<>();
 	private static ArrayList<GuiSupplier> guiBases = new ArrayList<>();
 	private static ArrayList<GuiSupplier> guiContainer = new ArrayList<>();
-
+	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (guiContainer.size() > ID) {
@@ -34,7 +35,7 @@ public final class GuiHandler implements IGuiHandler {
 		}
 		return null;
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -43,15 +44,15 @@ public final class GuiHandler implements IGuiHandler {
 		}
 		return null;
 	}
-
+	
 	public static <T> void addGui(Class<T> clazz, GuiSupplier gui) {
 		addGui(clazz, gui, guiBases, guiContainer);
 	}
-
+	
 	public static <T> void addServer(Class<T> clazz, GuiSupplier gui) {
 		addGui(clazz, gui, guiContainer, guiBases);
 	}
-
+	
 	private static <T> int addGui(Class<T> clazz, GuiSupplier gui, ArrayList<GuiSupplier> base, ArrayList<GuiSupplier> container) {
 		if (guiIDS.containsKey(clazz)) {
 			int id = guiIDS.get(clazz);
@@ -65,11 +66,11 @@ public final class GuiHandler implements IGuiHandler {
 		guiIDS.put(clazz, size);
 		return size;
 	}
-
+	
 	public static <T> void invokeGui(Class<T> clazz, EntityPlayer player, World world, BlockPos pos) {
 		player.openGui(modid, guiIDS.get(clazz), world, pos.getX(), pos.getY(), pos.getZ());
 	}
-
+	
 	public static GuiHandler getInstance(String modid) {
 		GuiHandler.modid = modid;
 		return INSTANCE;
