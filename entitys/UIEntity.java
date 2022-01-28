@@ -97,26 +97,35 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	public synchronized void add(final UIComponent component) {
-		this.components.add(component);
-		component.onAdd(this);
-		this.updateEvent(lastUpdateEvent);
+		if (!this.components.contains(component)) {
+			this.components.add(component);
+			component.onAdd(this);
+			this.updateEvent(lastUpdateEvent);
+		}
 	}
 	
 	public synchronized void remove(final UIComponent component) {
-		this.components.remove(component);
-		component.onRemove(this);
-		update();
+		if (components.contains(component)) {
+			this.components.remove(component);
+			component.onRemove(this);
+			update();
+		}
 	}
 	
 	public synchronized void add(final UIEntity component) {
-		this.children.add(component);
-		component.onAdd(this);
-		this.updateEvent(lastUpdateEvent);
+		if (!this.children.contains(component) && component != this) {
+			this.children.add(component);
+			component.onAdd(this);
+			this.updateEvent(lastUpdateEvent);
+		}
 	}
 	
 	public synchronized void remove(final UIEntity component) {
-		this.children.remove(component);
-		component.onRemove(this);
+		if (children.contains(component)) {
+			this.children.remove(component);
+			component.onRemove(this);
+			this.update();
+		}
 	}
 	
 	@Override
