@@ -23,6 +23,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiElements {
 	
+	public static UIEntity createSpacerH(int space) {
+		final UIEntity spacer = new UIEntity();
+		spacer.setInheritHeight(true);
+		spacer.setWidth(space);
+		return spacer;
+	}
+	
+	public static UIEntity createSpacerV(int space) {
+		final UIEntity spacer = new UIEntity();
+		spacer.setInheritWidth(true);
+		spacer.setHeight(space);
+		return spacer;
+	}
+	
 	public static UIEntity createInputElement(IIntegerable<?> property, IntConsumer consumer) {
 		final UIEntity middle = new UIEntity();
 		middle.setHeight(20);
@@ -42,7 +56,7 @@ public class GuiElements {
 		middle.setInheritWidth(true);
 		
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
-
+		
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
 			middleButton.setChecked(!middleButton.isChecked());
@@ -147,7 +161,7 @@ public class GuiElements {
 		middle.add(middleButton);
 		
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
-
+		
 		final UIEnumerable enumerable = new UIEnumerable(0, "pageselect");
 		final IntConsumer acceptOn = in -> {
 			middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());

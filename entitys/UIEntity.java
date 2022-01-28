@@ -59,7 +59,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void postDraw(final int mouseX, final int mouseY) {
+	public synchronized void postDraw(final int mouseX, final int mouseY) {
 		if (isVisible()) {
 			children.forEach(c -> c.postDraw(mouseX, mouseY));
 			components.forEach(c -> c.postDraw(mouseX, mouseY));
@@ -67,7 +67,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void update() {
+	public synchronized void update() {
 		if (lastUpdateEvent != null) {
 			if (this.parent != null) {
 				this.worldX = (this.x * lastUpdateEvent.guiScale) + parent.getWorldX();
@@ -82,7 +82,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void draw(final int mouseX, final int mouseY) {
+	public synchronized void draw(final int mouseX, final int mouseY) {
 		if (isVisible()) {
 			final int wX = this.getWorldX();
 			final int wY = this.getWorldY();
@@ -96,37 +96,36 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		}
 	}
 	
-	public void add(final UIComponent component) {
+	public synchronized void add(final UIComponent component) {
 		this.components.add(component);
 		component.onAdd(this);
 		this.updateEvent(lastUpdateEvent);
 	}
 	
-	public void remove(final UIComponent component) {
+	public synchronized void remove(final UIComponent component) {
 		this.components.remove(component);
 		component.onRemove(this);
 		update();
 	}
 	
-	public void add(final UIEntity component) {
+	public synchronized void add(final UIEntity component) {
 		this.children.add(component);
 		component.onAdd(this);
 		this.updateEvent(lastUpdateEvent);
 	}
 	
-	public void remove(final UIEntity component) {
+	public synchronized void remove(final UIEntity component) {
 		this.children.remove(component);
 		component.onRemove(this);
-		update();
 	}
 	
 	@Override
-	public void onClosed() {
+	public synchronized void onClosed() {
 		children.forEach(c -> c.onClosed());
 	}
 	
 	@Override
-	public void mouseEvent(final MouseEvent event) {
+	public synchronized void mouseEvent(final MouseEvent event) {
 		if (isVisible()) {
 			this.children.forEach(c -> c.mouseEvent(event));
 			this.components.forEach(c -> c.mouseEvent(event));
@@ -134,7 +133,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void keyEvent(final KeyEvent event) {
+	public synchronized void keyEvent(final KeyEvent event) {
 		if (isVisible()) {
 			this.children.forEach(c -> c.keyEvent(event));
 			this.components.forEach(c -> c.keyEvent(event));
@@ -142,7 +141,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void updateEvent(final UpdateEvent event) {
+	public synchronized void updateEvent(final UpdateEvent event) {
 		this.lastUpdateEvent = event;
 		this.children.forEach(c -> c.updateEvent(event));
 		this.components.forEach(c -> c.updateEvent(event));
@@ -166,7 +165,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void read(NBTTagCompound compound) {
+	public synchronized void read(NBTTagCompound compound) {
 		children.forEach(e -> e.read(compound));
 		components.forEach(c -> {
 			if (c instanceof UIAutoSync)
@@ -175,7 +174,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 	}
 	
 	@Override
-	public void write(NBTTagCompound compound) {
+	public synchronized void write(NBTTagCompound compound) {
 		children.forEach(e -> e.write(compound));
 		components.forEach(c -> {
 			if (c instanceof UIAutoSync)
@@ -187,20 +186,31 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		return hovered;
 	}
 	
-	public void clearChildren() {
-		@SuppressWarnings("unchecked")
-		final ArrayList<UIEntity> tmpChildren = (ArrayList<UIEntity>) this.children.clone();
-		this.children.clear();
-		tmpChildren.forEach(entity -> entity.onRemove(this));
-		this.update();
+	public synchronized void clearChildren() {
+		synchronized (this) {
+			this.children.forEach(entity -> entity.onRemove(this));
+			this.children.clear();
+		}
 	}
 	
-	public <T extends UIComponent> List<T> findRecursive(Class<T> c) {
+	public synchronized void clearComponents() {
+		synchronized (this) {
+			this.components.forEach(entity -> entity.onRemove(this));
+			this.components.clear();
+		}
+	}
+	
+	public synchronized void clear() {
+		clearComponents();
+		clearChildren();
+	}
+	
+	public synchronized <T extends UIComponent> List<T> findRecursive(Class<T> c) {
 		return findRecursive(this, c);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T extends UIComponent> List<T> findRecursive(UIEntity uiEntity, Class<T> c) {
+	public synchronized <T extends UIComponent> List<T> findRecursive(UIEntity uiEntity, Class<T> c) {
 		final ArrayList<T> components = new ArrayList<>();
 		uiEntity.components.stream().filter(u -> u.getClass().equals(c)).forEach(f -> components.add((T) f));
 		for (UIEntity nextEntity : uiEntity.children) {

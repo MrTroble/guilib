@@ -1,5 +1,7 @@
 package eu.gir.girsignals.guis.guilib.entitys;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.lwjgl.opengl.GL11;
 
 import eu.gir.girsignals.guis.guilib.DrawUtil;
@@ -14,7 +16,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class UIBlockRender extends UIComponent {
 	
-	private ThreadLocal<BufferBuilder> model = ThreadLocal.withInitial(() -> new BufferBuilder(500));
+	private AtomicReference<BufferBuilder> model = new AtomicReference<BufferBuilder>(new BufferBuilder(500));
 	
 	@Override
 	public void draw(int mouseX, int mouseY) {

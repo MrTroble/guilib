@@ -86,7 +86,7 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 		this.validator = validator;
 		this.textInput.setValidator(validator::test);
 	}
-
+	
 	public String getText() {
 		return this.textInput.getText();
 	}

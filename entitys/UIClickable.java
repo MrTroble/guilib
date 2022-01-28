@@ -12,8 +12,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class UIClickable extends UIComponent {
 	
 	private Consumer<UIEntity> callback;
+	private final int button;
 	
 	public UIClickable(final Consumer<UIEntity> callback) {
+		this(callback, 0);
+	}
+	
+	public UIClickable(final Consumer<UIEntity> callback, int button) {
+		this.button = button;
 		this.callback = callback;
 	}
 	
@@ -27,7 +33,7 @@ public class UIClickable extends UIComponent {
 	
 	@Override
 	public void mouseEvent(MouseEvent event) {
-		if (event.state == EnumMouseState.RELEASE && this.parent.isVisible()) {
+		if (event.state == EnumMouseState.RELEASE && event.key == this.button && this.parent.isVisible()) {
 			if (this.parent.isHovered()) {
 				callback.accept(this.parent);
 			}

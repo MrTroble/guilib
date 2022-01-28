@@ -16,6 +16,8 @@ public class UILabel extends UIComponent {
 	private FontRenderer renderer;
 	private int restHeight = 0;
 	private int restWidth = 0;
+	private boolean centerX = true;
+	private boolean centerY = true;
 	
 	public UILabel(String text) {
 		this.string = text;
@@ -34,8 +36,10 @@ public class UILabel extends UIComponent {
 	
 	@Override
 	public void update() {
-		this.restHeight = (this.parent.getHeight() - this.getTextHeight()) / 2;
-		this.restWidth = (this.parent.getWidth() - this.getTextWidth()) / 2;
+		if (this.centerY)
+			this.restHeight = (this.parent.getHeight() - this.getTextHeight()) / 2;
+		if (this.centerX)
+			this.restWidth = (this.parent.getWidth() - this.getTextWidth()) / 2;
 	}
 	
 	public String getText() {
@@ -68,5 +72,21 @@ public class UILabel extends UIComponent {
 	
 	public int getTextHeight() {
 		return renderer.FONT_HEIGHT;
+	}
+	
+	public boolean isCenterX() {
+		return centerX;
+	}
+	
+	public void setCenterX(boolean centerX) {
+		this.centerX = centerX;
+	}
+	
+	public boolean isCenterY() {
+		return centerY;
+	}
+	
+	public void setCenterY(boolean centerY) {
+		this.centerY = centerY;
 	}
 }

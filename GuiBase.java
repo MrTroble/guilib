@@ -10,7 +10,6 @@ import eu.gir.girsignals.guis.guilib.entitys.UIEntity.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,16 +19,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiBase extends GuiScreen {
 	
-	private static final int STRING_COLOR = 4210752;
-	private static final int TOP_STRING_OFFSET = 15;
-	private static final float STRING_SCALE = 1.5f;
-	private static final int LEFT_OFFSET = 20;
-	private static final int GUI_MIN_WIDTH = 150;
-	private static final int GUI_MAX_HEIGHT = 320;
-	private static final int RIGHT_INSET = 20;
-	private static final int GUI_INSET = 40;
-	private static final int SIGNAL_RENDER_WIDTH_AND_INSET = 180;
-	private static final int TOP_OFFSET = GUI_INSET;
+	private static final int GUI_MIN_WIDTH = 350;
+	private static final int GUI_MAX_HEIGHT = 300;
+	private static final int GUI_INSET = 4;
 	
 	private static final ResourceLocation CREATIVE_TAB = new ResourceLocation("textures/gui/container/creative_inventory/tab_inventory.png");
 	
@@ -39,10 +31,10 @@ public class GuiBase extends GuiScreen {
 	protected int ySize = 230;
 	protected UIEntity entity;
 	protected NBTTagCompound compound;
-	private final String name;
 	
-	public GuiBase(final String name) {
-		this.name = name;
+	private int lastButton = 0;
+	
+	public GuiBase() {
 		this.entity = new UIEntity();
 		this.compound = new NBTTagCompound();
 	}
@@ -65,29 +57,14 @@ public class GuiBase extends GuiScreen {
 		return false;
 	}
 	
-	public String getTitle() {
-		return this.name;
-	}
-	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		
 		mc.getTextureManager().bindTexture(CREATIVE_TAB);
-		
 		DrawUtil.drawBack(this, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
-		
-		entity.draw(mouseX, mouseY);
-		
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(this.guiLeft + LEFT_OFFSET, this.guiTop + TOP_STRING_OFFSET, 0);
-		GlStateManager.scale(STRING_SCALE, STRING_SCALE, STRING_SCALE);
-		this.fontRenderer.drawString(this.getTitle(), 0, 0, STRING_COLOR);
-		GlStateManager.popMatrix();
-		
+		this.entity.draw(mouseX, mouseY);
 		this.draw(mouseX, mouseY, partialTicks);
-		
-		entity.postDraw(mouseX, mouseY);
+		this.entity.postDraw(mouseX, mouseY);
 	}
 	
 	public void draw(int mouseX, int mouseY, float partialTicks) {
@@ -96,14 +73,14 @@ public class GuiBase extends GuiScreen {
 	
 	@Override
 	public void initGui() {
-		this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET);
-		this.xSize = GUI_MIN_WIDTH + 20 + SIGNAL_RENDER_WIDTH_AND_INSET + RIGHT_INSET;
+		this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET * 4);
+		this.xSize = GUI_MIN_WIDTH + GUI_INSET;
 		this.guiLeft = (this.width - this.xSize) / 2;
 		this.guiTop = (this.height - this.ySize) / 2;
-		this.entity.setWidth(this.xSize - RIGHT_INSET * 2);
+		this.entity.setWidth(GUI_MIN_WIDTH);
 		this.entity.setHeight(this.ySize - GUI_INSET);
-		this.entity.setX(this.guiLeft + RIGHT_INSET);
-		this.entity.setY(this.guiTop + TOP_OFFSET);
+		this.entity.setX(this.guiLeft + GUI_INSET);
+		this.entity.setY(this.guiTop + GUI_INSET);
 		final ScaledResolution res = new ScaledResolution(mc);
 		this.entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor(), Math.max(this.width / this.height, this.height / this.width)));
 	}
@@ -121,12 +98,13 @@ public class GuiBase extends GuiScreen {
 	
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		lastButton = mouseButton;
 		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
 	}
 	
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, 0, EnumMouseState.RELEASE));
+		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
 	}
 	
 	@Override
