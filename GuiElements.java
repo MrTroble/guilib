@@ -14,6 +14,9 @@ import eu.gir.girsignals.guis.guilib.entitys.UITextInput;
 import eu.gir.girsignals.guis.guilib.entitys.UIToolTip;
 import eu.gir.girsignals.tileentitys.SignalTileEnity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,10 +41,13 @@ public class GuiElements {
 		middle.setHeight(20);
 		middle.setInheritWidth(true);
 		
+		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+
 		final UICheckBox middleButton = new UICheckBox(property.getName());
 		final UIClickable clickable = new UIClickable(e -> {
 			middleButton.setChecked(!middleButton.isChecked());
 			consumer.accept(middleButton.isChecked() ? 1 : 0);
+			handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		});
 		middleButton.setOnChange(consumer);
 		middleButton.setText(property.getLocalizedName());
@@ -63,6 +69,8 @@ public class GuiElements {
 		
 		final UIButton leftButton = new UIButton("<");
 		final UIButton rightButton = new UIButton(">");
+		
+		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 		
 		final UIButton middleButton = new UIButton(property.getNamedObj(0));
 		final UIEnumerable enumerable = new UIEnumerable(property.count(), property.getName());
@@ -90,6 +98,7 @@ public class GuiElements {
 			if (id <= min)
 				return;
 			enumerable.setIndex(id - 1);
+			handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		});
 		left.add(leftButton);
 		left.add(leftclickable);
@@ -104,6 +113,7 @@ public class GuiElements {
 			if (id >= max)
 				return;
 			enumerable.setIndex(id + 1);
+			handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		});
 		right.add(rightButton);
 		right.add(rightclickable);
@@ -136,6 +146,8 @@ public class GuiElements {
 		final UILabel middleButton = new UILabel("DDDD");
 		middle.add(middleButton);
 		
+		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+
 		final UIEnumerable enumerable = new UIEnumerable(0, "pageselect");
 		final IntConsumer acceptOn = in -> {
 			middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
@@ -172,6 +184,7 @@ public class GuiElements {
 			if (id <= min)
 				return;
 			enumerable.setIndex(id - 1);
+			handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		});
 		left.add(leftButton);
 		left.add(leftclickable);
@@ -186,6 +199,7 @@ public class GuiElements {
 			if (id >= max)
 				return;
 			enumerable.setIndex(id + 1);
+			handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 		});
 		right.add(rightButton);
 		right.add(rightclickable);

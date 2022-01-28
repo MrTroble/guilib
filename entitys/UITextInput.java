@@ -24,6 +24,9 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	public UITextInput(String id) {
 		this.id = id;
 		this.textInput = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 0, 0);
+		this.textInput.setCanLoseFocus(false);
+		this.textInput.setFocused(true);
+		this.textInput.setEnabled(true);
 	}
 	
 	@Override
@@ -39,19 +42,21 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	
 	@Override
 	public void write(NBTTagCompound compound) {
-		compound.setString(id, this.textInput.getText());
+		compound.setString(id, this.getText());
 	}
 	
 	@Override
 	public void read(NBTTagCompound compound) {
-		if (compound.hasKey(id))
-			this.textInput.setText(compound.getString(id));
+		this.setText(compound.getString(id));
+		this.textInput.setCursorPositionZero();
 	}
 	
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		this.textInput.setVisible(visible);
+		this.textInput.setFocused(visible);
+		this.textInput.setEnabled(visible);
 	}
 	
 	@Override
@@ -80,5 +85,13 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	public void setValidator(Predicate<String> validator) {
 		this.validator = validator;
 		this.textInput.setValidator(validator::test);
+	}
+
+	public String getText() {
+		return this.textInput.getText();
+	}
+	
+	public void setText(String text) {
+		this.textInput.setText(text);
 	}
 }
