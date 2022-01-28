@@ -14,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -113,8 +112,7 @@ public class GuiSyncNetwork {
 		final ByteBuf buffer = Unpooled.buffer();
 		final PacketBuffer packet = new PacketBuffer(buffer);
 		packet.writeCompoundTag(compound);
-		final SPacketCustomPayload payload = new SPacketCustomPayload(UIInit.CHANNELNAME, packet);
-		UIInit.getChannel().sendTo(new FMLProxyPacket(payload), player);
+		UIInit.getChannel().sendTo(new FMLProxyPacket(packet, UIInit.CHANNELNAME), player);
 	}
 
 }
