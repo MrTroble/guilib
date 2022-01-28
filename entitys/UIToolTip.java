@@ -16,9 +16,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class UIToolTip extends UIComponent {
 	
-	public final String descripton;
+	private String descripton;
 	
 	public UIToolTip(final String descripton) {
+		this.descripton = descripton;
+	}
+	
+	public String getDescripton() {
+		return descripton;
+	}
+	
+	public void setDescripton(String descripton) {
 		this.descripton = descripton;
 	}
 	
