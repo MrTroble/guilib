@@ -107,6 +107,35 @@ public class DrawUtil {
 		
 	}
 	
+	public static class BoolIntegerables implements IIntegerable<String> {
+		
+		private final String name;
+		
+		public BoolIntegerables(final String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String getObjFromID(int obj) {
+			return obj == 0 ? "true":"false";
+		}
+		
+		@Override
+		public int count() {
+			return 2;
+		}
+		
+		public static BoolIntegerables of(final String name) {
+			return new BoolIntegerables(name);
+		}
+		
+		@Override
+		public String getName() {
+			return this.name;
+		}
+		
+	}
+	
 	public static class IntegerHolder {
 		
 		private int obj;

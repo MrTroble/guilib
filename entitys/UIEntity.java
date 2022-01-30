@@ -1,6 +1,7 @@
 package eu.gir.girsignals.guis.guilib.entitys;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -12,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public final class UIEntity extends UIComponent implements UIAutoSync {
+public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<UIEntity> {
 	
 	private int x;
 	private int y;
@@ -248,6 +249,8 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 		return lastUpdateEvent;
 	}
 	
+	
+	
 	public static enum EnumMouseState {
 		CLICKED,
 		RELEASE,
@@ -293,6 +296,12 @@ public final class UIEntity extends UIComponent implements UIAutoSync {
 			this.key = key;
 			this.state = enumState;
 		}
+	}
+
+	
+	@Override
+	public Iterator<UIEntity> iterator() {
+		return this.children.iterator();
 	}
 	
 }

@@ -20,6 +20,8 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 		this.max = max;
 		this.id = id;
 		this.min = 0;
+		this.onChange = e -> {
+		};
 	}
 	
 	@Override

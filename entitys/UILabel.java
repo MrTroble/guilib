@@ -31,6 +31,7 @@ public class UILabel extends UIComponent {
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			renderer.drawString(string, restWidth, restHeight, stringColor);
+			GlStateManager.color(1, 1, 1, 1);
 		}
 	}
 	
