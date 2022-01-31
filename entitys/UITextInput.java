@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class UITextInput extends UIComponent implements UIAutoSync {
 	
 	private final GuiTextField textInput;
-	private final String id;
+	private String id;
 	private Consumer<String> onTextUpdate;
 	private Predicate<String> validator;
 	
@@ -94,4 +94,14 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	public void setText(String text) {
 		this.textInput.setText(text);
 	}
+
+    @Override
+    public String getID() {
+        return this.id;
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
+    }
 }

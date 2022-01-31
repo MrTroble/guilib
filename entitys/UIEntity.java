@@ -303,5 +303,13 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 	public Iterator<UIEntity> iterator() {
 		return this.children.iterator();
 	}
+
+    @Override
+    public String getID() {
+        return null;
+    }
+
+    @Override
+    public void setID(String id) {}
 	
 }

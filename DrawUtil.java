@@ -105,6 +105,10 @@ public class DrawUtil {
 			return this.name;
 		}
 		
+		@Override
+		public String getNamedObj(int obj) {
+		    return getLocalizedName() + ": " + obj;
+		}
 	}
 	
 	public static class BoolIntegerables implements IIntegerable<String> {
