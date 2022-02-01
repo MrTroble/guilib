@@ -84,15 +84,15 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	public void setOnChange(IntConsumer onChange) {
 		this.onChange = onChange;
 	}
-
-    @Override
-    public String getID() {
-        return this.id;
-    }
-
-    @Override
-    public void setID(String id) {
-        this.id = id;
-    }
+	
+	@Override
+	public String getID() {
+		return this.id;
+	}
+	
+	@Override
+	public void setID(String id) {
+		this.id = id;
+	}
 	
 }

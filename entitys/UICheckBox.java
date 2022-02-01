@@ -86,14 +86,14 @@ public class UICheckBox extends UIComponent implements UIAutoSync {
 		this.checked = checked;
 	}
 	
-    @Override
-    public String getID() {
-        return this.id;
-    }
-
-    @Override
-    public void setID(String id) {
-        this.id = id;
-    }
+	@Override
+	public String getID() {
+		return this.id;
+	}
+	
+	@Override
+	public void setID(String id) {
+		this.id = id;
+	}
 	
 }

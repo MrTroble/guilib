@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.pipeline.LightUtil;
@@ -28,6 +29,38 @@ public class DrawUtil {
 	
 	private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 	public static final float DIM = 256.0f;
+	
+	public static class DisableIntegerable<T extends Comparable<T>> implements IIntegerable<T> {
+
+		private final IIntegerable<T> integerable;
+		
+		public DisableIntegerable(IIntegerable<T> integerable) {
+			this.integerable = integerable;
+		}
+		
+		@Override
+		public T getObjFromID(int obj) {
+			return integerable.getObjFromID(obj);
+		}
+
+		@Override
+		public int count() {
+			return integerable.count();
+		}
+
+		@Override
+		public String getName() {
+			return integerable.getName();
+		}
+		
+		@Override
+		public String getNamedObj(int obj) {
+			if(obj < 0)
+				return getLocalizedName() + ": " + I18n.format("property.disabled.name");
+			return integerable.getNamedObj(obj);
+		}
+		
+	}
 	
 	public static class EnumIntegerable<T extends Enum<T>> implements IIntegerable<T> {
 		
@@ -107,7 +140,7 @@ public class DrawUtil {
 		
 		@Override
 		public String getNamedObj(int obj) {
-		    return getLocalizedName() + ": " + obj;
+			return getLocalizedName() + ": " + obj;
 		}
 	}
 	
@@ -121,7 +154,7 @@ public class DrawUtil {
 		
 		@Override
 		public String getObjFromID(int obj) {
-			return obj == 0 ? "true":"false";
+			return obj == 0 ? "true" : "false";
 		}
 		
 		@Override

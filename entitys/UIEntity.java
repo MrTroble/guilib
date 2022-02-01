@@ -249,8 +249,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 		return lastUpdateEvent;
 	}
 	
-	
-	
 	public static enum EnumMouseState {
 		CLICKED,
 		RELEASE,
@@ -297,19 +295,19 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 			this.state = enumState;
 		}
 	}
-
 	
 	@Override
 	public Iterator<UIEntity> iterator() {
 		return this.children.iterator();
 	}
-
-    @Override
-    public String getID() {
-        return null;
-    }
-
-    @Override
-    public void setID(String id) {}
+	
+	@Override
+	public String getID() {
+		return null;
+	}
+	
+	@Override
+	public void setID(String id) {
+	}
 	
 }

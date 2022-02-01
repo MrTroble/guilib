@@ -13,7 +13,7 @@ public class UIDrag extends UIComponent {
 	private boolean drag = false;
 	private int oldX = 0;
 	private int oldY = 0;
-
+	
 	private BiIntConsumer consumer;
 	
 	public UIDrag(BiIntConsumer consumer) {

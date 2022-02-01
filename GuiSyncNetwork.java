@@ -31,7 +31,7 @@ public class GuiSyncNetwork {
 	@SubscribeEvent
 	public void onCustomClientPacket(ClientCustomPacketEvent event) {
 		final Container container = Minecraft.getMinecraft().player.openContainer;
-		if(container instanceof UIClientSync) {
+		if (container instanceof UIClientSync) {
 			final UIClientSync sync = (UIClientSync) container;
 			final FMLProxyPacket packet = event.getPacket();
 			final PacketBuffer payBuf = new PacketBuffer(packet.payload());
@@ -42,7 +42,7 @@ public class GuiSyncNetwork {
 			}
 		}
 	}
-
+	
 	@SubscribeEvent
 	public void onCustomPacket(ServerCustomPacketEvent event) {
 		FMLProxyPacket packet = event.getPacket();
@@ -114,5 +114,5 @@ public class GuiSyncNetwork {
 		packet.writeCompoundTag(compound);
 		UIInit.getChannel().sendTo(new FMLProxyPacket(packet, UIInit.CHANNELNAME), player);
 	}
-
+	
 }
