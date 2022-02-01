@@ -31,7 +31,7 @@ public class DrawUtil {
 	public static final float DIM = 256.0f;
 	
 	public static class DisableIntegerable<T extends Comparable<T>> implements IIntegerable<T> {
-
+		
 		private final IIntegerable<T> integerable;
 		
 		public DisableIntegerable(IIntegerable<T> integerable) {
@@ -42,12 +42,12 @@ public class DrawUtil {
 		public T getObjFromID(int obj) {
 			return integerable.getObjFromID(obj);
 		}
-
+		
 		@Override
 		public int count() {
 			return integerable.count();
 		}
-
+		
 		@Override
 		public String getName() {
 			return integerable.getName();
@@ -55,7 +55,7 @@ public class DrawUtil {
 		
 		@Override
 		public String getNamedObj(int obj) {
-			if(obj < 0)
+			if (obj < 0)
 				return getLocalizedName() + ": " + I18n.format("property.disabled.name");
 			return integerable.getNamedObj(obj);
 		}
