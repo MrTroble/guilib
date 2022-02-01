@@ -51,7 +51,11 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 	
 	@Override
 	public void read(NBTTagCompound compound) {
-		this.setIndex(compound.getInteger(id));
+		if(compound.hasKey(id)) {
+			this.setIndex(compound.getInteger(id));
+		} else {
+			this.setIndex(this.min);
+		}
 		this.onChange.accept(this.index);
 	}
 	
