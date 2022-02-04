@@ -1,5 +1,6 @@
 package eu.gir.girsignals.guis.guilib;
 
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
 import eu.gir.girsignals.guis.guilib.entitys.UIBox;
@@ -225,5 +226,21 @@ public class GuiElements {
 		hbox.setInheritWidth(true);
 		hbox.setHeight(20);
 		return hbox;
+	}
+	
+	public static UIEntity createButton(String name, Consumer<UIEntity> consumer) {
+		final UIEntity entity = createButton(name, 0, consumer);
+		entity.setInheritWidth(true);
+		return entity;
+	}
+
+	public static UIEntity createButton(String name, int width, Consumer<UIEntity> consumer) {
+		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
+		final UIEntity settingsEnt = new UIEntity();
+		settingsEnt.setHeight(20);
+		settingsEnt.setWidth(width);
+		settingsEnt.add(new UIButton(name));
+		settingsEnt.add(new UIClickable(consumer.andThen(e -> handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F)))));
+		return settingsEnt;
 	}
 }
