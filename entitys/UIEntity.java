@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import eu.gir.girsignals.guis.guilib.UIAutoSync;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
@@ -90,9 +88,10 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 			this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + this.width && mouseY < wY + this.height;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(this.x, this.y, 0);
-			children.forEach(c -> c.draw(mouseX, mouseY));
 			components.forEach(c -> c.draw(mouseX, mouseY));
-			GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			children.forEach(c -> c.draw(mouseX, mouseY));
+			children.forEach(c -> c.exitDraw(mouseX, mouseY));
+			components.forEach(c -> c.exitDraw(mouseX, mouseY));
 			GlStateManager.popMatrix();
 		}
 	}

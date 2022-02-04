@@ -94,6 +94,7 @@ public class UIBox extends UIComponent implements UIPagable {
 	private final IBoxMode mode;
 	private final int gap;
 	private final ArrayList<UIEntity> boundsUpdate = new ArrayList<>();
+	private boolean pageable = true;
 	
 	public UIBox(final IBoxMode mode, final int gap) {
 		this.mode = mode;
@@ -106,7 +107,7 @@ public class UIBox extends UIComponent implements UIPagable {
 	
 	@Override
 	public void update() {
-		final int parentBounds = mode.getBounds(parent);
+		final int parentBounds = pageable ? mode.getBounds(parent) : Integer.MAX_VALUE;
 		if (parentBounds < 1)
 			return;
 		updateBounds(parentBounds);
@@ -177,4 +178,13 @@ public class UIBox extends UIComponent implements UIPagable {
 	public int getMaxPages() {
 		return maxPages;
 	}
+	
+	public boolean isPageable() {
+		return pageable;
+	}
+	
+	public void setPageable(boolean pageable) {
+		this.pageable = pageable;
+	}
+	
 }

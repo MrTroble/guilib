@@ -15,6 +15,8 @@ public abstract class UIComponent {
 	
 	public abstract void draw(final int mouseX, final int mouseY);
 	
+	public void exitDraw(final int mouseX, final int mouseY) {}
+	
 	public abstract void update();
 	
 	public void onAdd(final UIEntity entity) {

@@ -40,4 +40,16 @@ public class UIClickable extends UIComponent {
 		}
 	}
 	
+	public Consumer<UIEntity> getCallback() {
+		return callback;
+	}
+	
+	public void setCallback(Consumer<UIEntity> callback) {
+		this.callback = callback;
+	}
+	
+	public int getButton() {
+		return button;
+	}
+	
 }
