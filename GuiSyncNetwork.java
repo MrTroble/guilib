@@ -97,6 +97,8 @@ public class GuiSyncNetwork {
 	}
 	
 	public static void sendToPosServer(NBTTagCompound compound, BlockPos pos) {
+		if(compound.hasNoTags())
+			return;
 		final ByteBuf buffer = Unpooled.buffer();
 		buffer.writeByte(SEND_TO_POS);
 		buffer.writeInt(pos.getX());
