@@ -136,7 +136,7 @@ public class GuiElements {
 		acceptOr.accept(0);
 		
 		final UIEntity hbox = new UIEntity();
-		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
+		hbox.add(new UIBox(UIBox.HBOX, 1));
 		final String desc = property.getDescription();
 		if (desc != null)
 			hbox.add(new UIToolTip(desc));
@@ -219,7 +219,7 @@ public class GuiElements {
 		right.add(rightButton);
 		right.add(rightclickable);
 		
-		hbox.add(new UIBox(UIBox.HBoxMode.INSTANCE, 1));
+		hbox.add(new UIBox(UIBox.HBOX, 1));
 		hbox.add(left);
 		hbox.add(middle);
 		hbox.add(right);

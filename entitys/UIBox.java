@@ -29,9 +29,10 @@ public class UIBox extends UIComponent implements UIPagable {
 		}
 	}
 	
+	public static VBoxMode VBOX = new VBoxMode();
+	public static HBoxMode HBOX = new HBoxMode();
+	
 	public static class VBoxMode implements IBoxMode {
-		
-		public static VBoxMode INSTANCE = new VBoxMode();
 		
 		@Override
 		public int getBounds(UIEntity entity) {
@@ -60,9 +61,34 @@ public class UIBox extends UIComponent implements UIPagable {
 		}
 	}
 	
-	public static class HBoxMode implements IBoxMode {
+	public static class StackMode implements IBoxMode {
 		
-		public static HBoxMode INSTANCE = new HBoxMode();
+		@Override
+		public int getBounds(UIEntity entity) {
+			return 1;
+		}
+		
+		@Override
+		public void setBounds(UIEntity entity, int bounds) {}
+		
+		@Override
+		public void setPos(UIEntity entity, int pos) {}
+		
+		@Override
+		public boolean inheritsBounds(UIEntity entity) {
+			return false;
+		}
+		
+		@Override
+		public void post(UIEntity entity) {
+			if (entity.inheritWidth())
+				entity.setWidth(entity.parent.getWidth());
+			if (entity.inheritHeight())
+				entity.setWidth(entity.parent.getHeight());
+		}
+	}
+	
+	public static class HBoxMode implements IBoxMode {
 		
 		@Override
 		public int getBounds(UIEntity entity) {

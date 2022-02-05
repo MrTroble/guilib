@@ -251,7 +251,8 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 	public static enum EnumMouseState {
 		CLICKED,
 		RELEASE,
-		MOVE
+		MOVE,
+		SCROLL
 	}
 	
 	public static final class UpdateEvent {

@@ -2,6 +2,8 @@ package eu.gir.girsignals.guis.guilib;
 
 import java.io.IOException;
 
+import org.lwjgl.input.Mouse;
+
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.EnumMouseState;
 import eu.gir.girsignals.guis.guilib.entitys.UIEntity.KeyEvent;
@@ -110,5 +112,15 @@ public class GuiBase extends GuiScreen {
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
+	}
+	
+	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+        int scroll = Mouse.getEventDWheel();
+        if (scroll != 0)
+        {
+    		this.entity.mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
+        }
 	}
 }
