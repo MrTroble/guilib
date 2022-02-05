@@ -21,11 +21,11 @@ public class UIScale extends UIComponent {
 	@Override
 	public void draw(int mouseX, int mouseY) {
 		GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
-		
 	}
 	
 	@Override
 	public void update() {
+		
 	}
 	
 	public float getScaleX() {

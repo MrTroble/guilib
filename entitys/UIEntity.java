@@ -13,12 +13,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<UIEntity> {
 	
-	private int x;
-	private int y;
-	private int width;
-	private int height;
-	private int worldY;
-	private int worldX;
+	private int x, y;
+	private int worldY, worldX;
+	private int width, height;
+	private int worldWidth, worldHeight;
+	private float scaleX, scaleY;
+	private float worldScaleX, worldScaleY;
 	private boolean hovered;
 	private boolean inheritHeight;
 	private boolean inheritWidth;
@@ -31,6 +31,8 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 		this.setVisible(true);
 		this.setInheritHeight(false);
 		this.setInheritWidth(false);
+		this.scaleX = 1;
+		this.scaleY = 1;
 	}
 	
 	public void setX(final int x) {
@@ -68,13 +70,21 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 	@Override
 	public synchronized void update() {
 		if (lastUpdateEvent != null) {
+			final int cX = this.x * lastUpdateEvent.guiScale;
+			final int cY = this.y * lastUpdateEvent.guiScale;
 			if (this.parent != null) {
-				this.worldX = (this.x * lastUpdateEvent.guiScale) + parent.getWorldX();
-				this.worldY = (this.y * lastUpdateEvent.guiScale) + parent.getWorldY();
+				this.worldScaleX = this.scaleX * parent.getWorldScaleX();
+				this.worldScaleY = this.scaleY * parent.getWorldScaleY();
+				this.worldX = (int) (cX * parent.worldScaleX + parent.getWorldX());
+				this.worldY = (int) (cY * parent.worldScaleY + parent.getWorldY());
 			} else {
-				this.worldX = (this.x * lastUpdateEvent.guiScale);
-				this.worldY = (this.y * lastUpdateEvent.guiScale);
+				this.worldScaleX = this.scaleX;
+				this.worldScaleY = this.scaleY;
+				this.worldX = (int) (cX * this.scaleX);
+				this.worldY = (int) (cY * this.scaleY);
 			}
+			this.worldWidth = (int) (this.worldScaleX * this.width);
+			this.worldHeight = (int) (this.worldScaleY * this.height);
 			components.forEach(c -> c.update());
 			children.forEach(c -> c.update());
 		}
@@ -85,9 +95,10 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 		if (isVisible()) {
 			final int wX = this.getWorldX();
 			final int wY = this.getWorldY();
-			this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + this.width && mouseY < wY + this.height;
+			this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + worldWidth && mouseY < wY + worldHeight;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(this.x, this.y, 0);
+			GlStateManager.scale(scaleX, scaleY, 1);
 			components.forEach(c -> c.draw(mouseX, mouseY));
 			children.forEach(c -> c.draw(mouseX, mouseY));
 			children.forEach(c -> c.exitDraw(mouseX, mouseY));
@@ -95,7 +106,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 			GlStateManager.popMatrix();
 		}
 	}
-	
+		
 	public synchronized void add(final UIComponent component) {
 		if (!this.components.contains(component)) {
 			this.components.add(component);
@@ -308,6 +319,30 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 	
 	@Override
 	public void setID(String id) {
+	}
+
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	public void setScaleX(float scaleX) {
+		this.scaleX = scaleX;
+	}
+
+	public float getScaleY() {
+		return scaleY;
+	}
+
+	public void setScaleY(float scaleY) {
+		this.scaleY = scaleY;
+	}
+
+	public float getWorldScaleX() {
+		return worldScaleX;
+	}
+
+	public float getWorldScaleY() {
+		return worldScaleY;
 	}
 	
 }
