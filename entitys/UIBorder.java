@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class UIBorder extends UIComponent {
 	
-	private final int color;
-	private final float lineWidth;
+	private int color;
+	private float lineWidth;
 	
 	public UIBorder(int color) {
 		this(color, 1);
@@ -47,6 +47,22 @@ public class UIBorder extends UIComponent {
 	@Override
 	public void update() {
 		
+	}
+	
+	public int getColor() {
+		return color;
+	}
+	
+	public void setColor(int color) {
+		this.color = color;
+	}
+	
+	public float getLineWidth() {
+		return lineWidth;
+	}
+	
+	public void setLineWidth(float lineWidth) {
+		this.lineWidth = lineWidth;
 	}
 	
 }

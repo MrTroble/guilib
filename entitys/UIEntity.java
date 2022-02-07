@@ -144,11 +144,12 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 		children.forEach(c -> c.onClosed());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void mouseEvent(final MouseEvent event) {
 		if (isVisible()) {
-			this.children.forEach(c -> c.mouseEvent(event));
-			this.components.forEach(c -> c.mouseEvent(event));
+			((Iterable<UIEntity>) this.children.clone()).forEach(c -> c.mouseEvent(event));
+			((Iterable<UIComponent>) this.components.clone()).forEach(c -> c.mouseEvent(event));
 		}
 	}
 	
