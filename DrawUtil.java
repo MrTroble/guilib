@@ -30,7 +30,7 @@ public class DrawUtil {
 	private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 	public static final float DIM = 256.0f;
 	
-	public static class DisableIntegerable<T extends Comparable<T>> implements IIntegerable<T> {
+	public static class DisableIntegerable<T> implements IIntegerable<T> {
 		
 		private final IIntegerable<T> integerable;
 		

@@ -87,9 +87,11 @@ public class GuiElements {
 		
 		final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 		
-		final UIButton middleButton = new UIButton(property.getNamedObj(0));
+		final UIButton middleButton = new UIButton("");
 		final UIEnumerable enumerable = new UIEnumerable(property.count(), property.getName());
 		final IntConsumer acceptOr = in -> {
+			if(in >= property.count())
+				return;
 			middleButton.setText(property.getNamedObj(in));
 			rightButton.setEnabled(true);
 			leftButton.setEnabled(true);
