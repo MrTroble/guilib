@@ -34,7 +34,7 @@ public class GuiBase extends GuiScreen {
 	protected UIEntity entity;
 	protected NBTTagCompound compound;
 	
-	private int lastButton = 0;
+	private int lastButton = -1;
 	
 	public GuiBase() {
 		this.entity = new UIEntity();
