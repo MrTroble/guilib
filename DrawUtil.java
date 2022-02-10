@@ -40,6 +40,8 @@ public class DrawUtil {
 		
 		@Override
 		public T getObjFromID(int obj) {
+			if(obj < 0)
+				return null;
 			return integerable.getObjFromID(obj);
 		}
 		

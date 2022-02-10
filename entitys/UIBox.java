@@ -24,9 +24,7 @@ public class UIBox extends UIComponent implements UIPagable {
 		
 		void post(UIEntity entity);
 		
-		default int getMin(UIEntity entity) {
-			return 20;
-		}
+		int getMin(UIEntity entity);
 	}
 	
 	public static VBoxMode VBOX = new VBoxMode();
@@ -59,32 +57,10 @@ public class UIBox extends UIComponent implements UIPagable {
 			if (entity.inheritWidth())
 				entity.setWidth(entity.parent.getWidth());
 		}
-	}
-	
-	public static class StackMode implements IBoxMode {
 		
 		@Override
-		public int getBounds(UIEntity entity) {
-			return 1;
-		}
-		
-		@Override
-		public void setBounds(UIEntity entity, int bounds) {}
-		
-		@Override
-		public void setPos(UIEntity entity, int pos) {}
-		
-		@Override
-		public boolean inheritsBounds(UIEntity entity) {
-			return false;
-		}
-		
-		@Override
-		public void post(UIEntity entity) {
-			if (entity.inheritWidth())
-				entity.setWidth(entity.parent.getWidth());
-			if (entity.inheritHeight())
-				entity.setWidth(entity.parent.getHeight());
+		public int getMin(UIEntity entity) {
+			return entity.getMinHeight();
 		}
 	}
 	
@@ -114,6 +90,11 @@ public class UIBox extends UIComponent implements UIPagable {
 		public void post(UIEntity entity) {
 			if (entity.inheritHeight())
 				entity.setHeight(entity.parent.getHeight());
+		}
+		
+		@Override
+		public int getMin(UIEntity entity) {
+			return entity.getMinWidth();
 		}
 	}
 	

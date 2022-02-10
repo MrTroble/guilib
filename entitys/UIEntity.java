@@ -15,6 +15,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 	
 	private int x, y;
 	private int worldY, worldX;
+	private int minWidth, minHeight;
 	private int width, height;
 	private int worldWidth, worldHeight;
 	private float scaleX, scaleY;
@@ -344,6 +345,22 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 
 	public float getWorldScaleY() {
 		return worldScaleY;
+	}
+
+	public int getMinWidth() {
+		return minWidth;
+	}
+
+	public void setMinWidth(int minWidth) {
+		this.minWidth = minWidth;
+	}
+
+	public int getMinHeight() {
+		return minHeight;
+	}
+
+	public void setMinHeight(int minHeight) {
+		this.minHeight = minHeight;
 	}
 	
 }
