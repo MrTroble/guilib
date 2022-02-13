@@ -20,7 +20,7 @@ public interface IIntegerable<T> {
 	
 	@SideOnly(Side.CLIENT)
 	default public String getNamedObj(int obj) {
-		return getLocalizedName() + ": " + I18n.format("property.value." + getObjFromID(obj).toString());
+		return getLocalizedName() + ": " + I18n.format("property.value." + getObjFromID(obj));
 	}
 	
 	@SideOnly(Side.CLIENT)

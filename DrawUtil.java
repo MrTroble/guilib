@@ -33,14 +33,21 @@ public class DrawUtil {
 	public static class DisableIntegerable<T> implements IIntegerable<T> {
 		
 		private final IIntegerable<T> integerable;
+		private final String name;
 		
 		public DisableIntegerable(IIntegerable<T> integerable) {
 			this.integerable = integerable;
+			this.name = this.integerable.getName();
+		}
+		
+		public DisableIntegerable(IIntegerable<T> integerable, String customName) {
+			this.integerable = integerable;
+			this.name = customName;
 		}
 		
 		@Override
 		public T getObjFromID(int obj) {
-			if(obj < 0)
+			if(obj < 0 || count() <= obj)
 				return null;
 			return integerable.getObjFromID(obj);
 		}
@@ -52,12 +59,13 @@ public class DrawUtil {
 		
 		@Override
 		public String getName() {
-			return integerable.getName();
+			return this.name;
 		}
 		
 		@Override
 		public String getNamedObj(int obj) {
-			if (obj < 0)
+			final T current = getObjFromID(obj);
+			if (current == null)
 				return getLocalizedName() + ": " + I18n.format("property.disabled.name");
 			return integerable.getNamedObj(obj);
 		}
