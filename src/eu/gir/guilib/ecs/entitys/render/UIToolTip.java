@@ -1,9 +1,10 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.render;
 
 import java.util.Arrays;
 
 import org.lwjgl.input.Keyboard;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import eu.gir.guilib.ecs.entitys.UIEntity.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -13,7 +14,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class UIToolTip extends UIComponent {
 	
 	private String descripton;

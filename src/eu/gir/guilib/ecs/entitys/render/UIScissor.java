@@ -1,7 +1,8 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.render;
 
 import org.lwjgl.opengl.GL11;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import eu.gir.guilib.ecs.entitys.UIEntity.UpdateEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

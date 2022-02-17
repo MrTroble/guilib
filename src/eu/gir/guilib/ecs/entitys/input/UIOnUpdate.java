@@ -1,10 +1,10 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.input;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class UIOnUpdate extends UIComponent {
 	
 	private Runnable onUpdate;

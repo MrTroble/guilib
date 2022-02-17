@@ -3,10 +3,10 @@ package eu.gir.guilib.ecs.entitys;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import eu.gir.guilib.ecs.UIAutoSync;
 import eu.gir.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import eu.gir.guilib.ecs.entitys.UIEntity.KeyEvent;
 import eu.gir.guilib.ecs.entitys.UIEntity.MouseEvent;
+import eu.gir.guilib.ecs.interfaces.UIAutoSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.nbt.NBTTagCompound;

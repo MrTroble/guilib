@@ -1,4 +1,4 @@
-package eu.gir.guilib.ecs;
+package eu.gir.guilib.ecs.interfaces;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;

@@ -2,7 +2,7 @@ package eu.gir.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
-import eu.gir.guilib.ecs.UIAutoSync;
+import eu.gir.guilib.ecs.interfaces.UIAutoSync;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

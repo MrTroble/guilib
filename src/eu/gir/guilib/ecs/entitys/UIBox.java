@@ -2,7 +2,7 @@ package eu.gir.guilib.ecs.entitys;
 
 import java.util.ArrayList;
 
-import eu.gir.guilib.ecs.UIPagable;
+import eu.gir.guilib.ecs.interfaces.UIPagable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -55,7 +55,7 @@ public class UIBox extends UIComponent implements UIPagable {
 		@Override
 		public void post(UIEntity entity) {
 			if (entity.inheritWidth())
-				entity.setWidth(entity.parent.getWidth());
+				entity.setWidth(entity.getParent().getWidth());
 		}
 		
 		@Override
@@ -89,7 +89,7 @@ public class UIBox extends UIComponent implements UIPagable {
 		@Override
 		public void post(UIEntity entity) {
 			if (entity.inheritHeight())
-				entity.setHeight(entity.parent.getHeight());
+				entity.setHeight(entity.getParent().getHeight());
 		}
 		
 		@Override

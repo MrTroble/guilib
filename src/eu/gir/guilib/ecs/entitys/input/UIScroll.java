@@ -1,10 +1,14 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.input;
 
 import java.util.function.IntConsumer;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import eu.gir.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import eu.gir.guilib.ecs.entitys.UIEntity.MouseEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class UIScroll extends UIComponent {
 	
 	private IntConsumer consumer;

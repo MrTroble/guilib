@@ -1,8 +1,9 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.input;
 
-import eu.gir.guilib.ecs.BiIntConsumer;
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import eu.gir.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import eu.gir.guilib.ecs.entitys.UIEntity.MouseEvent;
+import eu.gir.guilib.ecs.interfaces.BiIntConsumer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

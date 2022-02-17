@@ -1,4 +1,4 @@
-package eu.gir.guilib.ecs;
+package eu.gir.guilib.ecs.interfaces;
 
 @FunctionalInterface
 public interface BiIntConsumer {

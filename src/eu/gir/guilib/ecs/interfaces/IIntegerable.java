@@ -1,4 +1,4 @@
-package eu.gir.guilib.ecs;
+package eu.gir.guilib.ecs.interfaces;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;

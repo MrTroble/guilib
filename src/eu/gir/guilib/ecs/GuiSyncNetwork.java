@@ -3,6 +3,8 @@ package eu.gir.guilib.ecs;
 import java.io.IOException;
 
 import eu.gir.girsignals.items.Placementtool;
+import eu.gir.guilib.ecs.interfaces.ISyncable;
+import eu.gir.guilib.ecs.interfaces.UIClientSync;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;

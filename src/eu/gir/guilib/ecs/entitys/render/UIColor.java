@@ -1,11 +1,11 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.render;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class UIColor extends UIComponent {
 	
 	private int color;

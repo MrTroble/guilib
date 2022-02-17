@@ -1,4 +1,4 @@
-package eu.gir.guilib.ecs;
+package eu.gir.guilib.ecs.interfaces;
 
 import eu.gir.guilib.ecs.entitys.UIEntity;
 import net.minecraftforge.fml.relauncher.Side;

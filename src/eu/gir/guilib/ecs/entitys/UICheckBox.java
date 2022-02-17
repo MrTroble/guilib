@@ -3,7 +3,8 @@ package eu.gir.guilib.ecs.entitys;
 import java.util.function.IntConsumer;
 
 import eu.gir.guilib.ecs.DrawUtil;
-import eu.gir.guilib.ecs.UIAutoSync;
+import eu.gir.guilib.ecs.entitys.render.UIButton;
+import eu.gir.guilib.ecs.interfaces.UIAutoSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.client.config.GuiUtils;

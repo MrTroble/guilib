@@ -1,7 +1,11 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.transform;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class UIRotate extends UIComponent {
 	
 	private float rotateX, rotateY, rotateZ;

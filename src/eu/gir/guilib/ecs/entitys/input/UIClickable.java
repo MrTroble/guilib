@@ -1,14 +1,15 @@
-package eu.gir.guilib.ecs.entitys;
+package eu.gir.guilib.ecs.entitys.input;
 
 import java.util.function.Consumer;
 
+import eu.gir.guilib.ecs.entitys.UIComponent;
+import eu.gir.guilib.ecs.entitys.UIEntity;
 import eu.gir.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import eu.gir.guilib.ecs.entitys.UIEntity.MouseEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-
 public class UIClickable extends UIComponent {
 	
 	private Consumer<UIEntity> callback;
