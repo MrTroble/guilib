@@ -151,7 +151,7 @@ public class DrawUtil {
 		
 		@Override
 		public String getNamedObj(int obj) {
-			return getLocalizedName() + ": " + obj;
+			return getLocalizedName() + ": " + this.getter.getObjFrom(obj);
 		}
 	}
 	
