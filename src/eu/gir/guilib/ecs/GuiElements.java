@@ -26,6 +26,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiElements {
 	
+	public static Consumer<UIEntity> NULL_CONSUMER = e -> {};
+	
 	public static UIEntity createSpacerH(int space) {
 		final UIEntity spacer = new UIEntity();
 		spacer.setInheritHeight(true);
@@ -232,10 +234,18 @@ public class GuiElements {
 		return hbox;
 	}
 	
+	public static UIEntity createButton(String name) {
+		return createButton(name, NULL_CONSUMER);
+	}
+	
 	public static UIEntity createButton(String name, Consumer<UIEntity> consumer) {
 		final UIEntity entity = createButton(name, 0, consumer);
 		entity.setInheritWidth(true);
 		return entity;
+	}
+	
+	public static UIEntity createButton(String name, int width) {
+		return createButton(name, width, NULL_CONSUMER);
 	}
 	
 	public static UIEntity createButton(String name, int width, Consumer<UIEntity> consumer) {
