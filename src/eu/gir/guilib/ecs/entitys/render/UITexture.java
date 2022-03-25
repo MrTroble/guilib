@@ -26,10 +26,17 @@ public class UITexture extends UIComponent {
 	}
 	
 	public UITexture(ResourceLocation texture) {
-		this.texture = texture;
-		this.mu = 1;
-		this.mv = 1;
+		this(texture, 0, 0, 1, 1);
 	}
+	
+	public UITexture(ResourceLocation texture, double u, double v, double maxU, double maxV) {
+		this.texture = texture;
+		this.u = u;
+		this.v = v;
+		this.mu = maxU;
+		this.mv = maxV;
+	}
+
 	
 	@Override
 	public void draw(int mouseX, int mouseY) {
