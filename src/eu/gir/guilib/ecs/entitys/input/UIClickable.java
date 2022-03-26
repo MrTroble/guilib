@@ -34,6 +34,8 @@ public class UIClickable extends UIComponent {
 	
 	@Override
 	public void mouseEvent(MouseEvent event) {
+		if(!this.visible)
+			return;
 		if (event.state == EnumMouseState.RELEASE && event.key == this.button && this.parent.isVisible()) {
 			if (this.parent.isHovered()) {
 				callback.accept(this.parent);
