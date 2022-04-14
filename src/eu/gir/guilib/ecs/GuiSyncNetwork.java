@@ -101,8 +101,7 @@ public class GuiSyncNetwork {
 		for (PacketBuffer packet : packetBuffer) {
 			preBuffer.writeBytes(packet);
 		}
-		System.out.println(preBuffer.writerIndex());
-		Consumer<NBTTagCompound> consumer = header.apply(preBuffer);
+		final Consumer<NBTTagCompound> consumer = header.apply(preBuffer);
 		try {
 			final NBTTagCompound nbt = CompressedStreamTools.readCompressed(new ByteBufInputStream(preBuffer));
 			if(nbt == null)
