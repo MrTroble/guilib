@@ -174,6 +174,8 @@ public class GuiSyncNetwork {
 	}
 	
 	public static void sendToClient(NBTTagCompound compound, EntityPlayerMP player) {
+		if(player == null)
+			return;
 		packNBT(compound, _u -> {
 		}, packet -> {
 			UIInit.getChannel().sendTo(new FMLProxyPacket(packet, UIInit.CHANNELNAME), player);
