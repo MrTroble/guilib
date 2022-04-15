@@ -2,8 +2,10 @@ package eu.gir.guilib.ecs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -43,6 +45,16 @@ public final class GuiHandler implements IGuiHandler {
 			return guiBases.get(ID).get(player, world, new BlockPos(x, y, z));
 		}
 		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T, R> void addGui(Class<T> clazz, Class<R> tileClass, Function<R, Object> object) {
+		addGui(clazz, (p, w, bp) -> {
+			final TileEntity entity = w.getTileEntity(bp);
+			if (!tileClass.isInstance(entity))
+				return null;
+			return object.apply((R)entity);
+		});
 	}
 	
 	public static <T> void addGui(Class<T> clazz, GuiSupplier gui) {
