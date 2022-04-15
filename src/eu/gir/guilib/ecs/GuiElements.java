@@ -12,6 +12,7 @@ import eu.gir.guilib.ecs.entitys.UITextInput;
 import eu.gir.guilib.ecs.entitys.input.UIClickable;
 import eu.gir.guilib.ecs.entitys.input.UIOnUpdate;
 import eu.gir.guilib.ecs.entitys.render.UIButton;
+import eu.gir.guilib.ecs.entitys.render.UIColor;
 import eu.gir.guilib.ecs.entitys.render.UILabel;
 import eu.gir.guilib.ecs.entitys.render.UIToolTip;
 import eu.gir.guilib.ecs.interfaces.IIntegerable;
@@ -256,5 +257,30 @@ public class GuiElements {
 		settingsEnt.add(new UIButton(name));
 		settingsEnt.add(new UIClickable(consumer.andThen(e -> handler.playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F)))));
 		return settingsEnt;
+	}
+
+	public static UIEntity createLabel(String name, int color, int background) {
+		final UIEntity entity = new UIEntity();
+		entity.add(new UIColor(background));
+		final UILabel label = new UILabel(name);
+		entity.setHeight(15);
+		entity.setInheritWidth(true);
+		label.setTextColor(color);
+		entity.add(label);
+		return entity;
+	}
+	
+	public static UIEntity createLabel(String name, int color) {
+		final UIEntity entity = new UIEntity();
+		final UILabel label = new UILabel(name);
+		entity.setHeight(15);
+		entity.setInheritWidth(true);
+		label.setTextColor(color);
+		entity.add(label);
+		return entity;
+	}
+	
+	public static UIEntity createLabel(String name) {
+		return createLabel(name, UILabel.DEFAULT_STRING_COLOR);
 	}
 }
