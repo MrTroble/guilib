@@ -19,7 +19,7 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	private final GuiTextField textInput;
 	private String id;
 	private Consumer<String> onTextUpdate;
-	private Predicate<String> validator;
+	private Predicate<String> validator = string -> true;
 	
 	public UITextInput(String id) {
 		this.id = id;
@@ -27,6 +27,7 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 		this.textInput.setCanLoseFocus(false);
 		this.textInput.setFocused(true);
 		this.textInput.setEnabled(true);
+		this.textInput.setMaxStringLength(60);
 	}
 	
 	@Override
@@ -38,6 +39,7 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	public void update() {
 		textInput.width = this.parent.getWidth();
 		textInput.height = this.parent.getHeight();
+		textInput.setText(textInput.getText());
 	}
 	
 	@Override
@@ -48,7 +50,6 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 	@Override
 	public void read(NBTTagCompound compound) {
 		this.setText(compound.getString(id));
-		this.textInput.setCursorPositionZero();
 	}
 	
 	@Override
