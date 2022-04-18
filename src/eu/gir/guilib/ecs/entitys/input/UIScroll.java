@@ -10,27 +10,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class UIScroll extends UIComponent {
-	
-	private IntConsumer consumer;
-	
-	public UIScroll(IntConsumer consumer) {
-		this.consumer = consumer;
-	}
-	
-	@Override
-	public void draw(int mouseX, int mouseY) {
-	}
-	
-	@Override
-	public void update() {
-		
-	}
-	
-	@Override
-	public void mouseEvent(MouseEvent event) {
-		if (event.state.equals(EnumMouseState.SCROLL) && parent.isHovered()) {
-			consumer.accept(event.x);
-		}
-	}
-	
+
+    private final IntConsumer consumer;
+
+    public UIScroll(final IntConsumer consumer) {
+        this.consumer = consumer;
+    }
+
+    @Override
+    public void draw(final int mouseX, final int mouseY) {
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void mouseEvent(final MouseEvent event) {
+        if (event.state.equals(EnumMouseState.SCROLL) && parent.isHovered()) {
+            consumer.accept(event.x);
+        }
+    }
+
 }

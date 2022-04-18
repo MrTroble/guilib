@@ -15,37 +15,40 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class UIToolTip extends UIComponent {
-	
-	private String descripton;
-	
-	public UIToolTip(final String descripton) {
-		this.descripton = descripton;
-	}
-	
-	public String getDescripton() {
-		return descripton;
-	}
-	
-	public void setDescripton(String descripton) {
-		this.descripton = descripton;
-	}
-	
-	@Override
-	public void postDraw(final int mouseX, final int mouseY) {
-		if (this.parent.isHovered()) {
-			final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-			final String desc = (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || this.descripton.length() < 200) ? this.descripton : I18n.format("gui.keyprompt");
-			final UpdateEvent base = parent.getLastUpdateEvent();
-			if (base != null)
-				GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())), mouseX, mouseY, base.width, base.height, -1, font);
-		}
-	}
-	
-	@Override
-	public void draw(int mouseX, int mouseY) {
-	}
-	
-	@Override
-	public void update() {
-	}
+
+    private String descripton;
+
+    public UIToolTip(final String descripton) {
+        this.descripton = descripton;
+    }
+
+    public String getDescripton() {
+        return descripton;
+    }
+
+    public void setDescripton(final String descripton) {
+        this.descripton = descripton;
+    }
+
+    @Override
+    public void postDraw(final int mouseX, final int mouseY) {
+        if (this.parent.isHovered()) {
+            final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+            final String desc = (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
+                    || this.descripton.length() < 200) ? this.descripton
+                            : I18n.format("gui.keyprompt");
+            final UpdateEvent base = parent.getLastUpdateEvent();
+            if (base != null)
+                GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())), mouseX,
+                        mouseY, base.width, base.height, -1, font);
+        }
+    }
+
+    @Override
+    public void draw(final int mouseX, final int mouseY) {
+    }
+
+    @Override
+    public void update() {
+    }
 }
