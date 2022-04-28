@@ -28,6 +28,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -50,12 +51,14 @@ public class GuiSyncNetwork {
 
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
-        final Container container = Minecraft.getMinecraft().player.openContainer;
+        final EntityPlayer player = Minecraft.getMinecraft().player;
+        final Container container = player.openContainer;
         if (container instanceof UIClientSync) {
             final UIClientSync sync = (UIClientSync) container;
             final FMLProxyPacket packet = event.getPacket();
             final PacketBuffer payBuf = new PacketBuffer(packet.payload());
-            unpackNBT(payBuf, connectedBuf -> nbt -> sync.readFromNBT(nbt));
+            unpackNBT(player.getEntityWorld().getMinecraftServer(), payBuf,
+                    connectedBuf -> nbt -> sync.readFromNBT(nbt));
         }
     }
 
@@ -65,7 +68,7 @@ public class GuiSyncNetwork {
         final PacketBuffer payBuf = new PacketBuffer(packet.payload());
         final EntityPlayerMP mp = ((NetHandlerPlayServer) event.getHandler()).player;
         final World world = mp.world;
-        unpackNBT(payBuf, connectedBuf -> {
+        unpackNBT(world.getMinecraftServer(), payBuf, connectedBuf -> {
             final byte id = connectedBuf.readByte();
             switch (id) {
                 case SEND_TO_ITEM:
@@ -97,7 +100,8 @@ public class GuiSyncNetwork {
         }
     }
 
-    private static void unpack(final Function<ByteBuf, Consumer<NBTTagCompound>> header,
+    private static void unpack(final MinecraftServer server,
+            final Function<ByteBuf, Consumer<NBTTagCompound>> header,
             final ArrayList<PacketBuffer> alreadyPackets) {
         final PacketBuffer[] packetBuffer = new PacketBuffer[alreadyPackets.size()];
         for (final PacketBuffer packet : alreadyPackets) {
@@ -114,19 +118,19 @@ public class GuiSyncNetwork {
                     .readCompressed(new ByteBufInputStream(preBuffer));
             if (nbt == null)
                 return;
-            Minecraft.getMinecraft().addScheduledTask(() -> consumer.accept(nbt));
+            server.addScheduledTask(() -> consumer.accept(nbt));
         } catch (final IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void unpackNBT(final PacketBuffer packet,
+    private static void unpackNBT(final MinecraftServer server, final PacketBuffer packet,
             final Function<ByteBuf, Consumer<NBTTagCompound>> header) {
         INPUT_GROUP.execute(() -> {
             final int packetID = packet.readInt();
             final int maxCount = packet.readInt();
             if (maxCount == 1) {
-                unpack(header, Lists.newArrayList(packet));
+                unpack(server, header, Lists.newArrayList(packet));
             } else {
                 if (!PACKET_QUEUE.containsKey(packetID)) {
                     PACKET_QUEUE.put(packetID, new ArrayList<>());
@@ -134,7 +138,7 @@ public class GuiSyncNetwork {
                 final ArrayList<PacketBuffer> alreadyPackets = PACKET_QUEUE.get(packetID);
                 alreadyPackets.add(packet);
                 if (alreadyPackets.size() == maxCount) {
-                    unpack(header, alreadyPackets);
+                    unpack(server, header, alreadyPackets);
                     PACKET_QUEUE.remove(packetID);
                 }
             }
