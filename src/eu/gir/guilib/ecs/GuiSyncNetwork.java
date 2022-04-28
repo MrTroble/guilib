@@ -34,7 +34,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -63,13 +62,15 @@ public class GuiSyncNetwork {
     public static void start() {
         INPUT_GROUP.execute(() -> {
             int oldSize = REPORTS.size();
-            while (oldSize != REPORTS.size()) {
-                final ArrayList<NetReport> copyReports = (ArrayList<NetReport>) REPORTS.clone();
-                oldSize = copyReports.size();
-                try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
-                    NetReport.GSON.toJson(copyReports, writer);
-                } catch (final JsonIOException | IOException e) {
-                    e.printStackTrace();
+            while (true) {
+                while (oldSize != REPORTS.size()) {
+                    final ArrayList<NetReport> copyReports = (ArrayList<NetReport>) REPORTS.clone();
+                    oldSize = copyReports.size();
+                    try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
+                        NetReport.GSON.toJson(copyReports, writer);
+                    } catch (final JsonIOException | IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -78,14 +79,14 @@ public class GuiSyncNetwork {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
-        final EntityPlayer player = Minecraft.getMinecraft().player;
+        final Minecraft mc = Minecraft.getMinecraft();
+        final EntityPlayer player = mc.player;
         final Container container = player.openContainer;
-        final MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
         if (container instanceof UIClientSync) {
             final UIClientSync sync = (UIClientSync) container;
             final FMLProxyPacket packet = event.getPacket();
             final PacketBuffer payBuf = new PacketBuffer(packet.payload());
-            unpackNBT(server, payBuf, connectedBuf -> nbt -> sync.readFromNBT(nbt));
+            unpackNBT(mc::addScheduledTask, payBuf, connectedBuf -> nbt -> sync.readFromNBT(nbt));
         }
     }
 
@@ -96,7 +97,7 @@ public class GuiSyncNetwork {
         final NetHandlerPlayServer playerServer = (NetHandlerPlayServer) event.getHandler();
         final EntityPlayerMP mp = playerServer.player;
         final World world = mp.world;
-        unpackNBT(mp.mcServer, payBuf, connectedBuf -> {
+        unpackNBT(mp.mcServer::addScheduledTask, payBuf, connectedBuf -> {
             final byte id = connectedBuf.readByte();
             switch (id) {
                 case SEND_TO_ITEM:
@@ -128,7 +129,7 @@ public class GuiSyncNetwork {
         }
     }
 
-    private static void unpack(final MinecraftServer server,
+    private static void unpack(final Consumer<Runnable> server,
             final Function<ByteBuf, Consumer<NBTTagCompound>> header,
             final ArrayList<PacketBuffer> alreadyPackets) {
         final PacketBuffer[] packetBuffer = new PacketBuffer[alreadyPackets.size()];
@@ -155,13 +156,15 @@ public class GuiSyncNetwork {
                 return;
             if (server == null)
                 return;
-            server.addScheduledTask(() -> consumer.accept(nbt));
+            server.accept(() -> consumer.accept(nbt));
         } catch (final IOException e) {
             e.printStackTrace();
+        } finally {
+            preBuffer.release();
         }
     }
 
-    private static void unpackNBT(final MinecraftServer server, final PacketBuffer packet,
+    private static void unpackNBT(final Consumer<Runnable> server, final PacketBuffer packet,
             final Function<ByteBuf, Consumer<NBTTagCompound>> header) {
         INPUT_GROUP.execute(() -> {
             final int packetID = packet.readInt();
@@ -205,6 +208,7 @@ public class GuiSyncNetwork {
             buffer.writeBytes(inputBuffer, readable < MAX_PACKET ? readable : MAX_PACKET);
             consumer.accept(new PacketBuffer(buffer));
         }
+        inputBuffer.release();
     }
 
     public static void sendToItemServer(final NBTTagCompound compound) {
