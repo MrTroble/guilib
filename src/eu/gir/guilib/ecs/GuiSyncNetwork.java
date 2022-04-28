@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -42,6 +44,7 @@ public class GuiSyncNetwork {
     public static final int MAX_PACKET = 32600;
 
     private static final Random RANDOM = new Random();
+    public static final ExecutorService INPUT_GROUP = Executors.newCachedThreadPool();
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
 
@@ -111,7 +114,7 @@ public class GuiSyncNetwork {
                     .readCompressed(new ByteBufInputStream(preBuffer));
             if (nbt == null)
                 return;
-            consumer.accept(nbt);
+            Minecraft.getMinecraft().addScheduledTask(() -> consumer.accept(nbt));
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -119,21 +122,23 @@ public class GuiSyncNetwork {
 
     private static void unpackNBT(final PacketBuffer packet,
             final Function<ByteBuf, Consumer<NBTTagCompound>> header) {
-        final int packetID = packet.readInt();
-        final int maxCount = packet.readInt();
-        if (maxCount == 1) {
-            unpack(header, Lists.newArrayList(packet));
-        } else {
-            if (!PACKET_QUEUE.containsKey(packetID)) {
-                PACKET_QUEUE.put(packetID, new ArrayList<>());
+        INPUT_GROUP.execute(() -> {
+            final int packetID = packet.readInt();
+            final int maxCount = packet.readInt();
+            if (maxCount == 1) {
+                unpack(header, Lists.newArrayList(packet));
+            } else {
+                if (!PACKET_QUEUE.containsKey(packetID)) {
+                    PACKET_QUEUE.put(packetID, new ArrayList<>());
+                }
+                final ArrayList<PacketBuffer> alreadyPackets = PACKET_QUEUE.get(packetID);
+                alreadyPackets.add(packet);
+                if (alreadyPackets.size() == maxCount) {
+                    unpack(header, alreadyPackets);
+                    PACKET_QUEUE.remove(packetID);
+                }
             }
-            final ArrayList<PacketBuffer> alreadyPackets = PACKET_QUEUE.get(packetID);
-            alreadyPackets.add(packet);
-            if (alreadyPackets.size() == maxCount) {
-                unpack(header, alreadyPackets);
-                PACKET_QUEUE.remove(packetID);
-            }
-        }
+        });
     }
 
     private static void packNBT(final NBTTagCompound compound, final Consumer<ByteBuf> byteBuf,
