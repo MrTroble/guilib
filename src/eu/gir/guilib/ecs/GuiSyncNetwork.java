@@ -37,6 +37,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiSyncNetwork {
 
@@ -49,6 +51,7 @@ public class GuiSyncNetwork {
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
         final EntityPlayer player = Minecraft.getMinecraft().player;
