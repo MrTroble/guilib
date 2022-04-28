@@ -1,9 +1,9 @@
 package eu.gir.guilib.ecs;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,12 +64,12 @@ public class GuiSyncNetwork {
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
         final EntityPlayer player = Minecraft.getMinecraft().player;
         final Container container = player.openContainer;
+        final MinecraftServer server = Minecraft.getMinecraft().getIntegratedServer();
         if (container instanceof UIClientSync) {
             final UIClientSync sync = (UIClientSync) container;
             final FMLProxyPacket packet = event.getPacket();
             final PacketBuffer payBuf = new PacketBuffer(packet.payload());
-            unpackNBT(player.getEntityWorld().getMinecraftServer(), payBuf,
-                    connectedBuf -> nbt -> sync.readFromNBT(nbt));
+            unpackNBT(server, payBuf, connectedBuf -> nbt -> sync.readFromNBT(nbt));
         }
     }
 
@@ -77,9 +77,10 @@ public class GuiSyncNetwork {
     public void onCustomPacket(final ServerCustomPacketEvent event) {
         final FMLProxyPacket packet = event.getPacket();
         final PacketBuffer payBuf = new PacketBuffer(packet.payload());
-        final EntityPlayerMP mp = ((NetHandlerPlayServer) event.getHandler()).player;
+        final NetHandlerPlayServer playerServer = (NetHandlerPlayServer) event.getHandler();
+        final EntityPlayerMP mp = playerServer.player;
         final World world = mp.world;
-        unpackNBT(world.getMinecraftServer(), payBuf, connectedBuf -> {
+        unpackNBT(mp.mcServer, payBuf, connectedBuf -> {
             final byte id = connectedBuf.readByte();
             switch (id) {
                 case SEND_TO_ITEM:
@@ -131,17 +132,19 @@ public class GuiSyncNetwork {
             report.compound = nbt;
             report.packetSize = packetBuffer.length;
             report.size = preBuffer.writerIndex();
-            report.time = DateFormat.getInstance().format(new Date());
+            report.time = new Date().toString();
+            report.serverPresent = server != null;
             REPORTS.add(report);
             INPUT_GROUP.execute(() -> {
-                try {
-                    NetReport.GSON.toJson(REPORTS,
-                            Files.newBufferedWriter(Paths.get("netdebug.json")));
+                try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
+                    NetReport.GSON.toJson(REPORTS, writer);
                 } catch (final JsonIOException | IOException e) {
                     e.printStackTrace();
                 }
             });
             if (nbt == null)
+                return;
+            if (server == null)
                 return;
             server.addScheduledTask(() -> consumer.accept(nbt));
         } catch (final IOException e) {
