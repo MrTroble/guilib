@@ -1,7 +1,11 @@
 package eu.gir.guilib.ecs;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -10,8 +14,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonIOException;
 
 import eu.gir.girsignals.items.Placementtool;
+import eu.gir.guilib.ecs.debug.NetReport;
 import eu.gir.guilib.ecs.interfaces.ISyncable;
 import eu.gir.guilib.ecs.interfaces.UIClientSync;
 import io.netty.buffer.ByteBuf;
@@ -50,6 +56,8 @@ public class GuiSyncNetwork {
     public static final ExecutorService INPUT_GROUP = Executors.newCachedThreadPool();
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
+
+    private static final ArrayList<NetReport> REPORTS = new ArrayList<NetReport>();
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -119,6 +127,20 @@ public class GuiSyncNetwork {
         try {
             final NBTTagCompound nbt = CompressedStreamTools
                     .readCompressed(new ByteBufInputStream(preBuffer));
+            final NetReport report = new NetReport();
+            report.compound = nbt;
+            report.packetSize = packetBuffer.length;
+            report.size = preBuffer.writerIndex();
+            report.time = DateFormat.getInstance().format(new Date());
+            REPORTS.add(report);
+            INPUT_GROUP.execute(() -> {
+                try {
+                    NetReport.GSON.toJson(REPORTS,
+                            Files.newBufferedWriter(Paths.get("netdebug.json")));
+                } catch (final JsonIOException | IOException e) {
+                    e.printStackTrace();
+                }
+            });
             if (nbt == null)
                 return;
             server.addScheduledTask(() -> consumer.accept(nbt));
