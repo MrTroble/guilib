@@ -59,6 +59,22 @@ public class GuiSyncNetwork {
 
     private static final ArrayList<NetReport> REPORTS = new ArrayList<NetReport>();
 
+    @SuppressWarnings("unchecked")
+    public static void start() {
+        INPUT_GROUP.execute(() -> {
+            int oldSize = REPORTS.size();
+            while (oldSize != REPORTS.size()) {
+                final ArrayList<NetReport> copyReports = (ArrayList<NetReport>) REPORTS.clone();
+                oldSize = copyReports.size();
+                try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
+                    NetReport.GSON.toJson(copyReports, writer);
+                } catch (final JsonIOException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
@@ -135,13 +151,6 @@ public class GuiSyncNetwork {
             report.time = new Date().toString();
             report.serverPresent = server != null;
             REPORTS.add(report);
-            INPUT_GROUP.execute(() -> {
-                try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
-                    NetReport.GSON.toJson(REPORTS, writer);
-                } catch (final JsonIOException | IOException e) {
-                    e.printStackTrace();
-                }
-            });
             if (nbt == null)
                 return;
             if (server == null)

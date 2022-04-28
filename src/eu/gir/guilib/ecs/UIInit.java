@@ -17,6 +17,7 @@ public class UIInit {
         channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(CHANNELNAME);
         channel.register(new GuiSyncNetwork());
         NetworkRegistry.INSTANCE.registerGuiHandler(modid, GuiHandler.getInstance(modid));
+        GuiSyncNetwork.start();
     }
 
 }
