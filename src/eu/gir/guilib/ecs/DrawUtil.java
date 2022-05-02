@@ -26,7 +26,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-public class DrawUtil {
+public final class DrawUtil {
+
+    private DrawUtil() {
+    }
 
     private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation(
             "textures/gui/container/creative_inventory/tabs.png");

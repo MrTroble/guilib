@@ -25,7 +25,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiElements {
+public final class GuiElements {
+
+    private GuiElements() {
+    }
 
     public static final Consumer<UIEntity> NULL_CONSUMER = e -> {
     };

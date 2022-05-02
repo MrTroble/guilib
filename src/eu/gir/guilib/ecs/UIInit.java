@@ -3,7 +3,10 @@ package eu.gir.guilib.ecs;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-public class UIInit {
+public final class UIInit {
+
+    private UIInit() {
+    }
 
     private static FMLEventChannel channel;
 
