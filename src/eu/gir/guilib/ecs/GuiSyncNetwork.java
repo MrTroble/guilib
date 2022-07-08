@@ -66,7 +66,9 @@ public class GuiSyncNetwork {
                 while (oldSize != REPORTS.size()) {
                     final ArrayList<NetReport> copyReports = (ArrayList<NetReport>) REPORTS.clone();
                     oldSize = copyReports.size();
-                    try (Writer writer = Files.newBufferedWriter(Paths.get("netdebug.json"))) {
+                    final NetReport report = copyReports.get(0);
+                    try (Writer writer = Files.newBufferedWriter(
+                            Paths.get("netdebug" + report.serverPresent + ".json"))) {
                         NetReport.GSON.toJson(copyReports, writer);
                     } catch (final JsonIOException | IOException e) {
                         e.printStackTrace();
