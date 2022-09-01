@@ -1,11 +1,7 @@
 package eu.gir.guilib.ecs;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -14,10 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonIOException;
 
 import eu.gir.girsignals.items.Placementtool;
-import eu.gir.guilib.ecs.debug.NetReport;
 import eu.gir.guilib.ecs.interfaces.ISyncable;
 import eu.gir.guilib.ecs.interfaces.UIClientSync;
 import io.netty.buffer.ByteBuf;
@@ -55,28 +49,6 @@ public class GuiSyncNetwork {
     public static final ExecutorService INPUT_GROUP = Executors.newCachedThreadPool();
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
-
-    private static final ArrayList<NetReport> REPORTS = new ArrayList<NetReport>();
-
-    @SuppressWarnings("unchecked")
-    public static void start() {
-        INPUT_GROUP.execute(() -> {
-            int oldSize = REPORTS.size();
-            while (true) {
-                while (oldSize != REPORTS.size()) {
-                    final ArrayList<NetReport> copyReports = (ArrayList<NetReport>) REPORTS.clone();
-                    oldSize = copyReports.size();
-                    final NetReport report = copyReports.get(0);
-                    try (Writer writer = Files.newBufferedWriter(
-                            Paths.get("netdebug" + report.serverPresent + ".json"))) {
-                        NetReport.GSON.toJson(copyReports, writer);
-                    } catch (final JsonIOException | IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -147,13 +119,6 @@ public class GuiSyncNetwork {
         try {
             final NBTTagCompound nbt = CompressedStreamTools
                     .readCompressed(new ByteBufInputStream(preBuffer));
-            final NetReport report = new NetReport();
-            report.compound = nbt;
-            report.packetSize = packetBuffer.length;
-            report.size = preBuffer.writerIndex();
-            report.time = new Date().toString();
-            report.serverPresent = server != null;
-            REPORTS.add(report);
             if (nbt == null)
                 return;
             if (server == null)
