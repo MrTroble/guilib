@@ -25,7 +25,7 @@ public class UITextInput extends UIComponent implements UIAutoSync {
         this.id = id;
         this.textInput = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, 0, 0, 0, 0);
         this.textInput.setCanLoseFocus(false);
-        this.textInput.setFocused(true);
+        this.textInput.setFocused(false);
         this.textInput.setEnabled(true);
         this.textInput.setMaxStringLength(60);
     }
@@ -67,8 +67,15 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 
     @Override
     public void mouseEvent(final MouseEvent event) {
-        if (event.state.equals(EnumMouseState.CLICKED) && this.parent.isHovered())
-            this.textInput.mouseClicked(event.x, event.y, event.key);
+    	if (event.state.equals(EnumMouseState.CLICKED)) {
+			if (this.parent.isHovered()) {
+				this.textInput.setFocused(true);
+				this.textInput.mouseClicked(event.x, event.y, event.key);
+			}
+			else {
+				this.textInput.setFocused(false);
+			}
+		}            
     }
 
     public Consumer<String> getOnTextUpdate() {

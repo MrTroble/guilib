@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import eu.gir.girsignals.GirsignalsMain;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -54,8 +55,10 @@ public final class GuiHandler implements IGuiHandler {
             final Function<R, Object> object) {
         addGui(clazz, (p, w, bp) -> {
             final TileEntity entity = w.getTileEntity(bp);
-            if (!tileClass.isInstance(entity))
+            if (!tileClass.isInstance(entity)) {
+            	GirsignalsMain.log.warn("Could not get tileentity for {}!", clazz);
                 return null;
+            }
             return object.apply((R) entity);
         });
     }
