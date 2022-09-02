@@ -87,12 +87,18 @@ public final class GuiElements {
 
     public static UIEntity createEnumElement(final IIntegerable<?> property,
             final IntConsumer consumer) {
-        return createEnumElement(property, consumer,
+        return createEnumElement(new UIEnumerable(property.count(), property.getName()), property,
+                consumer);
+    }
+
+    public static UIEntity createEnumElement(final UIEnumerable enumerable,
+            final IIntegerable<?> property, final IntConsumer consumer) {
+        return createEnumElement(enumerable, property, consumer,
                 property.getMaxWidth(Minecraft.getMinecraft().fontRenderer) + 8);
     }
 
-    public static UIEntity createEnumElement(final IIntegerable<?> property,
-            final IntConsumer consumer, final int minWidth) {
+    public static UIEntity createEnumElement(final UIEnumerable enumerable,
+            final IIntegerable<?> property, final IntConsumer consumer, final int minWidth) {
         final UIEntity middle = new UIEntity();
         middle.setInheritWidth(true);
         middle.setInheritHeight(true);
@@ -103,7 +109,6 @@ public final class GuiElements {
         final SoundHandler handler = Minecraft.getMinecraft().getSoundHandler();
 
         final UIButton middleButton = new UIButton("");
-        final UIEnumerable enumerable = new UIEnumerable(property.count(), property.getName());
         final IntConsumer acceptOr = in -> {
             if (in >= property.count())
                 return;

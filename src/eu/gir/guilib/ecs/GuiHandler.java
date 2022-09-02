@@ -56,7 +56,7 @@ public final class GuiHandler implements IGuiHandler {
         addGui(clazz, (p, w, bp) -> {
             final TileEntity entity = w.getTileEntity(bp);
             if (!tileClass.isInstance(entity)) {
-            	GirsignalsMain.log.warn("Could not get tileentity for {}!", clazz);
+                GirsignalsMain.log.warn("Could not get tileentity for {}!", clazz);
                 return null;
             }
             return object.apply((R) entity);

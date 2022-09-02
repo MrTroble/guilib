@@ -67,15 +67,14 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 
     @Override
     public void mouseEvent(final MouseEvent event) {
-    	if (event.state.equals(EnumMouseState.CLICKED)) {
-			if (this.parent.isHovered()) {
-				this.textInput.setFocused(true);
-				this.textInput.mouseClicked(event.x, event.y, event.key);
-			}
-			else {
-				this.textInput.setFocused(false);
-			}
-		}            
+        if (event.state.equals(EnumMouseState.CLICKED)) {
+            if (this.parent.isHovered()) {
+                this.textInput.setFocused(true);
+                this.textInput.mouseClicked(event.x, event.y, event.key);
+            } else {
+                this.textInput.setFocused(false);
+            }
+        }
     }
 
     public Consumer<String> getOnTextUpdate() {
