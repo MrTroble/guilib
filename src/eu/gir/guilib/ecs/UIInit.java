@@ -22,6 +22,16 @@ public final class UIInit {
      * initialization
      * 
      * @param modid , the modid of the owning mod
+     */
+    public static void initCommon(final String modid) {
+        initCommon(modid, false);
+    }
+
+    /**
+     * Initializes the GUI system must be called by the mod in it's according
+     * initialization
+     * 
+     * @param modid , the modid of the owning mod
      * @param debug , whether debugging should be enabled or not
      */
     public static void initCommon(final String modid, final boolean debug) {
