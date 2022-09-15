@@ -31,7 +31,6 @@ import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
@@ -70,7 +69,6 @@ public class GuiSyncNetwork {
         final PacketBuffer payBuf = new PacketBuffer(packet.payload());
         final NetHandlerPlayServer playerServer = (NetHandlerPlayServer) event.getHandler();
         final EntityPlayerMP mp = playerServer.player;
-        final World world = mp.world;
         unpackNBT(mp.mcServer::addScheduledTask, payBuf, connectedBuf -> {
             final byte id = connectedBuf.readByte();
             switch (id) {
@@ -79,7 +77,7 @@ public class GuiSyncNetwork {
                 case SEND_TO_POS:
                     final BlockPos pos = new BlockPos(connectedBuf.readInt(),
                             connectedBuf.readInt(), connectedBuf.readInt());
-                    return nbt -> readFromPos(pos, nbt, world);
+                    return nbt -> readFromPos(pos, nbt, mp);
                 default:
                     throw new IllegalArgumentException("Wrong packet ID in network recive!");
             }
@@ -87,11 +85,12 @@ public class GuiSyncNetwork {
     }
 
     private static void readFromPos(final BlockPos pos, final NBTTagCompound nbt,
-            final World world) {
-        final TileEntity tile = world.getTileEntity(pos);
+            final EntityPlayer player) {
+        final TileEntity tile = player.world.getTileEntity(pos);
         if (tile != null && tile instanceof ISyncable) {
             final ISyncable syncable = (ISyncable) tile;
-            syncable.updateTag(nbt);
+            if (syncable.isValid(player))
+                syncable.updateTag(nbt);
         }
     }
 

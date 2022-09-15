@@ -1,5 +1,6 @@
 package eu.gir.guilib.ecs.interfaces;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface ISyncable {
@@ -8,4 +9,5 @@ public interface ISyncable {
 
     NBTTagCompound getTag();
 
+    boolean isValid(EntityPlayer player);
 }
