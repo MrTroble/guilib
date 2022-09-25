@@ -98,9 +98,13 @@ public class GuiBase extends GuiScreen {
         this.entity.write(this.compound);
     }
 
+    public void preClose() {
+    }
+
     @Override
     protected void keyTyped(final char typedChar, final int keyCode) throws IOException {
         if (keyCode == 1) {
+            preClose();
             this.mc.player.closeScreen();
         }
         this.entity.keyEvent(new KeyEvent(keyCode, typedChar));
