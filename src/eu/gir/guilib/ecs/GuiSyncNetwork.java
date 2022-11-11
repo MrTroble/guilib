@@ -21,7 +21,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,18 +47,33 @@ public class GuiSyncNetwork {
     public static final ExecutorService INPUT_GROUP = Executors.newCachedThreadPool();
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
+    private static final ArrayList<NBTTagCompound> MISSED_PACKETS = new ArrayList<>();
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
         final EntityPlayer player = mc.player;
-        final Container container = player.openContainer;
-        if (container instanceof UIClientSync) {
-            final UIClientSync sync = (UIClientSync) container;
-            final FMLProxyPacket packet = event.getPacket();
-            final PacketBuffer payBuf = new PacketBuffer(packet.payload());
-            unpackNBT(mc::addScheduledTask, payBuf, connectedBuf -> nbt -> sync.readFromNBT(nbt));
+        final FMLProxyPacket packet = event.getPacket();
+        final PacketBuffer payBuf = new PacketBuffer(packet.payload());
+        unpackNBT(mc::addScheduledTask, payBuf, connectedBuf -> nbt -> {
+            if (player.openContainer instanceof UIClientSync) {
+                final UIClientSync sync = (UIClientSync) player.openContainer;
+                sync.readFromNBT(nbt);
+            } else {
+                synchronized (MISSED_PACKETS) {
+                    MISSED_PACKETS.add(nbt);
+                }
+            }
+        });
+    }
+
+    public static void requestRemaining(final UIClientSync sync) {
+        synchronized (MISSED_PACKETS) {
+            MISSED_PACKETS.forEach(nbt -> {
+                sync.readFromNBT(nbt);
+            });
+            MISSED_PACKETS.clear();
         }
     }
 
