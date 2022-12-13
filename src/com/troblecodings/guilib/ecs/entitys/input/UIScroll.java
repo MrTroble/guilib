@@ -1,25 +1,25 @@
 package com.troblecodings.guilib.ecs.entitys.input;
 
-import java.util.function.IntConsumer;
+import java.util.function.DoubleConsumer;
 
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIScroll extends UIComponent {
 
-    private final IntConsumer consumer;
+    private final DoubleConsumer consumer;
 
-    public UIScroll(final IntConsumer consumer) {
+    public UIScroll(final DoubleConsumer consumer) {
         this.consumer = consumer;
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override

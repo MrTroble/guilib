@@ -6,12 +6,11 @@ import java.util.List;
 
 import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<UIEntity> {
 
     private int x, y;
@@ -53,19 +52,19 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         return y;
     }
 
-    public int getWorldY() {
+    public int getLevelY() {
         return worldY;
     }
 
-    public int getWorldX() {
+    public int getLevelX() {
         return worldX;
     }
 
     @Override
-    public synchronized void postDraw(final int mouseX, final int mouseY) {
+    public synchronized void postDraw(final DrawInfo info) {
         if (isVisible()) {
-            children.forEach(c -> c.postDraw(mouseX, mouseY));
-            components.forEach(c -> c.postDraw(mouseX, mouseY));
+            children.forEach(c -> c.postDraw(info));
+            components.forEach(c -> c.postDraw(info));
         }
     }
 
@@ -75,10 +74,10 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
             final int cX = this.x * lastUpdateEvent.guiScale;
             final int cY = this.y * lastUpdateEvent.guiScale;
             if (this.parent != null) {
-                this.worldScaleX = this.scaleX * parent.getWorldScaleX();
-                this.worldScaleY = this.scaleY * parent.getWorldScaleY();
-                this.worldX = (int) (cX * parent.worldScaleX + parent.getWorldX());
-                this.worldY = (int) (cY * parent.worldScaleY + parent.getWorldY());
+                this.worldScaleX = this.scaleX * parent.getLevelScaleX();
+                this.worldScaleY = this.scaleY * parent.getLevelScaleY();
+                this.worldX = (int) (cX * parent.worldScaleX + parent.getLevelX());
+                this.worldY = (int) (cY * parent.worldScaleY + parent.getLevelY());
             } else {
                 this.worldScaleX = this.scaleX;
                 this.worldScaleY = this.scaleY;
@@ -93,20 +92,20 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     }
 
     @Override
-    public synchronized void draw(final int mouseX, final int mouseY) {
+    public synchronized void draw(final DrawInfo info) {
         if (isVisible()) {
-            final int wX = this.getWorldX();
-            final int wY = this.getWorldY();
-            this.hovered = mouseX >= wX && mouseY >= wY && mouseX < wX + worldWidth
-                    && mouseY < wY + worldHeight;
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(this.x, this.y, 0);
-            GlStateManager.scale(scaleX, scaleY, 1);
-            components.forEach(c -> c.draw(mouseX, mouseY));
-            children.forEach(c -> c.draw(mouseX, mouseY));
-            children.forEach(c -> c.exitDraw(mouseX, mouseY));
-            components.forEach(c -> c.exitDraw(mouseX, mouseY));
-            GlStateManager.popMatrix();
+            final int wX = this.getLevelX();
+            final int wY = this.getLevelY();
+            this.hovered = info.mouseX >= wX && info.mouseY >= wY && info.mouseX < wX + worldWidth
+                    && info.mouseY < wY + worldHeight;
+            info.stack.pushPose();
+            info.stack.translate(this.x, this.y, 0);
+            info.stack.scale(scaleX, scaleY, 1);
+            components.forEach(c -> c.draw(info));
+            children.forEach(c -> c.draw(info));
+            children.forEach(c -> c.exitDraw(info));
+            components.forEach(c -> c.exitDraw(info));
+            info.stack.popPose();
         }
     }
 
@@ -189,7 +188,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     }
 
     @Override
-    public synchronized void read(final NBTTagCompound compound) {
+    public synchronized void read(final CompoundTag compound) {
         children.forEach(e -> e.read(compound));
         components.forEach(c -> {
             if (c instanceof UIAutoSync)
@@ -198,7 +197,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     }
 
     @Override
-    public synchronized void write(final NBTTagCompound compound) {
+    public synchronized void write(final CompoundTag compound) {
         children.forEach(e -> e.write(compound));
         components.forEach(c -> {
             if (c instanceof UIAutoSync)
@@ -298,12 +297,12 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
 
     public static final class MouseEvent {
 
-        public final int x;
-        public final int y;
+        public final double x;
+        public final double y;
         public final int key;
         public final EnumMouseState state;
 
-        public MouseEvent(final int x, final int y, final int key, final EnumMouseState enumState) {
+        public MouseEvent(final double x, final double y, final int key, final EnumMouseState enumState) {
             this.x = x;
             this.y = y;
             this.key = key;
@@ -341,11 +340,11 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         this.scaleY = scaleY;
     }
 
-    public float getWorldScaleX() {
+    public float getLevelScaleX() {
         return worldScaleX;
     }
 
-    public float getWorldScaleY() {
+    public float getLevelScaleY() {
         return worldScaleY;
     }
 

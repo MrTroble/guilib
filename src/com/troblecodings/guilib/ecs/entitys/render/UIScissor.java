@@ -5,10 +5,10 @@ import org.lwjgl.opengl.GL11;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIScissor extends UIComponent {
 
     private int x;
@@ -17,13 +17,13 @@ public class UIScissor extends UIComponent {
     private int height;
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
         GL11.glScissor(x, y, width, height);
     }
 
     @Override
-    public void exitDraw(final int mouseX, final int mouseY) {
+    public void exitDraw(final DrawInfo info) {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
@@ -36,8 +36,8 @@ public class UIScissor extends UIComponent {
             this.height = 0;
         if (this.width < 0)
             this.width = 0;
-        this.x = parent.getWorldX() * lastUpdateEvent.scaleFactor / lastUpdateEvent.guiScale;
-        this.y = (lastUpdateEvent.height - parent.getWorldY() - parent.getHeight())
+        this.x = parent.getLevelX() * lastUpdateEvent.scaleFactor / lastUpdateEvent.guiScale;
+        this.y = (lastUpdateEvent.height - parent.getLevelY() - parent.getHeight())
                 * lastUpdateEvent.scaleFactor;
     }
 

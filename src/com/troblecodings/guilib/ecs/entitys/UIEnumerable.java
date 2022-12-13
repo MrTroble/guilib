@@ -4,11 +4,11 @@ import java.util.function.IntConsumer;
 
 import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIEnumerable extends UIComponent implements UIAutoSync {
 
     private IntConsumer onChange;
@@ -26,7 +26,7 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override
@@ -49,15 +49,15 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void write(final NBTTagCompound compound) {
+    public void write(final CompoundTag compound) {
         if (id != null)
-            compound.setInteger(id, index);
+            compound.putInt(id, index);
     }
 
     @Override
-    public void read(final NBTTagCompound compound) {
-        if (id != null && compound.hasKey(id)) {
-            this.setIndex(compound.getInteger(id));
+    public void read(final CompoundTag compound) {
+        if (id != null && compound.contains(id)) {
+            this.setIndex(compound.getInt(id));
         } else {
             this.setIndex(this.min);
         }

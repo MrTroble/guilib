@@ -1,9 +1,7 @@
 package com.troblecodings.guilib.ecs;
 
-import java.io.IOException;
-
-import org.lwjgl.input.Mouse;
-
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
@@ -11,16 +9,17 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 
-public class GuiBase extends GuiScreen {
+public class GuiBase extends Screen {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -34,53 +33,49 @@ public class GuiBase extends GuiScreen {
     protected int xSize = 340;
     protected int ySize = 230;
     protected UIEntity entity;
-    protected NBTTagCompound compound;
+    protected CompoundTag compound;
+    protected Minecraft mc;
+    protected AbstractTexture creativeTabTexture;
 
     private int lastButton = -1;
 
     public GuiBase() {
+    	super(new TranslatableComponent("gui_base"));
         this.entity = new UIEntity();
-        this.compound = new NBTTagCompound();
+        this.compound = new CompoundTag();
+        this.creativeTabTexture = mc.getTextureManager().getTexture(CREATIVE_TAB);
     }
 
     @Override
-    public void setWorldAndResolution(final Minecraft mc, final int width, final int height) {
+    public void resize(final Minecraft mc, final int width, final int height) {
         this.mc = mc;
-        this.itemRender = mc.getRenderItem();
-        this.fontRenderer = mc.fontRenderer;
         this.width = width;
         this.height = height;
-        if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS
-                .post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Pre(this,
-                        this.buttonList))) {
-            this.initGui();
-        }
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS
-                .post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Post(this,
-                        this.buttonList));
+        this.init();
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
-        return false;
+    public boolean isPauseScreen() {
+    	return false;
     }
-
+    
     @Override
-    public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
-        drawDefaultBackground();
-        mc.getTextureManager().bindTexture(CREATIVE_TAB);
+    public void render(PoseStack stack, int mx, int my, float tick) {
+        this.renderBackground(stack);
+        this.creativeTabTexture.bind();
+        DrawInfo info = new DrawInfo(mx, my, stack, tick);
         DrawUtil.drawBack(this, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
-        this.entity.draw(mouseX, mouseY);
-        this.draw(mouseX, mouseY, partialTicks);
-        this.entity.postDraw(mouseX, mouseY);
+        this.entity.draw(info);
+        this.draw(info);
+        this.entity.postDraw(info);
     }
 
-    public void draw(final int mouseX, final int mouseY, final float partialTicks) {
+    public void draw(final DrawInfo info) {
 
     }
 
     @Override
-    public void initGui() {
+    protected void init() {
         this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET * 4);
         this.xSize = GUI_MIN_WIDTH + GUI_INSET;
         this.guiLeft = (this.width - this.xSize) / 2;
@@ -89,53 +84,50 @@ public class GuiBase extends GuiScreen {
         this.entity.setHeight(this.ySize - GUI_INSET);
         this.entity.setX(this.guiLeft + GUI_INSET);
         this.entity.setY(this.guiTop + GUI_INSET);
-        final ScaledResolution res = new ScaledResolution(mc);
-        this.entity.updateEvent(new UpdateEvent(width, height, res.getScaleFactor(),
+        this.entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
                 Math.max(this.width / this.height, this.height / this.width)));
     }
 
     @Override
-    public void onGuiClosed() {
+    public void onClose() {
         this.entity.write(this.compound);
     }
-
-    public void preClose() {
-    }
-
+    
     @Override
-    protected void keyTyped(final char typedChar, final int keyCode) throws IOException {
+    public boolean keyPressed(int typedChar, int keyCode, int test) {
         if (keyCode == 1) {
-            preClose();
-            this.mc.player.closeScreen();
+            this.mc.player.closeContainer();
         }
-        this.entity.keyEvent(new KeyEvent(keyCode, typedChar));
+        this.entity.keyEvent(new KeyEvent(keyCode, (char) typedChar));
+        return super.keyPressed(typedChar, keyCode, test);
     }
-
+    
     @Override
-    protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton)
-            throws IOException {
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         lastButton = mouseButton;
         this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
+    	return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-
+    
     @Override
-    protected void mouseReleased(final int mouseX, final int mouseY, final int state) {
+    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
+    	return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
-
+    
     @Override
-    protected void mouseClickMove(final int mouseX, final int mouseY, final int clickedMouseButton,
-            final long timeSinceLastClick) {
+    public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton, double p_94702_, double p_94703_) {
         this.entity.mouseEvent(
                 new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
+    	return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
     }
-
+    
     @Override
-    public void handleMouseInput() throws IOException {
-        super.handleMouseInput();
-        final int scroll = Mouse.getEventDWheel();
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         if (scroll != 0) {
             this.entity.mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
+    	return super.mouseScrolled(mouseX, mouseY, scroll);
     }
+    
 }

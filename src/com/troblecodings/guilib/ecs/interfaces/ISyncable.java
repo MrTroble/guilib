@@ -1,13 +1,13 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 public interface ISyncable {
 
-    void updateTag(NBTTagCompound compound);
+    void updateTag(CompoundTag compound);
 
-    NBTTagCompound getTag();
+    CompoundTag getTag();
 
-    boolean isValid(EntityPlayer player);
+    boolean isValid(Player player);
 }

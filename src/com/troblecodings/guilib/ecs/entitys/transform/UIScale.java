@@ -2,11 +2,10 @@ package com.troblecodings.guilib.ecs.entitys.transform;
 
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIScale extends UIComponent {
 
     private float scaleX, scaleY, scaleZ;
@@ -24,8 +23,8 @@ public class UIScale extends UIComponent {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
-        GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
+    public void draw(final DrawInfo info) {
+    	info.stack.scale(this.scaleX, this.scaleY, this.scaleZ);
     }
 
     @Override

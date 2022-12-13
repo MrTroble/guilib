@@ -2,11 +2,10 @@ package com.troblecodings.guilib.ecs.entitys.transform;
 
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIIndependentTranslate extends UIComponent {
 
     private double x, y, z;
@@ -45,8 +44,8 @@ public class UIIndependentTranslate extends UIComponent {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
-        GlStateManager.translate(x, y, z);
+    public void draw(final DrawInfo info) {
+    	info.stack.translate(x, y, z);
     }
 
     @Override

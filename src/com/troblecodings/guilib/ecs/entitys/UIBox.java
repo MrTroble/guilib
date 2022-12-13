@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIBox extends UIComponent implements UIPagable {
 
     private int page = 0;
@@ -110,7 +110,7 @@ public class UIBox extends UIComponent implements UIPagable {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override

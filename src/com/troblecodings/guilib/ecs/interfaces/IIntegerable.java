@@ -1,9 +1,9 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IIntegerable<T> {
 
@@ -13,26 +13,26 @@ public interface IIntegerable<T> {
 
     public String getName();
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default public String getLocalizedName() {
-        return I18n.format("property." + this.getName() + ".name");
+        return I18n.get("property." + this.getName() + ".name");
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default public String getNamedObj(int obj) {
-        return getLocalizedName() + ": " + I18n.format("property.value." + getObjFromID(obj));
+        return getLocalizedName() + ": " + I18n.get("property.value." + getObjFromID(obj));
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default public String getDescription() {
-        return I18n.format("property." + this.getName() + ".desc");
+        return I18n.get("property." + this.getName() + ".desc");
     }
 
-    @SideOnly(Side.CLIENT)
-    default public int getMaxWidth(final FontRenderer render) {
+    @OnlyIn(Dist.CLIENT)
+    default public int getMaxWidth(final Font render) {
         int ret = 0;
         for (int i = 0; i < this.count(); i++) {
-            final int newVal = render.getStringWidth(getNamedObj(i));
+            final int newVal = render.width(getNamedObj(i));
             if (ret < newVal)
                 ret = newVal;
         }

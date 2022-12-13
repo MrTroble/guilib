@@ -19,24 +19,23 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.entity.player.PlayerMP;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiSyncNetwork {
 
@@ -49,11 +48,11 @@ public class GuiSyncNetwork {
 
     private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onCustomClientPacket(final ClientCustomPacketEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
-        final EntityPlayer player = mc.player;
+        final Player player = mc.player;
         final Container container = player.openContainer;
         if (container instanceof UIClientSync) {
             final UIClientSync sync = (UIClientSync) container;
@@ -68,7 +67,7 @@ public class GuiSyncNetwork {
         final FMLProxyPacket packet = event.getPacket();
         final PacketBuffer payBuf = new PacketBuffer(packet.payload());
         final NetHandlerPlayServer playerServer = (NetHandlerPlayServer) event.getHandler();
-        final EntityPlayerMP mp = playerServer.player;
+        final PlayerMP mp = playerServer.player;
         unpackNBT(mp.mcServer::addScheduledTask, payBuf, connectedBuf -> {
             final byte id = connectedBuf.readByte();
             switch (id) {
@@ -84,8 +83,8 @@ public class GuiSyncNetwork {
         });
     }
 
-    private static void readFromPos(final BlockPos pos, final NBTTagCompound nbt,
-            final EntityPlayer player) {
+    private static void readFromPos(final BlockPos pos, final CompoundTag nbt,
+            final Player player) {
         final TileEntity tile = player.world.getTileEntity(pos);
         if (tile != null && tile instanceof ISyncable) {
             final ISyncable syncable = (ISyncable) tile;
@@ -94,16 +93,16 @@ public class GuiSyncNetwork {
         }
     }
 
-    private static void readItemNBTSet(final NBTTagCompound tagCompound,
-            final EntityPlayer player) {
+    private static void readItemNBTSet(final CompoundTag tagCompound,
+            final Player player) {
         final ItemStack stack = player.getHeldItem(EnumHand.MAIN_HAND);
         if (stack.getItem() instanceof ITagableItem) {
-            stack.setTagCompound(tagCompound);
+            stack.putCompound(tagCompound);
         }
     }
 
     private static void unpack(final Consumer<Runnable> server,
-            final Function<ByteBuf, Consumer<NBTTagCompound>> header,
+            final Function<ByteBuf, Consumer<CompoundTag>> header,
             final ArrayList<PacketBuffer> alreadyPackets) {
         final PacketBuffer[] packetBuffer = new PacketBuffer[alreadyPackets.size()];
         for (final PacketBuffer packet : alreadyPackets) {
@@ -114,9 +113,9 @@ public class GuiSyncNetwork {
         for (final PacketBuffer packet : packetBuffer) {
             preBuffer.writeBytes(packet);
         }
-        final Consumer<NBTTagCompound> consumer = header.apply(preBuffer);
+        final Consumer<CompoundTag> consumer = header.apply(preBuffer);
         try {
-            final NBTTagCompound nbt = CompressedStreamTools
+            final CompoundTag nbt = CompressedStreamTools
                     .readCompressed(new ByteBufInputStream(preBuffer));
             if (nbt == null)
                 return;
@@ -131,7 +130,7 @@ public class GuiSyncNetwork {
     }
 
     private static void unpackNBT(final Consumer<Runnable> server, final PacketBuffer packet,
-            final Function<ByteBuf, Consumer<NBTTagCompound>> header) {
+            final Function<ByteBuf, Consumer<CompoundTag>> header) {
         INPUT_GROUP.execute(() -> {
             final int packetID = packet.readInt();
             final int maxCount = packet.readInt();
@@ -151,7 +150,7 @@ public class GuiSyncNetwork {
         });
     }
 
-    private static void packNBT(final NBTTagCompound compound, final Consumer<ByteBuf> byteBuf,
+    private static void packNBT(final CompoundTag compound, final Consumer<ByteBuf> byteBuf,
             final Consumer<PacketBuffer> consumer) {
         if (compound == null || compound.hasNoTags())
             return;
@@ -177,7 +176,7 @@ public class GuiSyncNetwork {
         inputBuffer.release();
     }
 
-    public static void sendToItemServer(final NBTTagCompound compound) {
+    public static void sendToItemServer(final CompoundTag compound) {
         packNBT(compound, buffer -> buffer.writeByte(SEND_TO_ITEM), packet -> {
             final CPacketCustomPayload payload = new CPacketCustomPayload(UIInit.CHANNELNAME,
                     packet);
@@ -185,7 +184,7 @@ public class GuiSyncNetwork {
         });
     }
 
-    public static void sendToPosServer(final NBTTagCompound compound, final BlockPos pos) {
+    public static void sendToPosServer(final CompoundTag compound, final BlockPos pos) {
         packNBT(compound, buffer -> {
             buffer.writeByte(SEND_TO_POS);
             buffer.writeInt(pos.getX());
@@ -198,7 +197,7 @@ public class GuiSyncNetwork {
         });
     }
 
-    public static void sendToClient(final NBTTagCompound compound, final EntityPlayerMP player) {
+    public static void sendToClient(final CompoundTag compound, final PlayerMP player) {
         if (player == null)
             return;
         packNBT(compound, _u -> {

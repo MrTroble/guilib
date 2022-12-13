@@ -2,10 +2,10 @@ package com.troblecodings.guilib.ecs.entitys.input;
 
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIOnUpdate extends UIComponent {
 
     private Runnable onUpdate;
@@ -23,7 +23,7 @@ public class UIOnUpdate extends UIComponent {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override

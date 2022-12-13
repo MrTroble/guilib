@@ -3,7 +3,7 @@ package com.troblecodings.guilib.ecs;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.network.NetworkRegistry;
 
 public final class UIInit {
 

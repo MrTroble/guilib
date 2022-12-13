@@ -1,40 +1,42 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.Font;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UILabel extends UIComponent {
 
     public static final int DEFAULT_STRING_COLOR = 4210752;
     private String string;
     private int stringColor;
-    private final FontRenderer renderer;
+    private final Font renderer;
     private int restHeight = 0;
     private int restWidth = 0;
     private boolean centerX = true;
     private boolean centerY = true;
 
-    public UILabel(final String text) {
+	public UILabel(final String text) {
         this.string = text;
         this.stringColor = DEFAULT_STRING_COLOR;
-        this.renderer = Minecraft.getMinecraft().fontRenderer;
+        Minecraft mc = Minecraft.getInstance();
+        this.renderer = mc.font;
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
         if (this.visible) {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
                     GlStateManager.DestFactor.ZERO);
-            renderer.drawString(string, restWidth, restHeight, stringColor);
-            GlStateManager.color(1, 1, 1, 1);
+            renderer.draw(info.stack, string, restWidth, restHeight, stringColor);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 
@@ -71,11 +73,11 @@ public class UILabel extends UIComponent {
     }
 
     public int getTextWidth() {
-        return renderer.getStringWidth(string);
+        return renderer.width(string);
     }
 
     public int getTextHeight() {
-        return renderer.FONT_HEIGHT;
+        return renderer.lineHeight;
     }
 
     public boolean isCenterX() {

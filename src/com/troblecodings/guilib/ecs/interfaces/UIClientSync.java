@@ -1,11 +1,11 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 
 public interface UIClientSync {
 
-    void readFromNBT(NBTTagCompound compound);
+    void readFromNBT(CompoundTag compound);
 
-    EntityPlayerMP getPlayer();
+    Player getPlayer();
 }

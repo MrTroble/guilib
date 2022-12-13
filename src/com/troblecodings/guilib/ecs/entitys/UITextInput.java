@@ -10,11 +10,11 @@ import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UITextInput extends UIComponent implements UIAutoSync {
 
     private final GuiTextField textInput;
@@ -44,12 +44,12 @@ public class UITextInput extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void write(final NBTTagCompound compound) {
+    public void write(final CompoundTag compound) {
         compound.setString(id, this.getText());
     }
 
     @Override
-    public void read(final NBTTagCompound compound) {
+    public void read(final CompoundTag compound) {
         this.setText(compound.getString(id));
     }
 

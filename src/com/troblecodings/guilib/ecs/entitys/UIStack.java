@@ -6,7 +6,7 @@ public class UIStack extends UIComponent {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override

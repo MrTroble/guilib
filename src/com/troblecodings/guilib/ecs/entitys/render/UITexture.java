@@ -1,38 +1,38 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UITexture extends UIComponent {
 
-    private final ResourceLocation texture;
-    private final double u, v, mu, mv;
+    private final float u, v, mu, mv;
+    private final AbstractTexture texture;
 
-    public UITexture(final TextureAtlasSprite sprite) {
-        this.texture = TextureMap.LOCATION_BLOCKS_TEXTURE;
-        this.u = sprite.getMinU();
-        this.v = sprite.getMinV();
-        this.mu = sprite.getMaxU();
-        this.mv = sprite.getMaxV();
+    @SuppressWarnings("deprecation")
+	public UITexture(final TextureAtlasSprite sprite) {
+        this(TextureAtlas.LOCATION_BLOCKS, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
     public UITexture(final ResourceLocation texture) {
         this(texture, 0, 0, 1, 1);
     }
 
-    public UITexture(final ResourceLocation texture, final double u, final double v,
-            final double maxU, final double maxV) {
-        this.texture = texture;
+    public UITexture(final ResourceLocation texture, final float u, final float v,
+            final float maxU, final float maxV) {
+        Minecraft mc = Minecraft.getInstance();
+        this.texture = mc.getTextureManager().getTexture(texture);
         this.u = u;
         this.v = v;
         this.mu = maxU;
@@ -40,21 +40,19 @@ public class UITexture extends UIComponent {
     }
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
-        final Minecraft mc = Minecraft.getMinecraft();
-        mc.getTextureManager().bindTexture(this.texture);
-
+    public void draw(final DrawInfo info) {
+    	this.texture.bind();
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 
-        final Tessellator tessellator = Tessellator.getInstance();
-        final BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(0, h, 0).tex(u, mv).endVertex();
-        bufferbuilder.pos(w, h, 0).tex(mu, mv).endVertex();
-        bufferbuilder.pos(w, 0, 0).tex(mu, v).endVertex();
-        bufferbuilder.pos(0, 0, 0).tex(u, v).endVertex();
-        tessellator.draw();
+        final Tesselator tessellator = Tesselator.getInstance();
+        final BufferBuilder bufferbuilder = tessellator.getBuilder();
+        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.vertex(0, h, 0).uv(u, mv).endVertex();
+        bufferbuilder.vertex(w, h, 0).uv(mu, mv).endVertex();
+        bufferbuilder.vertex(w, 0, 0).uv(mu, v).endVertex();
+        bufferbuilder.vertex(0, 0, 0).uv(u, v).endVertex();
+        tessellator.end();
     }
 
     @Override

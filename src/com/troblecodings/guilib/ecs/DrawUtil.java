@@ -6,26 +6,28 @@ import static net.minecraft.client.gui.Gui.drawScaledCustomSizeModalRect;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 
 public final class DrawUtil {
 
@@ -72,7 +74,7 @@ public final class DrawUtil {
         public String getNamedObj(final int obj) {
             final T current = getObjFromID(obj);
             if (current == null)
-                return getLocalizedName() + ": " + I18n.format("property.disabled.name");
+                return getLocalizedName() + ": " + I18n.get("property.disabled.name");
             return integerable.getNamedObj(obj);
         }
 
@@ -208,7 +210,7 @@ public final class DrawUtil {
 
     }
 
-    public static void drawBack(final GuiScreen gui, final int xLeft, final int xRight,
+    public static void drawBack(final Screen gui, final int xLeft, final int xRight,
             final int yTop, final int yBottom) {
         gui.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
 
@@ -253,36 +255,38 @@ public final class DrawUtil {
         }
     }
 
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final IBlockState ebs) {
+    public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
+            final BlockState ebs) {
         addToBuffer(builder, manager, ebs, 0);
     }
+    
+    private static final Random random = new Random();
 
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final IBlockState ebs, final int color) {
+    @SuppressWarnings("deprecation")
+	public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
+            final BlockState ebs, final int color) {
         assert ebs != null;
-        final IBlockState cleanState = ebs instanceof IExtendedBlockState
-                ? ((IExtendedBlockState) ebs).getClean()
-                : ebs;
-        final IBakedModel mdl = manager.getModelForState(cleanState);
+        final BakedModel mdl = manager.getBlockModel(ebs);
         final List<BakedQuad> lst = new ArrayList<>();
-        lst.addAll(mdl.getQuads(ebs, null, 0));
-        for (final EnumFacing face : EnumFacing.VALUES)
-            lst.addAll(mdl.getQuads(ebs, face, 0));
+        lst.addAll(mdl.getQuads(ebs, null, random));
+        for (final Direction face : Direction.values())
+            lst.addAll(mdl.getQuads(ebs, face, random));
 
-        final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+        final BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+        final IVertexConsumer consumer = new VertexBufferConsumer(builder);
         for (final BakedQuad quad : lst) {
-            final int k = quad.hasTintIndex()
-                    ? (blockColors.colorMultiplier(cleanState, null, null, quad.getTintIndex())
+            final int k = quad.isTinted()
+                    ? (blockColors.getColor(ebs, null, null, quad.getTintIndex())
                             + 0xFF000000)
                     : 0xFFFFFFFF;
-            LightUtil.renderQuadColor(builder, quad, color + k);
+            // TODO color
+            LightUtil.putBakedQuad(consumer, quad);
         }
     }
 
-    public static void drawCenteredString(final FontRenderer fontRendererIn, final String text,
+    public static void drawCenteredString(final Font fontRendererIn, final String text,
             final int x, final int y, final int color) {
-        fontRendererIn.drawStringWithShadow(text, x - fontRendererIn.getStringWidth(text) / 2, y,
+        fontRendererIn.drawShadow(text, x - fontRendererIn.width(text) / 2, y,
                 color);
     }
 }

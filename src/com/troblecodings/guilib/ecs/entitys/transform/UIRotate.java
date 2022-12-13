@@ -1,21 +1,19 @@
 package com.troblecodings.guilib.ecs.entitys.transform;
 
+import com.mojang.math.Quaternion;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UIRotate extends UIComponent {
 
     private float rotateX, rotateY, rotateZ;
 
     @Override
-    public void draw(final int mouseX, final int mouseY) {
-        GlStateManager.rotate(this.rotateX, 1, 0, 0);
-        GlStateManager.rotate(this.rotateY, 0, 1, 0);
-        GlStateManager.rotate(this.rotateZ, 0, 0, 1);
+    public void draw(final DrawInfo info) {
+    	info.stack.mulPose(Quaternion.fromXYZ(rotateX, rotateY, rotateZ));
     }
 
     @Override
