@@ -2,22 +2,23 @@ package com.troblecodings.guilib.ecs;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.fml.common.network.FMLEventChannel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class UIInit {
 
     private UIInit() {
     }
 
-    private static FMLEventChannel channel;
+    private static SimpleChannel channel;
     private static boolean debug;
 
-    public static FMLEventChannel getChannel() {
+    public static SimpleChannel getChannel() {
         return channel;
     }
 
-    public static final String CHANNELNAME = "gir|guisyncnet";
+    public static final String CHANNELNAME = "guisyncnet";
 
     /**
      * Initializes the GUI system must be called by the mod in it's according
@@ -38,11 +39,9 @@ public final class UIInit {
      */
     public static GuiHandler initCommon(final String modid, final Logger logger,
             final boolean debug) {
-        channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(CHANNELNAME);
-        channel.register(new GuiSyncNetwork());
+        channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(modid, CHANNELNAME), () -> "1", _u -> true, _u -> true);
         UIInit.debug = debug;
         final GuiHandler handler = new GuiHandler(modid, logger);
-        NetworkRegistry.INSTANCE.registerGuiHandler(modid, handler);
         return handler;
     }
 

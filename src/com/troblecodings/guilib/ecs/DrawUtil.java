@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
+import net.minecraftforge.resource.ResourcePackLoader;
 
 public final class DrawUtil {
 
@@ -149,6 +150,7 @@ public final class DrawUtil {
 
         public static <T> IIntegerable<T> of(final String name, final int count,
                 final ObjGetter<T> get) {
+        	ResourcePackLoader
             return new SizeIntegerables<T>(name, count, get);
         }
 

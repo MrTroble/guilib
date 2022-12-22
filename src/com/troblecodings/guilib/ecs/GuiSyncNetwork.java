@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +47,7 @@ public class GuiSyncNetwork {
     private static final Random RANDOM = new Random();
     public static final ExecutorService INPUT_GROUP = Executors.newCachedThreadPool();
 
-    private static final HashMap<Integer, ArrayList<PacketBuffer>> PACKET_QUEUE = new HashMap<>();
+    private static final HashMap<Integer, ArrayList<Packet>> PACKET_QUEUE = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
