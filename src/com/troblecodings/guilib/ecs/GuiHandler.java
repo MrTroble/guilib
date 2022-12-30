@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 
+import com.troblecodings.guilib.ecs.BaseContainer.BaseContainerInfo;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
@@ -51,6 +53,8 @@ public final class GuiHandler {
         });
     }
 
+    // TODO implement new system
+    
     public <T> void addGui(final Class<T> clazz, final GuiSupplier gui) {
     }
 
@@ -59,5 +63,9 @@ public final class GuiHandler {
 
     public <T> void invokeGui(final Class<T> clazz, final Player player, final Level world,
             final BlockPos pos) {
+    }
+    
+    public <T> BaseContainerInfo getContainerInfo(final Class<T> clazz) {
+    	return new BaseContainerInfo();
     }
 }
