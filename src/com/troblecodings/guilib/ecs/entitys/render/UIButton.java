@@ -54,7 +54,7 @@ public class UIButton extends UIComponent {
 					parent.getWidth() / 2, parent.getHeight(), 0);
 			final int colorUsed = enabled ? (parent.isHovered() ? DEFAULT_HOVER_COLOR : DEFAULT_COLOR)
 					: DEFAULT_DISABLED_COLOR;
-			DrawUtil.drawCenteredString(fontrenderer, this.text, parent.getWidth() / 2, (parent.getHeight() - 8) / 2,
+			DrawUtil.drawCenteredString(info, fontrenderer, this.text, parent.getWidth() / 2, (parent.getHeight() - 8) / 2,
 					colorUsed);
 		}
 	}

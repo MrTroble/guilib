@@ -59,12 +59,18 @@ public class GuiBase extends Screen {
     	return false;
     }
     
+    private void drawBack(final DrawInfo info, final int xLeft, final int xRight,
+            final int yTop, final int yBottom) {
+        this.creativeTabTexture.bind();
+        
+        // TODO Rewrite back renderer without standard functions
+    }
+    
     @Override
     public void render(PoseStack stack, int mx, int my, float tick) {
         this.renderBackground(stack);
-        this.creativeTabTexture.bind();
         DrawInfo info = new DrawInfo(mx, my, stack, tick);
-        DrawUtil.drawBack(this, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
+        drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entity.draw(info);
         this.draw(info);
         this.entity.postDraw(info);

@@ -43,7 +43,7 @@ public class UICheckBox extends UIComponent implements UIAutoSync {
                 BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
         final int color = this.enabled ? UIButton.DEFAULT_COLOR : UIButton.DEFAULT_DISABLED_COLOR;
         if (this.isChecked())
-            DrawUtil.drawCenteredString(mc.font, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
+            DrawUtil.drawCenteredString(info, mc.font, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
         mc.font.drawShadow(info.stack, text, BOX_WIDTH + 2.0f, 2.0f, color);
     }
 

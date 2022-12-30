@@ -1,8 +1,5 @@
 package com.troblecodings.guilib.ecs;
 
-import static net.minecraft.client.gui.Gui.drawRect;
-import static net.minecraft.client.gui.Gui.drawScaledCustomSizeModalRect;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +7,16 @@ import java.util.Random;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.language.I18n;
@@ -28,16 +27,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
-import net.minecraftforge.resource.ResourcePackLoader;
 
 public final class DrawUtil {
 
     private DrawUtil() {
     }
-
-    private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation(
-            "textures/gui/container/creative_inventory/tabs.png");
-    public static final float DIM = 256.0f;
 
     public static class DisableIntegerable<T> implements IIntegerable<T> {
 
@@ -150,7 +144,6 @@ public final class DrawUtil {
 
         public static <T> IIntegerable<T> of(final String name, final int count,
                 final ObjGetter<T> get) {
-        	ResourcePackLoader
             return new SizeIntegerables<T>(name, count, get);
         }
 
@@ -212,49 +205,8 @@ public final class DrawUtil {
 
     }
 
-    public static void drawBack(final Screen gui, final int xLeft, final int xRight,
-            final int yTop, final int yBottom) {
-        gui.mc.getTextureManager().bindTexture(CREATIVE_INVENTORY_TABS);
-
-        gui.drawTexturedModalRect(xLeft, yTop, 0, 32, 4, 4);
-        gui.drawTexturedModalRect(xLeft, yBottom, 0, 124, 4, 4);
-        gui.drawTexturedModalRect(xRight, yTop, 24, 32, 4, 4);
-        gui.drawTexturedModalRect(xRight, yBottom, 24, 124, 4, 4);
-
-        drawScaledCustomSizeModalRect(xLeft + 4, yBottom, 4, 124, 1, 4, xRight - 4 - xLeft, 4, DIM,
-                DIM);
-        drawScaledCustomSizeModalRect(xLeft + 4, yTop, 4, 32, 1, 4, xRight - 4 - xLeft, 4, DIM,
-                DIM);
-        drawScaledCustomSizeModalRect(xLeft, yTop + 4, 0, 36, 4, 1, 4, yBottom - 4 - yTop, DIM,
-                DIM);
-        drawScaledCustomSizeModalRect(xRight, yTop + 4, 24, 36, 4, 1, 4, yBottom - 4 - yTop, DIM,
-                DIM);
-
-        drawRect(xLeft + 4, yTop + 4, xRight, yBottom, 0xFFC6C6C6);
-    }
-
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        if (bufferBuilderIn.getVertexCount() > 0) {
-            final VertexFormat vertexformat = bufferBuilderIn.getVertexFormat();
-            final int i = vertexformat.getNextOffset();
-            final ByteBuffer bytebuffer = bufferBuilderIn.getByteBuffer();
-            final List<VertexFormatElement> list = vertexformat.getElements();
-
-            for (int j = 0; j < list.size(); ++j) {
-                final VertexFormatElement vertexformatelement = list.get(j);
-                bytebuffer.position(vertexformat.getOffset(j));
-                vertexformatelement.getUsage().preDraw(vertexformat, j, i, bytebuffer);
-            }
-
-            GlStateManager.glDrawArrays(bufferBuilderIn.getDrawMode(), 0,
-                    bufferBuilderIn.getVertexCount());
-            int i1 = 0;
-
-            for (final int j1 = list.size(); i1 < j1; ++i1) {
-                final VertexFormatElement vertexformatelement1 = list.get(i1);
-                vertexformatelement1.getUsage().postDraw(vertexformat, i1, i, bytebuffer);
-            }
-        }
+    	BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
@@ -286,9 +238,9 @@ public final class DrawUtil {
         }
     }
 
-    public static void drawCenteredString(final Font fontRendererIn, final String text,
+    public static void drawCenteredString(DrawInfo info, final Font fontRendererIn, final String text,
             final int x, final int y, final int color) {
-        fontRendererIn.drawShadow(text, x - fontRendererIn.width(text) / 2, y,
+        fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y,
                 color);
     }
 }
