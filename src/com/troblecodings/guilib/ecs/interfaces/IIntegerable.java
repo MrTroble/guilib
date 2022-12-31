@@ -24,7 +24,7 @@ public interface IIntegerable<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public String getDescription() {
+    default public String getDescriptionForName() {
         return I18n.get("property." + this.getName() + ".desc");
     }
 

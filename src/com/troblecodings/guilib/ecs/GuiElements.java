@@ -56,7 +56,7 @@ public final class GuiElements {
 		textInput.setOnTextUpdate(str -> consumer.accept(str.length()));
 
 		middle.add(textInput);
-		middle.add(new UIToolTip(property.getDescription()));
+		middle.add(new UIToolTip(property.getDescriptionForName()));
 		return middle;
 	}
 
@@ -78,7 +78,7 @@ public final class GuiElements {
 
 		middle.add(middleButton);
 		middle.add(clickable);
-		middle.add(new UIToolTip(property.getDescription()));
+		middle.add(new UIToolTip(property.getDescriptionForName()));
 		return middle;
 	}
 
@@ -155,7 +155,7 @@ public final class GuiElements {
 
 		final UIEntity hbox = new UIEntity();
 		hbox.add(new UIBox(UIBox.HBOX, 1));
-		final String desc = property.getDescription();
+		final String desc = property.getDescriptionForName();
 		if (desc != null)
 			hbox.add(new UIToolTip(desc));
 		hbox.add(left);

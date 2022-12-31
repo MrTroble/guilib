@@ -1,6 +1,7 @@
 package com.troblecodings.core;
 
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -88,6 +89,10 @@ public class NBTWrapper {
 	
 	public NBTWrapper copy() {
 		return new NBTWrapper(this.tag.copy());
+	}
+	
+	public Set<String> keys() {
+		return this.tag.getAllKeys();
 	}
 	
 	public static NBTWrapper getBlockPosWrapper(BlockPos pos) {
