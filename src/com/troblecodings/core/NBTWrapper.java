@@ -1,4 +1,4 @@
-package com.troblecodings.guilib.ecs;
+package com.troblecodings.core;
 
 import java.util.List;
 
@@ -48,6 +48,10 @@ public class NBTWrapper {
 	public void putWrapper(String key, NBTWrapper value) {
 		tag.put(key, value.tag);
 	}
+	
+	public void putBlockPos(String key, BlockPos value) {
+		putWrapper(key, getBlockPosWrapper(value));
+	}
 
 	public boolean getBoolean(String key) {
 		return tag.getBoolean(key);
@@ -64,6 +68,10 @@ public class NBTWrapper {
 	public float getFloat(String key) {
 		return tag.getFloat(key);
 	}
+	
+	public BlockPos getBlockPos(String key) {
+		return getWrapper(key).getAsPos();
+	}
 
 	public List<NBTWrapper> getList(String key) {
 		ListTag list = (ListTag) tag.get(key);
@@ -76,6 +84,10 @@ public class NBTWrapper {
 	
 	public BlockPos getAsPos() {
 		return NbtUtils.readBlockPos(tag);
+	}
+	
+	public NBTWrapper copy() {
+		return new NBTWrapper(this.tag.copy());
 	}
 	
 	public static NBTWrapper getBlockPosWrapper(BlockPos pos) {

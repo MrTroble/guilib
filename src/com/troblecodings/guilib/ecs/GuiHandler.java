@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 
-import com.troblecodings.guilib.ecs.BaseContainer.BaseContainerInfo;
+import com.troblecodings.core.BaseContainer.BaseContainerInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
