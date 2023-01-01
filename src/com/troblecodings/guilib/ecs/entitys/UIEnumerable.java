@@ -2,9 +2,9 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
+import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,15 +49,15 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void write(final CompoundTag compound) {
+    public void write(final NBTWrapper compound) {
         if (id != null)
-            compound.putInt(id, index);
+            compound.putInteger(id, index);
     }
 
     @Override
-    public void read(final CompoundTag compound) {
+    public void read(final NBTWrapper compound) {
         if (id != null && compound.contains(id)) {
-            this.setIndex(compound.getInt(id));
+            this.setIndex(compound.getInteger(id));
         } else {
             this.setIndex(this.min);
         }

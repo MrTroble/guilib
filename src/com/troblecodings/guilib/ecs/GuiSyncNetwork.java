@@ -3,6 +3,8 @@ package com.troblecodings.guilib.ecs;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.troblecodings.core.NBTWrapper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -37,13 +39,13 @@ public class GuiSyncNetwork {
     public void onCustomPacket(final ServerCustomPayloadEvent event) {
     }
 
-    public static void sendToItemServer(final CompoundTag compound) {
+    public static void sendToItemServer(final NBTWrapper compound) {
     }
 
-    public static void sendToPosServer(final CompoundTag compound, final BlockPos pos) {
+    public static void sendToPosServer(final NBTWrapper compound, final BlockPos pos) {
     }
 
-    public static void sendToClient(final CompoundTag compound, final Player player) {
+    public static void sendToClient(final NBTWrapper compound, final Player player) {
         if (player == null)
             return;
     }

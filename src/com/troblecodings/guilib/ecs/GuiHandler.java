@@ -23,34 +23,45 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public final class GuiHandler {
 
-    private final String modid;
-    private final Logger logger;
+	private final String modid;
+	private final Logger logger;
 
-    public GuiHandler(final String modid, final Logger logger) {
-        this.modid = modid;
-        this.logger = logger;
-    }
+	public GuiHandler(final String modid, final Logger logger) {
+		this.modid = modid;
+		this.logger = logger;
+	}
 
-    public static class GuiCreateInfo {
-    	
-    }
-    
-    @SuppressWarnings("rawtypes")
+	public static class GuiCreateInfo {
+		public final Level world;
+		public final BlockPos pos;
+		public final Player player;
+		public final MenuType<?> type;
+
+		public GuiCreateInfo(Level world, BlockPos pos, Player player, MenuType<?> type) {
+			super();
+			this.world = world;
+			this.pos = pos;
+			this.player = player;
+			this.type = type;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T getTile() {
+			return (T) world.getBlockEntity(pos);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
 	private final Map<Class<?>, MenuType> guiIDS = new HashMap<>();
-    private final List<Function<GuiCreateInfo, ? extends GuiBase>> guiBases = new ArrayList<>();
-    private final List<Function<GuiCreateInfo, ? extends ContainerBase>> guiContainer = new ArrayList<>();
-    
-    public <T> void addGui(final Class<T> clazz, final Function<GuiCreateInfo, ? extends GuiBase> gui) {
-    }
+	private final List<Function<GuiCreateInfo, ? extends GuiBase>> guiBases = new ArrayList<>();
+	private final List<Function<GuiCreateInfo, ? extends ContainerBase>> guiContainer = new ArrayList<>();
 
-    public <T> void addServer(final Class<T> clazz, final Function<GuiCreateInfo, ? extends ContainerBase> gui) {
-    }
+	public <T> void addGui(final Class<T> clazz, final Function<GuiCreateInfo, ? extends GuiBase> gui) {
+	}
 
-    public <T> void invokeGui(final Class<T> clazz, final Player player, final Level world,
-            final BlockPos pos) {
-    }
-    
-    public <T> BaseContainerInfo getContainerInfo(final Class<T> clazz) {
-    	return new BaseContainerInfo();
-    }
+	public <T> void addServer(final Class<T> clazz, final Function<GuiCreateInfo, ? extends ContainerBase> gui) {
+	}
+
+	public <T> void invokeGui(final Class<T> clazz, final Player player, final Level world, final BlockPos pos) {
+	}
 }

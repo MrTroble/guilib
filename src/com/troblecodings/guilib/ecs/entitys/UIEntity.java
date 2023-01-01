@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -188,7 +188,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     }
 
     @Override
-    public synchronized void read(final CompoundTag compound) {
+    public synchronized void read(final NBTWrapper compound) {
         children.forEach(e -> e.read(compound));
         components.forEach(c -> {
             if (c instanceof UIAutoSync)
@@ -197,7 +197,7 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     }
 
     @Override
-    public synchronized void write(final CompoundTag compound) {
+    public synchronized void write(final NBTWrapper compound) {
         children.forEach(e -> e.write(compound));
         components.forEach(c -> {
             if (c instanceof UIAutoSync)

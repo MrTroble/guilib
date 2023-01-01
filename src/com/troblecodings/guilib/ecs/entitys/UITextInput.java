@@ -3,6 +3,7 @@ package com.troblecodings.guilib.ecs.entitys;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
@@ -10,7 +11,6 @@ import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,12 +48,12 @@ public class UITextInput extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void write(final CompoundTag compound) {
+    public void write(final NBTWrapper compound) {
         compound.putString(id, this.getText());
     }
 
     @Override
-    public void read(final CompoundTag compound) {
+    public void read(final NBTWrapper compound) {
         this.setText(compound.getString(id));
     }
 

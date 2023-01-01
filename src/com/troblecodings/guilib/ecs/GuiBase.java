@@ -1,6 +1,7 @@
 package com.troblecodings.guilib.ecs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
@@ -11,7 +12,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,7 +33,7 @@ public class GuiBase extends Screen {
     protected int xSize = 340;
     protected int ySize = 230;
     protected UIEntity entity;
-    protected CompoundTag compound;
+    protected NBTWrapper compound;
     protected Minecraft mc;
     protected AbstractTexture creativeTabTexture;
 
@@ -42,7 +42,7 @@ public class GuiBase extends Screen {
     public GuiBase() {
     	super(new TranslatableComponent("gui_base"));
         this.entity = new UIEntity();
-        this.compound = new CompoundTag();
+        this.compound = new NBTWrapper();
         this.creativeTabTexture = mc.getTextureManager().getTexture(CREATIVE_TAB);
     }
 

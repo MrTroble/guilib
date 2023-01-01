@@ -2,12 +2,12 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
+import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.DrawUtil;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.GuiUtils;
@@ -48,12 +48,12 @@ public class UICheckBox extends UIComponent implements UIAutoSync {
     }
 
     @Override
-    public void write(final CompoundTag compound) {
+    public void write(final NBTWrapper compound) {
         compound.putBoolean(id, isChecked());
     }
 
     @Override
-    public void read(final CompoundTag compound) {
+    public void read(final NBTWrapper compound) {
         this.setChecked(compound.getBoolean(id));
     }
 

@@ -1,12 +1,12 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.nbt.CompoundTag;
+import com.troblecodings.core.NBTWrapper;
 
 public interface UIAutoSync {
 
-    public void write(final CompoundTag compound);
+    public void write(final NBTWrapper compound);
 
-    public void read(final CompoundTag compound);
+    public void read(final NBTWrapper compound);
 
     public String getID();
 
