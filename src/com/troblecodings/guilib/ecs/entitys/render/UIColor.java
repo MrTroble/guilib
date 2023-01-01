@@ -17,7 +17,7 @@ public class UIColor extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        GuiUtils.drawGradientRect(info.stack.last().pose(), 0, 0, 0, parent.getWidth(), parent.getHeight(), this.color,
+        GuiUtils.drawGradientRect(info.stack.last().pose(), 0, 0, 0, (int)parent.getWidth(), (int)parent.getHeight(), this.color,
                 this.color);
     }
 

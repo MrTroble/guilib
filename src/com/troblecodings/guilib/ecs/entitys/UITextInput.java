@@ -42,8 +42,8 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 
     @Override
     public void update() {
-        textInput.setWidth(this.parent.getWidth());
-        textInput.setWidth(this.parent.getHeight());
+        textInput.setWidth((int)this.parent.getWidth());
+        textInput.setWidth((int)this.parent.getHeight());
         textInput.setMessage(textInput.getMessage());
     }
 

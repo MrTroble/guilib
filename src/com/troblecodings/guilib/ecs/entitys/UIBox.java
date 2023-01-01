@@ -35,7 +35,7 @@ public class UIBox extends UIComponent implements UIPagable {
 
         @Override
         public int getBounds(final UIEntity entity) {
-            return entity.getHeight();
+            return (int)entity.getHeight();
         }
 
         @Override
@@ -61,7 +61,7 @@ public class UIBox extends UIComponent implements UIPagable {
 
         @Override
         public int getMin(final UIEntity entity) {
-            return entity.getMinHeight();
+            return (int)entity.getMinHeight();
         }
     }
 
@@ -69,7 +69,7 @@ public class UIBox extends UIComponent implements UIPagable {
 
         @Override
         public int getBounds(final UIEntity entity) {
-            return entity.getWidth();
+            return (int)entity.getWidth();
         }
 
         @Override
@@ -95,7 +95,7 @@ public class UIBox extends UIComponent implements UIPagable {
 
         @Override
         public int getMin(final UIEntity entity) {
-            return entity.getMinWidth();
+            return (int)entity.getMinWidth();
         }
     }
 

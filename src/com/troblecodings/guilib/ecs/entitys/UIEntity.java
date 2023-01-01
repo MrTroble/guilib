@@ -13,11 +13,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<UIEntity> {
 
-    private int x, y;
-    private int worldY, worldX;
-    private int minWidth, minHeight;
-    private int width, height;
-    private int worldWidth, worldHeight;
+    private double x, y;
+    private double worldY, worldX;
+    private double minWidth, minHeight;
+    private double width, height;
+    private double worldWidth, worldHeight;
     private float scaleX, scaleY;
     private float worldScaleX, worldScaleY;
     private boolean hovered;
@@ -36,27 +36,27 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         this.scaleY = 1;
     }
 
-    public void setX(final int x) {
+    public void setX(final double x) {
         this.x = x;
     }
 
-    public void setY(final int y) {
+    public void setY(final double y) {
         this.y = y;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public int getLevelY() {
+    public double getLevelY() {
         return worldY;
     }
 
-    public int getLevelX() {
+    public double getLevelX() {
         return worldX;
     }
 
@@ -71,8 +71,8 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     @Override
     public synchronized void update() {
         if (lastUpdateEvent != null) {
-            final int cX = this.x * lastUpdateEvent.guiScale;
-            final int cY = this.y * lastUpdateEvent.guiScale;
+            final double cX = this.x * lastUpdateEvent.guiScale;
+            final double cY = this.y * lastUpdateEvent.guiScale;
             if (this.parent != null) {
                 this.worldScaleX = this.scaleX * parent.getLevelScaleX();
                 this.worldScaleY = this.scaleY * parent.getLevelScaleY();
@@ -94,8 +94,8 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     @Override
     public synchronized void draw(final DrawInfo info) {
         if (isVisible()) {
-            final int wX = this.getLevelX();
-            final int wY = this.getLevelY();
+            final double wX = this.getLevelX();
+            final double wY = this.getLevelY();
             this.hovered = info.mouseX >= wX && info.mouseY >= wY && info.mouseX < wX + worldWidth
                     && info.mouseY < wY + worldHeight;
             info.stack.pushPose();
@@ -171,19 +171,19 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         update();
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return width;
     }
 
-    public void setHeight(final int height) {
+    public void setHeight(final double height) {
         this.height = height;
     }
 
-    public void setWidth(final int width) {
+    public void setWidth(final double width) {
         this.width = width;
     }
 
@@ -348,19 +348,19 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         return worldScaleY;
     }
 
-    public int getMinWidth() {
+    public double getMinWidth() {
         return minWidth;
     }
 
-    public void setMinWidth(final int minWidth) {
+    public void setMinWidth(final double minWidth) {
         this.minWidth = minWidth;
     }
 
-    public int getMinHeight() {
+    public double getMinHeight() {
         return minHeight;
     }
 
-    public void setMinHeight(final int minHeight) {
+    public void setMinHeight(final double minHeight) {
         this.minHeight = minHeight;
     }
 
