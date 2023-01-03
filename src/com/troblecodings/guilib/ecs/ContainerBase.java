@@ -4,6 +4,7 @@ import com.troblecodings.guilib.ecs.GuiHandler.GuiCreateInfo;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 public class ContainerBase extends AbstractContainerMenu {
 
@@ -15,5 +16,4 @@ public class ContainerBase extends AbstractContainerMenu {
 	public boolean stillValid(Player player) {
 		return true;
 	}
-
 }
