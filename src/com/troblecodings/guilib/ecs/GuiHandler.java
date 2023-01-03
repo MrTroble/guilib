@@ -74,14 +74,20 @@ public final class GuiHandler {
         player.openMenu(new MenuProvider() {
 
             @Override
-            public AbstractContainerMenu createMenu(int p_39954_, Inventory inventory,
-                    Player p_39956_) {
-                return new ContainerBase(new GuiCreateInfo(world, pos, player, guiIDS.get(clazz)));
+            public AbstractContainerMenu createMenu(final int id, final Inventory inventory,
+                    final Player player) {
+                return new AbstractContainerMenu(guiIDS.get(clazz), id) {
+
+                    @Override
+                    public boolean stillValid(final Player player) {
+                        return true;
+                    }
+                };
             }
 
             @Override
             public Component getDisplayName() {
-                return new TextComponent("GUI");
+                return new TextComponent(clazz.getTypeName());
             }
         });
     }
