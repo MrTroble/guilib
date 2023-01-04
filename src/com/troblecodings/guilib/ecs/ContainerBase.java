@@ -1,14 +1,12 @@
 package com.troblecodings.guilib.ecs;
 
-import com.troblecodings.guilib.ecs.GuiHandler.GuiCreateInfo;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class ContainerBase extends AbstractContainerMenu {
 
-    public ContainerBase(final GuiCreateInfo info) {
-        super(info.type, 0);// TODO
+    public ContainerBase(final GuiInfo info) {
+        super(info.type, info.id);// TODO
     }
 
     @Override

@@ -1,22 +1,22 @@
 package com.troblecodings.guilib.ecs;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public final class GuiHandler {
 
@@ -26,69 +26,40 @@ public final class GuiHandler {
     public GuiHandler(final String modid, final Logger logger) {
         this.modid = modid;
         this.logger = logger;
-    }
+        final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        eventBus.register(this);
 
-    public static class GuiCreateInfo {
-        public final Level world;
-        public final BlockPos pos;
-        public final Player player;
-        public final MenuType<?> type;
-
-        public GuiCreateInfo(final Level world, final BlockPos pos, final Player player,
-                final MenuType<?> type) {
-            super();
-            this.world = world;
-            this.pos = pos;
-            this.player = player;
-            this.type = type;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> T getTile() {
-            return (T) world.getBlockEntity(pos);
-        }
     }
 
     @SuppressWarnings("rawtypes")
     private final Map<Class<?>, MenuType> guiIDS = new HashMap<>();
-    private final List<Function<GuiCreateInfo, ? extends GuiBase>> guiBases = new ArrayList<>();
-    private final List<Function<GuiCreateInfo, ? extends ContainerBase>> guiContainer = new ArrayList<>();
+    private final Map<Class<?>, Function<GuiInfo, ? extends GuiBase>> guiBases = new HashMap<>();
+    private final Map<Class<?>, Function<GuiInfo, ? extends ContainerBase>> guiContainer = new HashMap<>();
 
-    public <T> void addGui(final Class<T> clazz,
-            final Function<GuiCreateInfo, ? extends GuiBase> gui) {
-        guiBases.add(gui);
+    public <T> void addGui(final Class<T> clazz, final Function<GuiInfo, ? extends GuiBase> gui) {
+        guiBases.put(clazz, gui);
     }
 
     public <T> void addServer(final Class<T> clazz,
-            final Function<GuiCreateInfo, ? extends ContainerBase> gui) {
-        guiContainer.add(gui);
+            final Function<GuiInfo, ? extends ContainerBase> gui) {
+        guiContainer.put(clazz, gui);
         guiIDS.put(clazz, new MenuType<>((id, inventory) -> {
-            return new ContainerBase(new GuiCreateInfo(inventory.player.getLevel(), null,
-                    inventory.player, guiIDS.get(clazz)));
-        }));
-
+            return new ContainerBase(new GuiInfo(guiIDS.get(clazz), id, inventory.player.getLevel(),
+                    null, inventory.player));
+        }).setRegistryName(modid, clazz.getTypeName().toLowerCase()));
     }
 
-    public <T> void invokeGui(final Class<T> clazz, final Player player, final Level world,
-            final BlockPos pos) {
-        player.openMenu(new MenuProvider() {
+    public <T> void invokeGui(final Class<T> clazz, final Player mcPlayer, final Level world,
+            final BlockPos pos, final String name) {
+        mcPlayer.openMenu(new SimpleMenuProvider(
+                (id, inventory, player) -> guiContainer.get(clazz)
+                        .apply(new GuiInfo(guiIDS.get(clazz), id, world, pos, player)),
+                new TextComponent(name)));
+    }
 
-            @Override
-            public AbstractContainerMenu createMenu(final int id, final Inventory inventory,
-                    final Player player) {
-                return new AbstractContainerMenu(guiIDS.get(clazz), id) {
-
-                    @Override
-                    public boolean stillValid(final Player player) {
-                        return true;
-                    }
-                };
-            }
-
-            @Override
-            public Component getDisplayName() {
-                return new TextComponent(clazz.getTypeName());
-            }
-        });
+    @SubscribeEvent
+    public void registerMenuType(final RegistryEvent.Register<MenuType<?>> event) {
+        final IForgeRegistry<MenuType<?>> registry = event.getRegistry();
+        guiIDS.forEach((_u, type) -> registry.register(type));
     }
 }
