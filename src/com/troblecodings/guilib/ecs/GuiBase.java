@@ -10,16 +10,15 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 
-public class GuiBase extends Screen {
+public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -39,10 +38,11 @@ public class GuiBase extends Screen {
 
     private int lastButton = -1;
 
-    public GuiBase() {
-    	super(new TranslatableComponent("gui_base"));
+    public GuiBase(GuiInfo info) {
+    	super(info.base, info.inventory, info.component);
         this.entity = new UIEntity();
         this.compound = new NBTWrapper();
+        this.mc = Minecraft.getInstance();
         this.creativeTabTexture = mc.getTextureManager().getTexture(CREATIVE_TAB);
     }
 
@@ -134,6 +134,11 @@ public class GuiBase extends Screen {
             this.entity.mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
     	return super.mouseScrolled(mouseX, mouseY, scroll);
+    }
+
+    @Override
+    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
+        
     }
     
 }

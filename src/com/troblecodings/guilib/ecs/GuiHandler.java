@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.SimpleMenuProvider;
@@ -36,25 +37,33 @@ public final class GuiHandler {
     private final Map<Class<?>, Function<GuiInfo, ? extends GuiBase>> guiBases = new HashMap<>();
     private final Map<Class<?>, Function<GuiInfo, ? extends ContainerBase>> guiContainer = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public <T> void addGui(final Class<T> clazz, final Function<GuiInfo, ? extends GuiBase> gui) {
+        if (!guiIDS.containsKey(clazz))
+            throw new IllegalArgumentException("Register server side before client!");
         guiBases.put(clazz, gui);
+        MenuScreens.register(guiIDS.get(clazz), (base, inventory, component) -> gui
+                .apply(((ContainerBase) base).getInfo().with(component)));
     }
 
     public <T> void addServer(final Class<T> clazz,
             final Function<GuiInfo, ? extends ContainerBase> gui) {
         guiContainer.put(clazz, gui);
-        guiIDS.put(clazz, new MenuType<>((id, inventory) -> {
-            return new ContainerBase(new GuiInfo(guiIDS.get(clazz), id, inventory.player.getLevel(),
-                    null, inventory.player));
-        }).setRegistryName(modid, clazz.getTypeName().toLowerCase()));
+        guiIDS.put(clazz,
+                new MenuType<>((id,
+                        inventory) -> gui.apply(new GuiInfo(guiIDS.get(clazz), id,
+                                inventory.player.getLevel(), null, inventory.player, inventory)))
+                                        .setRegistryName(modid, clazz.getTypeName().toLowerCase()));
     }
 
     public <T> void invokeGui(final Class<T> clazz, final Player mcPlayer, final Level world,
             final BlockPos pos, final String name) {
-        mcPlayer.openMenu(new SimpleMenuProvider(
-                (id, inventory, player) -> guiContainer.get(clazz)
-                        .apply(new GuiInfo(guiIDS.get(clazz), id, world, pos, player)),
-                new TextComponent(name)));
+        mcPlayer.openMenu(
+                new SimpleMenuProvider(
+                        (id, inventory, player) -> guiContainer.get(clazz)
+                                .apply(new GuiInfo(guiIDS.get(clazz), id, world, pos, player,
+                                        inventory).with(new TextComponent(name))),
+                        new TextComponent(name)));
     }
 
     @SubscribeEvent

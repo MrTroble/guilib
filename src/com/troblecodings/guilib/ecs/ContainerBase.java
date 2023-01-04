@@ -5,12 +5,21 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class ContainerBase extends AbstractContainerMenu {
 
+    private final GuiInfo info;
+
     public ContainerBase(final GuiInfo info) {
-        super(info.type, info.id);// TODO
+        super(info.type, info.id);
+        info.base = this;
+        this.info = info;
     }
 
     @Override
     public boolean stillValid(Player player) {
         return true;
     }
+
+    public GuiInfo getInfo() {
+        return info;
+    }
+
 }

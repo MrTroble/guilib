@@ -1,6 +1,11 @@
 package com.troblecodings.guilib.ecs;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
@@ -10,14 +15,20 @@ public class GuiInfo {
     public final MenuType<?> type;
     public final int id;
     public final Level world;
-    public final BlockPos pos;
     public final Player player;
+    public final Inventory inventory;
+    public Component component = new TextComponent("");
+    @Nullable
+    public final BlockPos pos;
+    @Nullable
+    public ContainerBase base = null;
 
     public GuiInfo(final MenuType<?> type, final int id, final Level world, final BlockPos pos,
-            final Player player) {
+            final Player player, final Inventory inventory) {
         this.type = type;
         this.id = id;
         this.world = world;
+        this.inventory = inventory;
         this.pos = pos;
         this.player = player;
     }
@@ -27,4 +38,8 @@ public class GuiInfo {
         return (T) world.getBlockEntity(pos);
     }
 
+    public GuiInfo with(Component component) {
+        this.component = component;
+        return this;
+    }
 }
