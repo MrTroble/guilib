@@ -206,18 +206,18 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-    	BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
             final BlockState ebs) {
         addToBuffer(builder, manager, ebs, 0);
     }
-    
+
     private static final Random random = new Random();
 
     @SuppressWarnings("deprecation")
-	public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
+    public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
             final BlockState ebs, final int color) {
         assert ebs != null;
         final BakedModel mdl = manager.getBlockModel(ebs);
@@ -230,17 +230,33 @@ public final class DrawUtil {
         final IVertexConsumer consumer = new VertexBufferConsumer(builder);
         for (final BakedQuad quad : lst) {
             final int k = quad.isTinted()
-                    ? (blockColors.getColor(ebs, null, null, quad.getTintIndex())
-                            + 0xFF000000)
+                    ? (blockColors.getColor(ebs, null, null, quad.getTintIndex()) + 0xFF000000)
                     : 0xFFFFFFFF;
             // TODO color
             LightUtil.putBakedQuad(consumer, quad);
         }
     }
 
-    public static void drawCenteredString(DrawInfo info, final Font fontRendererIn, final String text,
-            final int x, final int y, final int color) {
-        fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y,
-                color);
+    public static void drawCenteredString(DrawInfo info, final Font fontRendererIn,
+            final String text, final int x, final int y, final int color) {
+        fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
+    }
+
+    public static void drawBack(final GuiBase gui, final int xLeft, final int xRight,
+            final int yTop, final int yBottom) {
+        gui.mc.getTextureManager().getTexture(null);
+
+        gui.drawTexturedModalRect(xLeft, yTop, 0, 32, 4, 4);
+        gui.drawTexturedModalRect(xLeft, yBottom, 0, 124, 4, 4);
+        gui.drawTexturedModalRect(xRight, yTop, 24, 32, 4, 4);
+        gui.drawTexturedModalRect(xRight, yBottom, 24, 124, 4, 4);
+
+        drawScaledCustomSizeModalRect(xLeft + 4, yBottom, 4, 124, 1, 4, xRight - 4 - xLeft, 4, 0,
+                0);
+        drawScaledCustomSizeModalRect(xLeft + 4, yTop, 4, 32, 1, 4, xRight - 4 - xLeft, 4, 0, 0);
+        drawScaledCustomSizeModalRect(xLeft, yTop + 4, 0, 36, 4, 1, 4, yBottom - 4 - yTop, 0, 0);
+        drawScaledCustomSizeModalRect(xRight, yTop + 4, 24, 36, 4, 1, 4, yBottom - 4 - yTop, 0, 0);
+
+        // drawRect(xLeft + 4, yTop + 4, xRight, yBottom, 0xFFC6C6C6);
     }
 }

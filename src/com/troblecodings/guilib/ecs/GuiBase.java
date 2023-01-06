@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
@@ -10,6 +11,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +41,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     private int lastButton = -1;
 
     public GuiBase(GuiInfo info) {
-    	super(info.base, info.inventory, info.component);
+        super(info.base, info.inventory, info.component);
         this.entity = new UIEntity();
         this.compound = new NBTWrapper();
         this.mc = Minecraft.getInstance();
@@ -56,16 +58,16 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     @Override
     public boolean isPauseScreen() {
-    	return false;
+        return false;
     }
-    
-    private void drawBack(final DrawInfo info, final int xLeft, final int xRight,
-            final int yTop, final int yBottom) {
+
+    private void drawBack(final DrawInfo info, final int xLeft, final int xRight, final int yTop,
+            final int yBottom) {
         this.creativeTabTexture.bind();
-        
+
         // TODO Rewrite back renderer without standard functions
     }
-    
+
     @Override
     public void render(PoseStack stack, int mx, int my, float tick) {
         this.renderBackground(stack);
@@ -98,7 +100,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     public void onClose() {
         this.entity.write(this.compound);
     }
-    
+
     @Override
     public boolean keyPressed(int typedChar, int keyCode, int test) {
         if (keyCode == 1) {
@@ -107,38 +109,47 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.entity.keyEvent(new KeyEvent(keyCode, (char) typedChar));
         return super.keyPressed(typedChar, keyCode, test);
     }
-    
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         lastButton = mouseButton;
         this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
-    	return super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-    
+
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
-    	return super.mouseReleased(mouseX, mouseY, mouseButton);
+        return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
-    
+
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton, double p_94702_, double p_94703_) {
+    public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton,
+            double p_94702_, double p_94703_) {
         this.entity.mouseEvent(
                 new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
-    	return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
+        return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
     }
-    
+
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         if (scroll != 0) {
             this.entity.mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
-    	return super.mouseScrolled(mouseX, mouseY, scroll);
+        return super.mouseScrolled(mouseX, mouseY, scroll);
     }
 
     @Override
     protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
-        
+
     }
-    
+
+    @Override
+    public void renderBackground(final PoseStack stack) {
+        RenderSystem.colorMask(true, true, true, true);
+        int x = (this.width - this.xSize) * 2;
+        int y = (this.height - this.ySize) * 2;
+        GuiComponent.fill(stack, x, y, x + this.xSize, y + this.ySize, 0xFFFFFF);
+    }
+
 }

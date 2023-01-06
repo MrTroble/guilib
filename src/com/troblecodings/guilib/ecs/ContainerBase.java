@@ -21,5 +21,6 @@ public class ContainerBase extends AbstractContainerMenu {
     public GuiInfo getInfo() {
         return info;
     }
+    
 
 }
