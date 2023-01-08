@@ -235,22 +235,4 @@ public final class DrawUtil {
             final String text, final int x, final int y, final int color) {
         fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
     }
-
-    public static void drawBack(final GuiBase gui, final int xLeft, final int xRight,
-            final int yTop, final int yBottom) {
-        gui.mc.getTextureManager().getTexture(null);
-
-        gui.drawTexturedModalRect(xLeft, yTop, 0, 32, 4, 4);
-        gui.drawTexturedModalRect(xLeft, yBottom, 0, 124, 4, 4);
-        gui.drawTexturedModalRect(xRight, yTop, 24, 32, 4, 4);
-        gui.drawTexturedModalRect(xRight, yBottom, 24, 124, 4, 4);
-
-        drawScaledCustomSizeModalRect(xLeft + 4, yBottom, 4, 124, 1, 4, xRight - 4 - xLeft, 4, 0,
-                0);
-        drawScaledCustomSizeModalRect(xLeft + 4, yTop, 4, 32, 1, 4, xRight - 4 - xLeft, 4, 0, 0);
-        drawScaledCustomSizeModalRect(xLeft, yTop + 4, 0, 36, 4, 1, 4, yBottom - 4 - yTop, 0, 0);
-        drawScaledCustomSizeModalRect(xRight, yTop + 4, 24, 36, 4, 1, 4, yBottom - 4 - yTop, 0, 0);
-
-        // drawRect(xLeft + 4, yTop + 4, xRight, yBottom, 0xFFC6C6C6);
-    }
 }
