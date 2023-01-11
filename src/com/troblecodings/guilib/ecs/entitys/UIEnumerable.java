@@ -2,14 +2,11 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
-import com.troblecodings.core.NBTWrapper;
-import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class UIEnumerable extends UIComponent implements UIAutoSync {
+public class UIEnumerable extends UIComponent {
 
     private IntConsumer onChange;
     private int index;
@@ -48,22 +45,6 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
             this.onChange.accept(index);
     }
 
-    @Override
-    public void write(final NBTWrapper compound) {
-        if (id != null)
-            compound.putInteger(id, index);
-    }
-
-    @Override
-    public void read(final NBTWrapper compound) {
-        if (id != null && compound.contains(id)) {
-            this.setIndex(compound.getInteger(id));
-        } else {
-            this.setIndex(this.min);
-        }
-        this.onChange.accept(this.index);
-    }
-
     public int getMax() {
         return max;
     }
@@ -92,16 +73,6 @@ public class UIEnumerable extends UIComponent implements UIAutoSync {
 
     public void setOnChange(final IntConsumer onChange) {
         this.onChange = onChange;
-    }
-
-    @Override
-    public String getID() {
-        return this.id;
-    }
-
-    @Override
-    public void setID(final String id) {
-        this.id = id;
     }
 
 }

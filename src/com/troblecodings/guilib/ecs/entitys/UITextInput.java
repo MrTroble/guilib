@@ -3,11 +3,9 @@ package com.troblecodings.guilib.ecs.entitys;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
-import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,15 +15,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class UITextInput extends UIComponent implements UIAutoSync {
+public class UITextInput extends UIComponent {
 
     private final EditBox textInput;
-    private String id;
     private Consumer<String> onTextUpdate;
     private Predicate<String> validator = string -> true;
 
     public UITextInput(final String id) {
-        this.id = id;
         Minecraft mc = Minecraft.getInstance();
         this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
         this.textInput.setCanLoseFocus(false);
@@ -45,16 +41,6 @@ public class UITextInput extends UIComponent implements UIAutoSync {
         textInput.setWidth((int)this.parent.getWidth());
         textInput.setWidth((int)this.parent.getHeight());
         textInput.setMessage(textInput.getMessage());
-    }
-
-    @Override
-    public void write(final NBTWrapper compound) {
-        compound.putString(id, this.getText());
-    }
-
-    @Override
-    public void read(final NBTWrapper compound) {
-        this.setText(compound.getString(id));
     }
 
     @Override
@@ -105,15 +91,5 @@ public class UITextInput extends UIComponent implements UIAutoSync {
 
     public void setText(final String text) {
         this.textInput.setMessage(new TextComponent(text));;
-    }
-
-    @Override
-    public String getID() {
-        return this.id;
-    }
-
-    @Override
-    public void setID(final String id) {
-        this.id = id;
     }
 }

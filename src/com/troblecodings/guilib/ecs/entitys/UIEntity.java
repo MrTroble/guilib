@@ -1,17 +1,19 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.troblecodings.core.NBTWrapper;
-import com.troblecodings.guilib.ecs.interfaces.UIAutoSync;
+import com.troblecodings.signals.signalbox.entrys.INetworkSavable;
+import com.troblecodings.signals.signalbox.entrys.ISaveable;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<UIEntity> {
+public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     private double x, y;
     private double worldY, worldX;
@@ -187,24 +189,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
         this.width = width;
     }
 
-    @Override
-    public synchronized void read(final NBTWrapper compound) {
-        children.forEach(e -> e.read(compound));
-        components.forEach(c -> {
-            if (c instanceof UIAutoSync)
-                ((UIAutoSync) c).read(compound);
-        });
-    }
-
-    @Override
-    public synchronized void write(final NBTWrapper compound) {
-        children.forEach(e -> e.write(compound));
-        components.forEach(c -> {
-            if (c instanceof UIAutoSync)
-                ((UIAutoSync) c).write(compound);
-        });
-    }
-
     public boolean isHovered() {
         return hovered;
     }
@@ -313,15 +297,6 @@ public final class UIEntity extends UIComponent implements UIAutoSync, Iterable<
     @Override
     public Iterator<UIEntity> iterator() {
         return this.children.iterator();
-    }
-
-    @Override
-    public String getID() {
-        return null;
-    }
-
-    @Override
-    public void setID(final String id) {
     }
 
     public float getScaleX() {

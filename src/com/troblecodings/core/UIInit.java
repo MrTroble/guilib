@@ -1,22 +1,19 @@
-package com.troblecodings.guilib.ecs;
+package com.troblecodings.core;
+
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import com.google.common.collect.Maps;
+import com.troblecodings.core.net.NetworkHandler;
+import com.troblecodings.guilib.ecs.GuiHandler;
 
 public final class UIInit {
 
     private UIInit() {
     }
 
-    private static SimpleChannel channel;
     private static boolean debug;
-
-    public static SimpleChannel getChannel() {
-        return channel;
-    }
 
     public static final String CHANNELNAME = "guisyncnet";
 
@@ -26,8 +23,9 @@ public final class UIInit {
      * 
      * @param modid , the modid of the owning mod
      */
-    public static void initCommon(final String modid, final Logger logger) {
-        initCommon(modid, logger, false);
+    public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
+            final Logger logger) {
+        return initCommon(modid, logger, false);
     }
 
     /**
@@ -37,12 +35,11 @@ public final class UIInit {
      * @param modid , the modid of the owning mod
      * @param debug , whether debugging should be enabled or not
      */
-    public static GuiHandler initCommon(final String modid, final Logger logger,
-            final boolean debug) {
-        channel = NetworkRegistry.newSimpleChannel(new ResourceLocation(modid, CHANNELNAME), () -> "1", _u -> true, _u -> true);
+    public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
+            final Logger logger, final boolean debug) {
         UIInit.debug = debug;
-        final GuiHandler handler = new GuiHandler(modid, logger);
-        return handler;
+        return Maps.immutableEntry(new GuiHandler(modid, logger),
+                new NetworkHandler(modid, logger));
     }
 
     /**

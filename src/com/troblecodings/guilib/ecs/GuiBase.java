@@ -2,7 +2,6 @@ package com.troblecodings.guilib.ecs;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.troblecodings.core.NBTWrapper;
 import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
@@ -34,7 +33,6 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     protected int xSize = 340;
     protected int ySize = 230;
     protected UIEntity entity;
-    protected NBTWrapper compound;
     protected Minecraft mc;
     protected AbstractTexture creativeTabTexture;
 
@@ -43,7 +41,6 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     public GuiBase(GuiInfo info) {
         super(info.base, info.inventory, info.component);
         this.entity = new UIEntity();
-        this.compound = new NBTWrapper();
         this.mc = Minecraft.getInstance();
         this.creativeTabTexture = mc.getTextureManager().getTexture(CREATIVE_TAB);
     }
@@ -94,11 +91,6 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.entity.setY(this.guiTop + GUI_INSET);
         this.entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
                 Math.max(this.width / this.height, this.height / this.width)));
-    }
-
-    @Override
-    public void onClose() {
-        this.entity.write(this.compound);
     }
 
     @Override
