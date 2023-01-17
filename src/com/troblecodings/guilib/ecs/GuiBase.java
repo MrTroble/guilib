@@ -1,24 +1,34 @@
 package com.troblecodings.guilib.ecs;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
+import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
+import com.troblecodings.signals.signalbox.SignalBoxUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.gui.GuiUtils;
 
 @OnlyIn(Dist.CLIENT)
-
 public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     private static final int GUI_MIN_WIDTH = 350;
@@ -26,7 +36,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     private static final int GUI_INSET = 4;
 
     private static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
-            "textures/gui/container/creative_inventory/tab_inventory.png");
+            "textures/gui/container/creative_inventory/tabs.png");
 
     protected int guiLeft;
     protected int guiTop;
@@ -60,9 +70,37 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     private void drawBack(final DrawInfo info, final int xLeft, final int xRight, final int yTop,
             final int yBottom) {
-        this.creativeTabTexture.bind();
+        info.applyTexture(CREATIVE_TAB);
+        info.color();
+        info.blendOn();
+        info.depthOn();
+        final BufferWrapper builder = info.builder(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        final int inset = 8;
+        final int topOffset = 32;
+        final int leftOffset = 20;
+        final int bottomOffset = 120;
+        builder.quadNonNormalized(xLeft, xLeft + inset, yTop, yTop + inset, 0, inset, topOffset,
+                topOffset + inset);
+        builder.quadNonNormalized(xLeft, xLeft + inset, yBottom - inset, yBottom, 0, inset,
+                bottomOffset, bottomOffset + inset);
+        builder.quadNonNormalized(xRight - inset, xRight, yTop, yTop + inset, leftOffset,
+                leftOffset + inset, topOffset, topOffset + inset);
+        builder.quadNonNormalized(xRight - inset, xRight, yBottom - inset, yBottom, leftOffset,
+                leftOffset + inset, bottomOffset, bottomOffset + inset);
 
-        // TODO Rewrite back renderer without standard functions
+        builder.quadNonNormalized(xLeft, xLeft + inset, yTop + inset, yBottom - inset, 0, inset,
+                topOffset + inset, topOffset + inset + 1);
+        builder.quadNonNormalized(xRight - inset, xRight, yTop + inset, yBottom - inset, leftOffset,
+                leftOffset + inset, topOffset + inset, topOffset + inset + 1);
+        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop , yTop + inset, inset,
+                inset + 1, topOffset, topOffset + inset);
+        builder.quadNonNormalized(xLeft + inset, xRight - inset, yBottom - inset, yBottom, inset,
+                inset + 1, bottomOffset, bottomOffset + inset);
+        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop + inset, yBottom - inset, inset,
+                inset + 1, topOffset + inset + 1, topOffset + inset + 2);
+        info.end();
+        info.depthOff();
+        info.blendOff();
     }
 
     @Override

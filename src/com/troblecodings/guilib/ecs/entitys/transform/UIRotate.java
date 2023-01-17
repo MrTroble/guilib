@@ -1,6 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys.transform;
 
 import com.mojang.math.Quaternion;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraftforge.api.distmarker.Dist;

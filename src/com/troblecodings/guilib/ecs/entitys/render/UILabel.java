@@ -2,6 +2,7 @@ package com.troblecodings.guilib.ecs.entitys.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;

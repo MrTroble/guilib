@@ -1,6 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;

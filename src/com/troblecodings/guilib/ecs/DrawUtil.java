@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
-import com.troblecodings.guilib.ecs.entitys.UIComponent.DrawInfo;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
 import net.minecraft.client.Minecraft;

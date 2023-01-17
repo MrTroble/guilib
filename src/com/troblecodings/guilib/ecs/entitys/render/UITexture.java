@@ -1,13 +1,11 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -18,11 +16,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class UITexture extends UIComponent {
 
     private final double u, v, mu, mv;
-    private final AbstractTexture texture;
+    private final ResourceLocation texture;
 
     @SuppressWarnings("deprecation")
-	public UITexture(final TextureAtlasSprite sprite) {
-        this(TextureAtlas.LOCATION_BLOCKS, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
+    public UITexture(final TextureAtlasSprite sprite) {
+        this(TextureAtlas.LOCATION_BLOCKS, sprite.getU0(), sprite.getV0(), sprite.getU1(),
+                sprite.getV1());
     }
 
     public UITexture(final ResourceLocation texture) {
@@ -31,8 +30,7 @@ public class UITexture extends UIComponent {
 
     public UITexture(final ResourceLocation texture, final double u, final double v,
             final double maxU, final double maxV) {
-        Minecraft mc = Minecraft.getInstance();
-        this.texture = mc.getTextureManager().getTexture(texture);
+        this.texture = texture;
         this.u = u;
         this.v = v;
         this.mu = maxU;
@@ -41,18 +39,17 @@ public class UITexture extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    	this.texture.bind();
+        info.applyTexture(texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 
-        final Tesselator tessellator = Tesselator.getInstance();
-        final BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.vertex(0, h, 0).uv((float)u, (float)mv).endVertex();
-        bufferbuilder.vertex(w, h, 0).uv((float)mu, (float)mv).endVertex();
-        bufferbuilder.vertex(w, 0, 0).uv((float)mu, (float)v).endVertex();
-        bufferbuilder.vertex(0, 0, 0).uv((float)u, (float)v).endVertex();
-        tessellator.end();
+        final BufferWrapper bufferbuilder = info.builder(Mode.QUADS,
+                DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
+        bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
+        bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
+        bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
+        info.end();
     }
 
     @Override

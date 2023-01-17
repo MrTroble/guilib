@@ -1,13 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.troblecodings.core.NBTWrapper;
-import com.troblecodings.signals.signalbox.entrys.INetworkSavable;
-import com.troblecodings.signals.signalbox.entrys.ISaveable;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,6 +21,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     private boolean inheritHeight;
     private boolean inheritWidth;
     private UpdateEvent lastUpdateEvent;
+    private int inputLayer;
+    private boolean layoutable;
 
     protected ArrayList<UIEntity> children = new ArrayList<>();
     protected ArrayList<UIComponent> components = new ArrayList<>();
@@ -34,8 +31,10 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         this.setVisible(true);
         this.setInheritHeight(false);
         this.setInheritWidth(false);
+        this.setInputLayer(0);
         this.scaleX = 1;
         this.scaleY = 1;
+        this.layoutable = true;
     }
 
     public void setX(final double x) {
@@ -151,7 +150,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized void mouseEvent(final MouseEvent event) {
-        if (isVisible()) {
+        if (isVisible() && inputLayer == event.inputLayer) {
             ((Iterable<UIComponent>) this.components.clone()).forEach(c -> c.mouseEvent(event));
             ((Iterable<UIEntity>) this.children.clone()).forEach(c -> c.mouseEvent(event));
         }
@@ -159,7 +158,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     @Override
     public synchronized void keyEvent(final KeyEvent event) {
-        if (isVisible()) {
+        if (isVisible() && inputLayer == event.inputLayer) {
             this.children.forEach(c -> c.keyEvent(event));
             this.components.forEach(c -> c.keyEvent(event));
         }
@@ -272,11 +271,22 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
         public final int keyCode;
         public final char typed;
+        public final int inputLayer;
 
-        public KeyEvent(final int keyCode, final char typed) {
+        public KeyEvent(final int keyCode, final char typed, final int inputLayer) {
             this.keyCode = keyCode;
             this.typed = typed;
+            this.inputLayer = inputLayer;
         }
+        
+        public KeyEvent(final int keyCode, final char typed) {
+            this(keyCode, typed, 0);
+        }
+        
+        public KeyEvent promote(int value) {
+            return new KeyEvent(keyCode, typed, this.inputLayer + value);
+        }
+
     }
 
     public static final class MouseEvent {
@@ -285,12 +295,24 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         public final double y;
         public final int key;
         public final EnumMouseState state;
+        public final int inputLayer;
 
-        public MouseEvent(final double x, final double y, final int key, final EnumMouseState enumState) {
+        public MouseEvent(final double x, final double y, final int key,
+                final EnumMouseState enumState) {
+            this(x, y, key, enumState, 0);
+        }
+
+        public MouseEvent(final double x, final double y, final int key,
+                final EnumMouseState enumState, final int inputLayer) {
             this.x = x;
             this.y = y;
             this.key = key;
             this.state = enumState;
+            this.inputLayer = inputLayer;
+        }
+
+        public MouseEvent promote(int value) {
+            return new MouseEvent(x, y, key, state, this.inputLayer + value);
         }
     }
 
@@ -337,6 +359,22 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public void setMinHeight(final double minHeight) {
         this.minHeight = minHeight;
+    }
+
+    public int getInputLayer() {
+        return inputLayer;
+    }
+
+    public void setInputLayer(int inputLayer) {
+        this.inputLayer = inputLayer;
+    }
+
+    public boolean isLayoutable() {
+        return layoutable;
+    }
+
+    public void setLayoutable(boolean layoutable) {
+        this.layoutable = layoutable;
     }
 
 }

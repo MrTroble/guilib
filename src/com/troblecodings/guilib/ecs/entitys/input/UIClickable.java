@@ -2,6 +2,7 @@ package com.troblecodings.guilib.ecs.entitys.input;
 
 import java.util.function.Consumer;
 
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;

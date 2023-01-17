@@ -1,6 +1,5 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
@@ -10,22 +9,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class UIComponent {
-
-	public static class DrawInfo {
-		public final int mouseX;
-		public final int mouseY;
-		public final PoseStack stack;
-		public final float tick;
-
-		public DrawInfo(int mouseX, int mouseY, PoseStack stack, float tick) {
-			super();
-			this.mouseX = mouseX;
-			this.mouseY = mouseY;
-			this.stack = stack;
-			this.tick = tick;
-		}
-
-	}
 
 	protected UIEntity parent = null;
 	protected boolean visible = true;

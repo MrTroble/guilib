@@ -2,6 +2,7 @@ package com.troblecodings.guilib.ecs.entitys.render;
 
 import org.lwjgl.opengl.GL11;
 
+import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
