@@ -96,12 +96,22 @@ public final class GuiElements {
         return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8);
     }
 
+    public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
+            final IIntegerable<?> property, final IntConsumer consumer) {
+        final UIEntity entity = new UIEntity();
+        entity.add(new UIBox(UIBox.VBOX, 2));
+        for (int i = 0; i < property.count(); i++) {
+            entity.add(createButton(property.getNamedObj(i)));
+        }
+        return entity;
+    }
+
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth) {
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
         middle.setInheritWidth(true);
-        middle.setHeight(20);
+        middle.setInheritHeight(true);
 
         final UIButton middleButton = new UIButton("");
         final IntConsumer acceptOr = in -> {
@@ -113,9 +123,8 @@ public final class GuiElements {
         middle.add(new UIOnUpdate(() -> acceptOr.accept(enumerable.getIndex())));
         middle.add(middleButton);
         middle.add(enumerable);
-        middle.add(new UIClickable(entity -> {
-            hbox.update();
-        }));
+        middle.add(new UIClickable(
+                entity -> middle.getLastUpdateEvent().base.push(createSelectionScreen(enumerable, property, consumer))));
 
         acceptOr.accept(0);
 
@@ -125,7 +134,7 @@ public final class GuiElements {
             hbox.add(new UIToolTip(desc));
         hbox.add(middle);
         hbox.setInheritWidth(true);
-        hbox.setInheritHeight(true);
+        hbox.setHeight(22);
         return hbox;
     }
 

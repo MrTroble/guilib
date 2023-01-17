@@ -102,6 +102,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> {
+            if(entityStack.size() > 1)
+                this.renderBackground(stack);
             entity.draw(info);
         });
         this.entityStack.lastElement().postDraw(info);
@@ -114,6 +116,15 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         entity.setY(this.guiTop + GUI_INSET);
         entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
                 Math.max(this.width / this.height, this.height / this.width), this));
+    }
+
+    public void push(UIEntity entity) {
+        this.entityStack.push(entity);
+        updateSingle(entity);
+    }
+
+    public UIEntity pop() {
+        return this.entityStack.pop();
     }
 
     @Override
@@ -167,16 +178,6 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
-
-    }
-
-    @Override
-    public void renderBackground(final PoseStack stack) {
-        RenderSystem.colorMask(true, true, true, true);
-        int x = (this.width - this.xSize) * 2;
-        int y = (this.height - this.ySize) * 2;
-        GuiComponent.fill(stack, x, y, x + this.xSize, y + this.ySize, 0xFFFFFF);
-    }
+    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {}
 
 }
