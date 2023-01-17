@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.troblecodings.guilib.ecs.GuiBase;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,6 +26,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     private int inputLayer;
     private boolean layoutable;
 
+    
     protected ArrayList<UIEntity> children = new ArrayList<>();
     protected ArrayList<UIComponent> components = new ArrayList<>();
 
@@ -257,13 +260,15 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         public final int height;
         public final int scaleFactor;
         public final int guiScale;
+        public final GuiBase base;
 
         public UpdateEvent(final int width, final int height, final int scaleFactor,
-                final int guiScale) {
+                final int guiScale, GuiBase base) {
             this.width = width;
             this.height = height;
             this.scaleFactor = scaleFactor;
             this.guiScale = guiScale;
+            this.base = base;
         }
     }
 

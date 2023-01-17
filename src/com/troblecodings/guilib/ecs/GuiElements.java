@@ -5,7 +5,6 @@ import java.util.function.IntConsumer;
 
 import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
-import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEnumerable;
 import com.troblecodings.guilib.ecs.entitys.UITextInput;
@@ -102,7 +101,7 @@ public final class GuiElements {
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
         middle.setInheritWidth(true);
-        middle.setInheritHeight(true);
+        middle.setHeight(20);
 
         final UIButton middleButton = new UIButton("");
         final IntConsumer acceptOr = in -> {
@@ -119,16 +118,6 @@ public final class GuiElements {
         }));
 
         acceptOr.accept(0);
-
-        final UIEntity page = new UIEntity();
-        page.setInheritWidth(true);
-        page.setInheritHeight(true);
-        page.add(new UIBox(UIBox.VBOX, 1));
-        for (int i = 0; i < property.count(); i++) {
-            final int index = i;
-            page.add(createButton(property.getObjFromID(i).toString(),
-                    entity -> enumerable.setIndex(index)));
-        }
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
         final String desc = property.getDescriptionForName();

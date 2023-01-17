@@ -34,22 +34,19 @@ public class UIToolTip extends UIComponent {
     @Override
     public void postDraw(final DrawInfo info) {
         if (this.parent.isHovered()) {
-        	Minecraft mc = Minecraft.getInstance();
-            final Font font = mc.font;
-            final String desc = (tooltip
-                    || this.descripton.length() < 200) ? this.descripton
-                            : I18n.get("gui.keyprompt");
+            final String desc = (tooltip || this.descripton.length() < 200) ? this.descripton
+                    : I18n.get("gui.keyprompt");
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
-                font.drawWordWrap(new TextComponent(desc), info.mouseX,
-                		info.mouseY, base.width, base.height);
+                base.base.renderTooltip(info.stack, new TextComponent(desc), info.mouseX,
+                        info.mouseY);
             }
         }
     }
-    
+
     @Override
     public void keyEvent(KeyEvent event) {
-    	this.tooltip = event.keyCode == InputConstants.KEY_LCONTROL;
+        this.tooltip = event.keyCode == InputConstants.KEY_LCONTROL;
     }
 
     @Override

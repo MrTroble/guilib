@@ -1,13 +1,11 @@
 package com.troblecodings.guilib.ecs;
 
+import java.util.Stack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -15,18 +13,13 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
-import com.troblecodings.signals.signalbox.SignalBoxUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiBase extends AbstractContainerScreen<ContainerBase> {
@@ -42,17 +35,17 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     protected int guiTop;
     protected int xSize = 340;
     protected int ySize = 230;
+    protected Stack<UIEntity> entityStack = new Stack<>();
     protected UIEntity entity;
     protected Minecraft mc;
-    protected AbstractTexture creativeTabTexture;
 
     private int lastButton = -1;
 
     public GuiBase(GuiInfo info) {
         super(info.base, info.inventory, info.component);
-        this.entity = new UIEntity();
+        this.entityStack.add(new UIEntity());
+        this.entity = entityStack.lastElement();
         this.mc = Minecraft.getInstance();
-        this.creativeTabTexture = mc.getTextureManager().getTexture(CREATIVE_TAB);
     }
 
     @Override
@@ -92,12 +85,12 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
                 topOffset + inset, topOffset + inset + 1);
         builder.quadNonNormalized(xRight - inset, xRight, yTop + inset, yBottom - inset, leftOffset,
                 leftOffset + inset, topOffset + inset, topOffset + inset + 1);
-        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop , yTop + inset, inset,
+        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop, yTop + inset, inset,
                 inset + 1, topOffset, topOffset + inset);
         builder.quadNonNormalized(xLeft + inset, xRight - inset, yBottom - inset, yBottom, inset,
                 inset + 1, bottomOffset, bottomOffset + inset);
-        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop + inset, yBottom - inset, inset,
-                inset + 1, topOffset + inset + 1, topOffset + inset + 2);
+        builder.quadNonNormalized(xLeft + inset, xRight - inset, yTop + inset, yBottom - inset,
+                inset, inset + 1, topOffset + inset + 1, topOffset + inset + 2);
         info.end();
         info.depthOff();
         info.blendOff();
@@ -108,13 +101,19 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.renderBackground(stack);
         DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
-        this.entity.draw(info);
-        this.draw(info);
-        this.entity.postDraw(info);
+        this.entityStack.forEach(entity -> {
+            entity.draw(info);
+        });
+        this.entityStack.lastElement().postDraw(info);
     }
 
-    public void draw(final DrawInfo info) {
-
+    private void updateSingle(UIEntity entity) {
+        entity.setWidth(GUI_MIN_WIDTH);
+        entity.setHeight(this.ySize - GUI_INSET);
+        entity.setX(this.guiLeft + GUI_INSET);
+        entity.setY(this.guiTop + GUI_INSET);
+        entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
+                Math.max(this.width / this.height, this.height / this.width), this));
     }
 
     @Override
@@ -123,12 +122,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.xSize = GUI_MIN_WIDTH + GUI_INSET;
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
-        this.entity.setWidth(GUI_MIN_WIDTH);
-        this.entity.setHeight(this.ySize - GUI_INSET);
-        this.entity.setX(this.guiLeft + GUI_INSET);
-        this.entity.setY(this.guiTop + GUI_INSET);
-        this.entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
-                Math.max(this.width / this.height, this.height / this.width)));
+        this.entityStack.forEach(this::updateSingle);
     }
 
     @Override
@@ -136,27 +130,29 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         if (keyCode == 1) {
             this.mc.player.closeContainer();
         }
-        this.entity.keyEvent(new KeyEvent(keyCode, (char) typedChar));
+        this.entityStack.lastElement().keyEvent(new KeyEvent(keyCode, (char) typedChar));
         return super.keyPressed(typedChar, keyCode, test);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         lastButton = mouseButton;
-        this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
+        this.entityStack.lastElement()
+                .mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
         return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
-        this.entity.mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
+        this.entityStack.lastElement()
+                .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
         return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton,
             double p_94702_, double p_94703_) {
-        this.entity.mouseEvent(
+        this.entityStack.lastElement().mouseEvent(
                 new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
         return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
     }
@@ -164,7 +160,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         if (scroll != 0) {
-            this.entity.mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
+            this.entityStack.lastElement()
+                    .mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
         return super.mouseScrolled(mouseX, mouseY, scroll);
     }
