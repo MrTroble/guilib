@@ -103,4 +103,11 @@ public class NBTWrapper {
     public static NBTWrapper getOrCreateWrapper(final ItemStack stack) {
         return new NBTWrapper(stack.getOrCreateTag());
     }
+
+    public static NBTWrapper createForStack(final ItemStack stack) {
+        final NBTWrapper wrapper = new NBTWrapper();
+        stack.setTag(wrapper.tag);
+        return wrapper;
+    }
+
 }
