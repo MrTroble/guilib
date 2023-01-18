@@ -1,7 +1,10 @@
 package com.troblecodings.guilib.ecs;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerBase extends AbstractContainerMenu {
 
@@ -13,6 +16,12 @@ public class ContainerBase extends AbstractContainerMenu {
         this.info = info;
     }
 
+    @SuppressWarnings("resource")
+    @OnlyIn(Dist.CLIENT)
+    public void update() {
+        ((GuiBase)Minecraft.getInstance().screen).updateFromContainer();
+    }
+    
     @Override
     public boolean stillValid(Player player) {
         return true;
@@ -22,5 +31,9 @@ public class ContainerBase extends AbstractContainerMenu {
         return info;
     }
     
+    
+    public Player getPlayer() {
+        return info.player;
+    }
 
 }

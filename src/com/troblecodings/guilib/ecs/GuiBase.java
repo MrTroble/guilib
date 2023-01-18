@@ -103,6 +103,10 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.entityStack.lastElement().postDraw(info);
     }
 
+    public void updateFromContainer() {
+        
+    }
+    
     private void updateSingle(UIEntity entity) {
         entity.setWidth(GUI_MIN_WIDTH);
         entity.setHeight(this.ySize - GUI_INSET);

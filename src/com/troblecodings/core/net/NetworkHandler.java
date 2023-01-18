@@ -37,6 +37,14 @@ public class NetworkHandler {
 
     @SubscribeEvent
     public void clientEvent(ClientCustomPayloadEvent event) {
+        final AbstractContainerMenu menu = event.getSource().get().getSender().containerMenu;
+        if (menu instanceof INetworkSync) {
+            ((INetworkSync) menu).deserializeServer(event.getPayload().nioBuffer());
+        }
+    }
+
+    @SubscribeEvent
+    public void serverEvent(ServerCustomPayloadEvent event) {
         final Minecraft mc = Minecraft.getInstance();
         final LocalPlayer player = mc.player;
         final AbstractContainerMenu menu = player.containerMenu;
@@ -45,16 +53,8 @@ public class NetworkHandler {
         }
     }
 
-    @SubscribeEvent
-    public void serverEvent(ServerCustomPayloadEvent event) {
-        final AbstractContainerMenu menu = event.getSource().get().getSender().containerMenu;
-        if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeServer(event.getPayload().nioBuffer());
-        }
-    }
-
     public void sendTo(Player player, ByteBuffer buf) {
-        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(buf));
+        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(buf.position(0)));
         if (player instanceof ServerPlayer) {
             final ServerPlayer server = (ServerPlayer) player;
             server.connection.send(new ClientboundCustomPayloadPacket(channelName, buffer));
