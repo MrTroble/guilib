@@ -1,10 +1,10 @@
 package com.troblecodings.core.interfaces;
 
-import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 
 public interface INetworkSync {
 
-    default void deserializeServer(ByteBuf buf) {}
+    default void deserializeServer(ByteBuffer buf) {}
     
-    default void deserializeClient(ByteBuf buf) {}
+    default void deserializeClient(ByteBuffer buf) {}
 }
