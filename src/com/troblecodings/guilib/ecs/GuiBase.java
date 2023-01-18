@@ -2,7 +2,6 @@ package com.troblecodings.guilib.ecs;
 
 import java.util.Stack;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -15,7 +14,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -101,11 +99,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.renderBackground(stack);
         DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
-        this.entityStack.forEach(entity -> {
-            if(entityStack.size() > 1)
-                this.renderBackground(stack);
-            entity.draw(info);
-        });
+        this.entityStack.forEach(entity -> entity.draw(info));
         this.entityStack.lastElement().postDraw(info);
     }
 
@@ -119,12 +113,16 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     public void push(UIEntity entity) {
+        this.entityStack.lastElement().setHoveringEnabled(false);
+        entity.setHoveringEnabled(true);
         this.entityStack.push(entity);
         updateSingle(entity);
     }
 
     public UIEntity pop() {
-        return this.entityStack.pop();
+        final UIEntity old = this.entityStack.pop();
+        this.entityStack.lastElement().setHoveringEnabled(true);
+        return old;
     }
 
     @Override
@@ -137,14 +135,20 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean keyPressed(int typedChar, int keyCode, int test) {
+    public boolean keyPressed(int typedChar, int keyCode, int time) {
         if (keyCode == 1) {
             this.mc.player.closeContainer();
         }
-        this.entityStack.lastElement().keyEvent(new KeyEvent(keyCode, (char) typedChar));
-        return super.keyPressed(typedChar, keyCode, test);
+        this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, keyCode, time));
+        return super.keyPressed(typedChar, keyCode, time);
     }
 
+    @Override
+    public boolean charTyped(char character, int typedChar) {
+        this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, 0, 0, character));
+        return super.charTyped(character, typedChar);
+    }
+    
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         lastButton = mouseButton;

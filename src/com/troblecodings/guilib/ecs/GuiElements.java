@@ -97,12 +97,56 @@ public final class GuiElements {
     }
 
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
-            final IIntegerable<?> property, final IntConsumer consumer) {
+            final IIntegerable<?> property) {
+        final int insets = 40;
+
         final UIEntity entity = new UIEntity();
-        entity.add(new UIBox(UIBox.VBOX, 2));
+        entity.add(new UIBox(UIBox.HBOX, 0));
+        final UIEntity inner = new UIEntity();
+        entity.add(createSpacerH(insets));
+        entity.add(inner);
+        entity.add(createSpacerH(insets));
+
+        inner.add(new UIBox(UIBox.VBOX, 0));
+        inner.setInheritHeight(true);
+        inner.setInheritWidth(true);
+        final UIEntity searchPanel = new UIEntity();
+        searchPanel.add(new UIBox(UIBox.VBOX, 3));
+        searchPanel.setInheritHeight(true);
+        searchPanel.setInheritWidth(true);
+        
+        final UIEntity searchBar = new UIEntity(); 
+        searchBar.setInheritWidth(true);
+        searchBar.setHeight(20);
+        searchBar.add(new UITextInput("TEST"));
+        searchPanel.add(searchBar);
+        
+        final UIEntity listWithScroll = new UIEntity();
+        listWithScroll.setInheritHeight(true);
+        listWithScroll.setInheritWidth(true);
+        listWithScroll.add(new UIBox(UIBox.HBOX, 2));
+        searchPanel.add(listWithScroll);
+        
+        inner.add(createSpacerV(insets));
+        inner.add(searchPanel);
+        inner.add(createSpacerV(insets));
+        searchPanel.add(new UIColor(0x6F000000, 5));
+
+        final UIEntity list = new UIEntity();
+        listWithScroll.add(list);
+        list.setInheritHeight(true);
+        list.setInheritWidth(true);
+
+        list.add(new UIBox(UIBox.VBOX, 2));
         for (int i = 0; i < property.count(); i++) {
-            entity.add(createButton(property.getNamedObj(i)));
+            final int index = i;
+            list.add(createButton(property.getNamedObj(i), e -> {
+                enumerable.setIndex(index);
+                e.getLastUpdateEvent().base.pop();
+            }));
         }
+        
+        listWithScroll.add(createSpacerH(10));
         return entity;
     }
 
@@ -123,8 +167,8 @@ public final class GuiElements {
         middle.add(new UIOnUpdate(() -> acceptOr.accept(enumerable.getIndex())));
         middle.add(middleButton);
         middle.add(enumerable);
-        middle.add(new UIClickable(
-                entity -> middle.getLastUpdateEvent().base.push(createSelectionScreen(enumerable, property, consumer))));
+        middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base
+                .push(createSelectionScreen(enumerable, property))));
 
         acceptOr.accept(0);
 

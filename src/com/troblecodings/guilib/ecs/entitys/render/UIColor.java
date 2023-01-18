@@ -1,25 +1,42 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class UIColor extends UIComponent {
 
     private int color;
+    private final int insets;
 
     public UIColor(final int color) {
-        this.setColor(color);
+        this(color, 0);
+    }
+
+    public UIColor(final int color, final int insets) {
+        this.color = color;
+        this.insets = insets;
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        GuiUtils.drawGradientRect(info.stack.last().pose(), 0, 0, 0, (int)parent.getWidth(), (int)parent.getHeight(), this.color,
-                this.color);
+        if (this.visible) {
+            info.applyColor();
+            info.depthOff();
+            info.blendOn();
+            final BufferWrapper wrapper = info.builder(Mode.QUADS,
+                    DefaultVertexFormat.POSITION_COLOR);
+            wrapper.quad(-insets, (int) parent.getWidth() + insets, -insets,
+                    (int) parent.getHeight() + insets, this.color);
+            info.end();
+            info.blendOff();
+        }
     }
 
     @Override
@@ -31,7 +48,7 @@ public class UIColor extends UIComponent {
         return color;
     }
 
-    public void setColor(final int color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

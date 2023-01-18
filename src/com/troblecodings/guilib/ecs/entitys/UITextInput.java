@@ -39,7 +39,7 @@ public class UITextInput extends UIComponent {
     @Override
     public void update() {
         textInput.setWidth((int)this.parent.getWidth());
-        textInput.setWidth((int)this.parent.getHeight());
+        textInput.setHeight((int)this.parent.getHeight());
         textInput.setMessage(textInput.getMessage());
     }
 
@@ -53,7 +53,10 @@ public class UITextInput extends UIComponent {
 
     @Override
     public void keyEvent(final KeyEvent event) {
-        this.textInput.charTyped(event.typed, event.keyCode);
+        if(event.character == 0)
+            this.textInput.keyPressed(event.typedChar, event.keyCode, event.time);
+        if(event.character != 0)
+            this.textInput.charTyped(event.character, event.typedChar);
     }
 
     @Override

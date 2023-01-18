@@ -3,6 +3,8 @@ package com.troblecodings.guilib.ecs.entitys;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.math.Matrix4f;
 
+import net.minecraft.util.FastColor;
+
 public class BufferWrapper {
 
     private final BufferBuilder builder;
@@ -19,6 +21,16 @@ public class BufferWrapper {
         return this;
     }
 
+    public BufferWrapper color(int color) {
+        return this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
+                FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
+    }
+
+    public BufferWrapper color(float r, float g, float b, float a) {
+        builder.color(r, g, b, a);
+        return this;
+    }
+
     public BufferWrapper tex(double u, double v) {
         builder.uv((float) u, (float) v);
         return this;
@@ -26,6 +38,15 @@ public class BufferWrapper {
 
     public void end() {
         builder.endVertex();
+    }
+
+    public BufferWrapper quad(final int xLeft, final int xRight, final int yTop, final int yBottom,
+            int color) {
+        builder.vertex(matrix, xRight, yTop, 0).color(color).endVertex();
+        builder.vertex(matrix, xLeft, yTop, 0).color(color).endVertex();
+        builder.vertex(matrix, xLeft, yBottom, 0).color(color).endVertex();
+        builder.vertex(matrix, xRight, yBottom, 0).color(color).endVertex();
+        return this;
     }
 
     public BufferWrapper quad(final int xLeft, final int xRight, final int yTop, final int yBottom,

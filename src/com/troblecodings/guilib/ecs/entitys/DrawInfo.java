@@ -23,6 +23,18 @@ public class DrawInfo {
         this.stack = stack;
         this.tick = tick;
     }
+    
+    public void applyColor() {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+    }
+    
+    public void push() {
+        this.stack.pushPose();
+    }
+    
+    public void pop() {
+        this.stack.popPose();
+    }
 
     public void translate(double x, double y, double z) {
         this.stack.translate(x, y, z);

@@ -23,10 +23,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     private boolean inheritHeight;
     private boolean inheritWidth;
     private UpdateEvent lastUpdateEvent;
-    private int inputLayer;
+    private boolean enableHovering;
     private boolean layoutable;
 
-    
     protected ArrayList<UIEntity> children = new ArrayList<>();
     protected ArrayList<UIComponent> components = new ArrayList<>();
 
@@ -34,7 +33,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         this.setVisible(true);
         this.setInheritHeight(false);
         this.setInheritWidth(false);
-        this.setInputLayer(0);
+        this.enableHovering = true;
         this.scaleX = 1;
         this.scaleY = 1;
         this.layoutable = true;
@@ -100,8 +99,10 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (isVisible()) {
             final double wX = this.getLevelX();
             final double wY = this.getLevelY();
-            this.hovered = info.mouseX >= wX && info.mouseY >= wY && info.mouseX < wX + worldWidth
-                    && info.mouseY < wY + worldHeight;
+            if (enableHovering) {
+                this.hovered = info.mouseX >= wX && info.mouseY >= wY
+                        && info.mouseX < wX + worldWidth && info.mouseY < wY + worldHeight;
+            }
             info.stack.pushPose();
             info.stack.translate(this.x, this.y, 0);
             info.stack.scale(scaleX, scaleY, 1);
@@ -153,7 +154,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @SuppressWarnings("unchecked")
     @Override
     public synchronized void mouseEvent(final MouseEvent event) {
-        if (isVisible() && inputLayer == event.inputLayer) {
+        if (isVisible()) {
             ((Iterable<UIComponent>) this.components.clone()).forEach(c -> c.mouseEvent(event));
             ((Iterable<UIEntity>) this.children.clone()).forEach(c -> c.mouseEvent(event));
         }
@@ -161,7 +162,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     @Override
     public synchronized void keyEvent(final KeyEvent event) {
-        if (isVisible() && inputLayer == event.inputLayer) {
+        if (isVisible()) {
             this.children.forEach(c -> c.keyEvent(event));
             this.components.forEach(c -> c.keyEvent(event));
         }
@@ -274,22 +275,21 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public static final class KeyEvent {
 
+        public final int typedChar;
         public final int keyCode;
-        public final char typed;
-        public final int inputLayer;
+        public final int time;
+        public final char character;
 
-        public KeyEvent(final int keyCode, final char typed, final int inputLayer) {
+        public KeyEvent(int typedChar, int keyCode, int time, char character) {
+            super();
+            this.typedChar = typedChar;
             this.keyCode = keyCode;
-            this.typed = typed;
-            this.inputLayer = inputLayer;
+            this.time = time;
+            this.character = character;
         }
-        
-        public KeyEvent(final int keyCode, final char typed) {
-            this(keyCode, typed, 0);
-        }
-        
-        public KeyEvent promote(int value) {
-            return new KeyEvent(keyCode, typed, this.inputLayer + value);
+
+        public KeyEvent(int typedChar, int keyCode, int time) {
+            this(typedChar, keyCode, time, (char) 0);
         }
 
     }
@@ -366,20 +366,23 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         this.minHeight = minHeight;
     }
 
-    public int getInputLayer() {
-        return inputLayer;
-    }
-
-    public void setInputLayer(int inputLayer) {
-        this.inputLayer = inputLayer;
-    }
-
     public boolean isLayoutable() {
         return layoutable;
     }
 
     public void setLayoutable(boolean layoutable) {
         this.layoutable = layoutable;
+    }
+
+    public boolean isHoveringEnabled() {
+        return enableHovering;
+    }
+
+    public void setHoveringEnabled(boolean enableHovering) {
+        if (!enableHovering)
+            this.hovered = false;
+        this.enableHovering = enableHovering;
+        this.children.forEach(entity -> entity.setHoveringEnabled(enableHovering));
     }
 
 }

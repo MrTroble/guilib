@@ -39,8 +39,7 @@ public class UIButton extends UIComponent {
         if (this.visible) {
             info.applyTexture(BUTTON_TEXTURES);
             info.color();
-            info.blendOn();
-            info.depthOn();
+            info.depthOff();
             final int offsetV = enabled ? (parent.isHovered() ? 2 : 1) : 0;
             GuiUtils.drawTexturedModalRect(info.stack, 0, 0, 0, 46 + offsetV * 20,
                     (int) parent.getWidth() / 2, (int) parent.getHeight(), 0);
@@ -52,8 +51,6 @@ public class UIButton extends UIComponent {
                     : DEFAULT_DISABLED_COLOR;
             DrawUtil.drawCenteredString(info, fontrenderer, this.text, (int) parent.getWidth() / 2,
                     ((int) parent.getHeight() - 8) / 2, colorUsed);
-            info.blendOff();
-            info.depthOff();
         }
     }
 
