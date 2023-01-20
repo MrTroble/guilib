@@ -112,8 +112,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         entity.setHeight(this.ySize - GUI_INSET);
         entity.setX(this.guiLeft + GUI_INSET);
         entity.setY(this.guiTop + GUI_INSET);
-        entity.updateEvent(new UpdateEvent(width, height, mc.options.guiScale,
-                Math.max(this.width / this.height, this.height / this.width), this));
+        entity.updateEvent(new UpdateEvent(width, height, this.minecraft.getWindow().getGuiScale(), 1, this));
     }
 
     public void push(UIEntity entity) {

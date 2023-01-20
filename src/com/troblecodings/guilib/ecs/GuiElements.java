@@ -7,6 +7,7 @@ import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEnumerable;
+import com.troblecodings.guilib.ecs.entitys.UIScrollBox;
 import com.troblecodings.guilib.ecs.entitys.UITextInput;
 import com.troblecodings.guilib.ecs.entitys.input.UIClickable;
 import com.troblecodings.guilib.ecs.entitys.input.UIOnUpdate;
@@ -98,6 +99,19 @@ public final class GuiElements {
 
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
             final IIntegerable<?> property) {
+        return createScreen(list -> {
+            list.add(new UIScrollBox(UIBox.VBOX, 2));
+            for (int i = 0; i < property.count(); i++) {
+                final int index = i;
+                list.add(createButton(property.getNamedObj(i), e -> {
+                    enumerable.setIndex(index);
+                    e.getLastUpdateEvent().base.pop();
+                }));
+            }
+        });
+    }
+
+    public static UIEntity createScreen(Consumer<UIEntity> entityConsumer) {
         final int insets = 40;
 
         final UIEntity entity = new UIEntity();
@@ -114,19 +128,19 @@ public final class GuiElements {
         searchPanel.add(new UIBox(UIBox.VBOX, 3));
         searchPanel.setInheritHeight(true);
         searchPanel.setInheritWidth(true);
-        
-        final UIEntity searchBar = new UIEntity(); 
+
+        final UIEntity searchBar = new UIEntity();
         searchBar.setInheritWidth(true);
         searchBar.setHeight(20);
         searchBar.add(new UITextInput("TEST"));
         searchPanel.add(searchBar);
-        
+
         final UIEntity listWithScroll = new UIEntity();
         listWithScroll.setInheritHeight(true);
         listWithScroll.setInheritWidth(true);
         listWithScroll.add(new UIBox(UIBox.HBOX, 2));
         searchPanel.add(listWithScroll);
-        
+
         inner.add(createSpacerV(insets));
         inner.add(searchPanel);
         inner.add(createSpacerV(insets));
@@ -137,15 +151,8 @@ public final class GuiElements {
         list.setInheritHeight(true);
         list.setInheritWidth(true);
 
-        list.add(new UIBox(UIBox.VBOX, 2));
-        for (int i = 0; i < property.count(); i++) {
-            final int index = i;
-            list.add(createButton(property.getNamedObj(i), e -> {
-                enumerable.setIndex(index);
-                e.getLastUpdateEvent().base.pop();
-            }));
-        }
-        
+        entityConsumer.accept(list);
+
         listWithScroll.add(createSpacerH(10));
         return entity;
     }

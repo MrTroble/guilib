@@ -78,6 +78,14 @@ public class DrawInfo {
         RenderSystem.disableDepthTest();
     }
 
+    public void scissorOn(int x, int y, int width, int height) {
+        RenderSystem.enableScissor(x, y, width, height);
+    }
+    
+    public void scissorOff() {
+        RenderSystem.disableScissor();
+    }
+    
     public BufferWrapper builder(VertexFormat.Mode mode, VertexFormat format) {
         BufferBuilder builder = Tesselator.getInstance().getBuilder();
         builder.begin(mode, format);

@@ -2,6 +2,7 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.ArrayList;
 
+import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,91 +14,8 @@ public class UIBox extends UIComponent implements UIPagable {
     private int page = 0;
     private int maxPages = 0;
 
-    private static interface IBoxMode {
-
-        int getBounds(UIEntity entity);
-
-        void setBounds(UIEntity entity, int bounds);
-
-        void setPos(UIEntity entity, int pos);
-
-        boolean inheritsBounds(UIEntity entity);
-
-        void post(UIEntity entity);
-
-        int getMin(UIEntity entity);
-    }
-
     public static final VBoxMode VBOX = new VBoxMode();
     public static final HBoxMode HBOX = new HBoxMode();
-
-    private static class VBoxMode implements IBoxMode {
-
-        @Override
-        public int getBounds(final UIEntity entity) {
-            return (int)entity.getHeight();
-        }
-
-        @Override
-        public void setBounds(final UIEntity entity, final int bounds) {
-            entity.setHeight(bounds);
-        }
-
-        @Override
-        public void setPos(final UIEntity entity, final int pos) {
-            entity.setY(pos);
-        }
-
-        @Override
-        public boolean inheritsBounds(final UIEntity entity) {
-            return entity.inheritHeight();
-        }
-
-        @Override
-        public void post(final UIEntity entity) {
-            if (entity.inheritWidth())
-                entity.setWidth(entity.getParent().getWidth());
-        }
-
-        @Override
-        public int getMin(final UIEntity entity) {
-            return (int)entity.getMinHeight();
-        }
-    }
-
-    private static class HBoxMode implements IBoxMode {
-
-        @Override
-        public int getBounds(final UIEntity entity) {
-            return (int)entity.getWidth();
-        }
-
-        @Override
-        public void setBounds(final UIEntity entity, final int bounds) {
-            entity.setWidth(bounds);
-        }
-
-        @Override
-        public void setPos(final UIEntity entity, final int pos) {
-            entity.setX(pos);
-        }
-
-        @Override
-        public boolean inheritsBounds(final UIEntity entity) {
-            return entity.inheritWidth();
-        }
-
-        @Override
-        public void post(final UIEntity entity) {
-            if (entity.inheritHeight())
-                entity.setHeight(entity.getParent().getHeight());
-        }
-
-        @Override
-        public int getMin(final UIEntity entity) {
-            return (int)entity.getMinWidth();
-        }
-    }
 
     private final IBoxMode mode;
     private final int gap;

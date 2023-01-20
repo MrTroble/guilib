@@ -118,7 +118,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.components.contains(component)) {
             this.components.add(component);
             component.onAdd(this);
-            this.updateEvent(lastUpdateEvent);
+            if (lastUpdateEvent != null)
+                this.updateEvent(lastUpdateEvent);
         }
     }
 
@@ -134,7 +135,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.children.contains(component) && component != this) {
             this.children.add(component);
             component.onAdd(this);
-            this.updateEvent(lastUpdateEvent);
+            if (lastUpdateEvent != null)
+                this.updateEvent(lastUpdateEvent);
         }
     }
 
@@ -259,11 +261,11 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
         public final int width;
         public final int height;
-        public final int scaleFactor;
+        public final double scaleFactor;
         public final int guiScale;
         public final GuiBase base;
 
-        public UpdateEvent(final int width, final int height, final int scaleFactor,
+        public UpdateEvent(final int width, final int height, final double scaleFactor,
                 final int guiScale, GuiBase base) {
             this.width = width;
             this.height = height;

@@ -1,7 +1,5 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
@@ -19,27 +17,34 @@ public class UIScissor extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor(x, y, width, height);
+        info.scissorOn(x, y, width, height);
     }
 
     @Override
     public void exitDraw(final DrawInfo info) {
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        info.scissorOff();
+    }
+
+    @Override
+    public void updateEvent(UpdateEvent lastUpdateEvent) {
+        this.height = (int) (parent.getHeight() * lastUpdateEvent.scaleFactor);
+        this.width = (int) (parent.getWidth() * lastUpdateEvent.scaleFactor);
+        if (this.height < 0)
+            this.height = 0;
+        if (this.width < 0)
+            this.width = 0;
+        this.x = (int) (parent.getLevelX() * lastUpdateEvent.scaleFactor
+                / lastUpdateEvent.guiScale);
+        this.y = (int) ((lastUpdateEvent.height - (int) parent.getLevelY()
+                - (int) parent.getHeight()) * lastUpdateEvent.scaleFactor);
     }
 
     @Override
     public void update() {
         final UpdateEvent lastUpdateEvent = parent.getLastUpdateEvent();
-        this.height = (int)parent.getHeight() * lastUpdateEvent.scaleFactor;
-        this.width = (int)parent.getWidth() * lastUpdateEvent.scaleFactor;
-        if (this.height < 0)
-            this.height = 0;
-        if (this.width < 0)
-            this.width = 0;
-        this.x = (int)parent.getLevelX() * lastUpdateEvent.scaleFactor / lastUpdateEvent.guiScale;
-        this.y = (lastUpdateEvent.height - (int)parent.getLevelY() - (int)parent.getHeight())
-                * lastUpdateEvent.scaleFactor;
+        if (lastUpdateEvent == null)
+            return;
+        updateEvent(lastUpdateEvent);
     }
 
 }
