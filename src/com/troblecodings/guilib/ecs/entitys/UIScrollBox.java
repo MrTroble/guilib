@@ -1,12 +1,15 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import com.troblecodings.guilib.ecs.entitys.render.UIScissor;
+import java.util.function.IntConsumer;
+
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 
-public class UIScrollBox extends UIScissor {
+public class UIScrollBox extends UIComponent {
 
     private final IBoxMode mode;
     private final int spacer;
+    private int wholeBounds = 0;
+    private IntConsumer consumer;
 
     public UIScrollBox(IBoxMode mode, int spacer) {
         super();
@@ -14,15 +17,35 @@ public class UIScrollBox extends UIScissor {
         this.spacer = spacer;
     }
 
+    public IntConsumer getConsumer() {
+        return consumer;
+    }
+
+    public void setConsumer(IntConsumer consumer) {
+        this.consumer = consumer;
+    }
+
     @Override
     public void update() {
-        super.update();
-        int bounds = 0;
+        this.wholeBounds = 0;
         for (final UIEntity child : this.parent.children) {
-            mode.setPos(child, bounds);
-            bounds += mode.getBounds(child) + spacer;
+            mode.setPos(child, this.wholeBounds);
+            this.wholeBounds += mode.getBounds(child) + spacer;
             mode.post(child);
         }
+        consumer.accept(wholeBounds);
+    }
+
+    public IBoxMode getMode() {
+        return mode;
+    }
+
+    public int getWholeBounds() {
+        return wholeBounds;
+    }
+
+    @Override
+    public void draw(DrawInfo info) {
     }
 
 }

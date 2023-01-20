@@ -13,7 +13,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class UIScroll extends UIComponent {
 
-    private final DoubleConsumer consumer;
+    protected DoubleConsumer consumer;
+
+    public UIScroll() {
+        this.consumer = d -> {
+        };
+    }
 
     public UIScroll(final DoubleConsumer consumer) {
         this.consumer = consumer;

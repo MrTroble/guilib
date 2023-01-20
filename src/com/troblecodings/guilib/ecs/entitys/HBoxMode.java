@@ -34,4 +34,29 @@ public class HBoxMode implements IBoxMode {
     public int getMin(final UIEntity entity) {
         return (int)entity.getMinWidth();
     }
+
+    @Override
+    public double choose(double x, double y) {
+        return x;
+    }
+
+    @Override
+    public int getPos(UIEntity entity) {
+        return (int) entity.getX();
+    }
+
+    @Override
+    public void inheritsBounds(UIEntity entity, boolean inherit) {
+        entity.setInheritWidth(inherit);
+    }
+
+    @Override
+    public IBoxMode getOrthogonal() {
+        return UIBox.VBOX;
+    }
+
+    @Override
+    public double getWorldPos(UIEntity entity) {
+        return entity.getWorldX();
+    }
 }
