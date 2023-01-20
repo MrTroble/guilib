@@ -89,8 +89,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
             }
             this.worldWidth = (int) (this.worldScaleX * this.width);
             this.worldHeight = (int) (this.worldScaleY * this.height);
-            components.forEach(c -> c.update());
-            children.forEach(c -> c.update());
+            List.copyOf(components).forEach(c -> c.update());
+            List.copyOf(children).forEach(c -> c.update());
         }
     }
 
@@ -173,8 +173,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @Override
     public synchronized void updateEvent(final UpdateEvent event) {
         this.lastUpdateEvent = event;
-        this.children.forEach(c -> c.updateEvent(event));
-        this.components.forEach(c -> c.updateEvent(event));
+        List.copyOf(this.children).forEach(c -> c.updateEvent(event));
+        List.copyOf(this.components).forEach(c -> c.updateEvent(event));
         update();
     }
 
@@ -385,6 +385,14 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
             this.hovered = false;
         this.enableHovering = enableHovering;
         this.children.forEach(entity -> entity.setHoveringEnabled(enableHovering));
+    }
+
+    public double getWorldY() {
+        return worldY;
+    }
+
+    public double getWorldX() {
+        return worldX;
     }
 
 }

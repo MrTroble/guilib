@@ -11,10 +11,15 @@ import com.troblecodings.guilib.ecs.entitys.UIScrollBox;
 import com.troblecodings.guilib.ecs.entitys.UITextInput;
 import com.troblecodings.guilib.ecs.entitys.input.UIClickable;
 import com.troblecodings.guilib.ecs.entitys.input.UIOnUpdate;
+import com.troblecodings.guilib.ecs.entitys.input.UIScroll;
+import com.troblecodings.guilib.ecs.entitys.input.UIScrollBar;
+import com.troblecodings.guilib.ecs.entitys.render.UIBorder;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 import com.troblecodings.guilib.ecs.entitys.render.UILabel;
+import com.troblecodings.guilib.ecs.entitys.render.UIScissor;
 import com.troblecodings.guilib.ecs.entitys.render.UIToolTip;
+import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
@@ -116,10 +121,57 @@ public final class GuiElements {
                 value);
     }
 
+    public static UIEntity createScrollBar(final UIScrollBox scrollbox, final int insets,
+            final UIScroll scroll) {
+        IBoxMode mode = scrollbox.getMode();
+        IBoxMode orthogonal = mode.getOrthogonal();
+        final UIEntity entity = new UIEntity();
+        final UIEntity button = new UIEntity();
+        mode.inheritsBounds(entity, true);
+        mode.inheritsBounds(button, true);
+        button.setHeight(insets);
+        button.setWidth(insets);
+        orthogonal.setBounds(entity, insets);
+        entity.add(button);
+
+        button.add(new UIColor(0xFFFF00FF));
+        entity.add(new UIColor(0xFF0000FF));
+
+        entity.add(new UIScrollBar(scrollbox, insets, input -> {
+            final int position = (int) (Math.floor((mode.getBounds(entity) - insets) * input));
+            mode.setPos(button, position);
+            final int positionOfList = (int) (Math.floor(
+                    (scrollbox.getWholeBounds() - mode.getBounds(scrollbox.getParent())) * input));
+            mode.setPos(scrollbox.getParent(), -positionOfList);
+            scrollbox.getParent().update();
+        }, scroll));
+        return entity;
+    }
+
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
             final IIntegerable<?> property) {
-        return createScreen(list -> {
-            list.add(new UIScrollBox(UIBox.VBOX, 2));
+        return createScreen(searchPanel -> {
+            final UIEntity searchBar = new UIEntity();
+            searchBar.setInheritWidth(true);
+            searchBar.setHeight(20);
+            searchBar.add(new UITextInput("TEST"));
+            searchPanel.add(searchBar);
+
+            final UIEntity listWithScroll = new UIEntity();
+            listWithScroll.setInheritHeight(true);
+            listWithScroll.setInheritWidth(true);
+            listWithScroll.add(new UIBox(UIBox.HBOX, 2));
+            listWithScroll.add(new UIScissor());
+            listWithScroll.add(new UIBorder(0xFF000000));
+            searchPanel.add(listWithScroll);
+
+            final UIEntity list = new UIEntity();
+            listWithScroll.add(list);
+            list.setInheritHeight(true);
+            list.setInheritWidth(true);
+
+            final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
+            list.add(scrollbox);
             for (int i = 0; i < property.count(); i++) {
                 final int index = i;
                 list.add(createButton(property.getNamedObj(i), e -> {
@@ -127,6 +179,17 @@ public final class GuiElements {
                     e.getLastUpdateEvent().base.pop();
                 }));
             }
+            final UIScroll scroll = new UIScroll();
+            final UIEntity scrollBar = createScrollBar(scrollbox, 10, scroll);
+            scrollbox.setConsumer(size -> {
+                if (size > list.getHeight()) {
+                    listWithScroll.add(scroll);
+                    listWithScroll.add(scrollBar);
+                } else {
+                    listWithScroll.remove(scrollBar);
+                    listWithScroll.remove(scroll);
+                }
+            });
         });
     }
 
@@ -148,31 +211,12 @@ public final class GuiElements {
         searchPanel.setInheritHeight(true);
         searchPanel.setInheritWidth(true);
 
-        final UIEntity searchBar = new UIEntity();
-        searchBar.setInheritWidth(true);
-        searchBar.setHeight(20);
-        searchBar.add(new UITextInput("TEST"));
-        searchPanel.add(searchBar);
-
-        final UIEntity listWithScroll = new UIEntity();
-        listWithScroll.setInheritHeight(true);
-        listWithScroll.setInheritWidth(true);
-        listWithScroll.add(new UIBox(UIBox.HBOX, 2));
-        searchPanel.add(listWithScroll);
-
         inner.add(createSpacerV(insets));
         inner.add(searchPanel);
         inner.add(createSpacerV(insets));
         searchPanel.add(new UIColor(0x6F000000, 5));
 
-        final UIEntity list = new UIEntity();
-        listWithScroll.add(list);
-        list.setInheritHeight(true);
-        list.setInheritWidth(true);
-
-        entityConsumer.accept(list);
-
-        listWithScroll.add(createSpacerH(10));
+        entityConsumer.accept(searchPanel);
         return entity;
     }
 
