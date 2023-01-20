@@ -64,6 +64,11 @@ public final class GuiElements {
 
     public static UIEntity createBoolElement(final IIntegerable<?> property,
             final IntConsumer consumer) {
+        return createBoolElement(property, consumer, 0);
+    }
+
+    public static UIEntity createBoolElement(final IIntegerable<?> property,
+            final IntConsumer consumer, final int defaultValue) {
         final UIEntity middle = new UIEntity();
         middle.setHeight(20);
         middle.setInheritWidth(true);
@@ -71,6 +76,7 @@ public final class GuiElements {
         final SoundManager handler = Minecraft.getInstance().getSoundManager();
 
         final UICheckBox middleButton = new UICheckBox(property.getName());
+        middleButton.setChecked(defaultValue == 0 ? false : true);
         final UIClickable clickable = new UIClickable(e -> {
             middleButton.setChecked(!middleButton.isChecked());
             consumer.accept(middleButton.isChecked() ? 1 : 0);
@@ -87,14 +93,27 @@ public final class GuiElements {
 
     public static UIEntity createEnumElement(final IIntegerable<?> property,
             final IntConsumer consumer) {
+        return createEnumElement(property, consumer, 0);
+    }
+
+    public static UIEntity createEnumElement(final IIntegerable<?> property,
+            final IntConsumer consumer, final int value) {
         return createEnumElement(new UIEnumerable(property.count(), property.getName()), property,
-                consumer);
+                consumer, value);
     }
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer) {
         Minecraft mc = Minecraft.getInstance();
-        return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8);
+        return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8,
+                0);
+    }
+
+    public static UIEntity createEnumElement(final UIEnumerable enumerable,
+            final IIntegerable<?> property, final IntConsumer consumer, final int value) {
+        Minecraft mc = Minecraft.getInstance();
+        return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8,
+                value);
     }
 
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
@@ -158,7 +177,8 @@ public final class GuiElements {
     }
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
-            final IIntegerable<?> property, final IntConsumer consumer, final int minWidth) {
+            final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
+            final int value) {
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
         middle.setInheritWidth(true);

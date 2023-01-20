@@ -8,7 +8,7 @@ import com.troblecodings.core.interfaces.INetworkSync;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
@@ -27,7 +27,7 @@ public class NetworkHandler {
     private final EventNetworkChannel channel;
     private final ResourceLocation channelName;
 
-    public NetworkHandler(String modid, Logger logger) {
+    public NetworkHandler(final String modid, final Logger logger) {
         super();
         this.channelName = new ResourceLocation(modid, "guilib");
         this.channel = NetworkRegistry.newEventChannel(this.channelName, () -> modid,
@@ -36,7 +36,7 @@ public class NetworkHandler {
     }
 
     @SubscribeEvent
-    public void clientEvent(ClientCustomPayloadEvent event) {
+    public void clientEvent(final ClientCustomPayloadEvent event) {
         final AbstractContainerMenu menu = event.getSource().get().getSender().containerMenu;
         if (menu instanceof INetworkSync) {
             ((INetworkSync) menu).deserializeServer(event.getPayload().nioBuffer());
@@ -44,16 +44,15 @@ public class NetworkHandler {
     }
 
     @SubscribeEvent
-    public void serverEvent(ServerCustomPayloadEvent event) {
+    public void serverEvent(final ServerCustomPayloadEvent event) {
         final Minecraft mc = Minecraft.getInstance();
-        final LocalPlayer player = mc.player;
-        final AbstractContainerMenu menu = player.containerMenu;
-        if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeClient(event.getPayload().nioBuffer());
+        final Screen screen = mc.screen;
+        if (screen instanceof INetworkSync) {
+            ((INetworkSync) screen).deserializeClient(event.getPayload().nioBuffer());
         }
     }
 
-    public void sendTo(Player player, ByteBuffer buf) {
+    public void sendTo(final Player player, final ByteBuffer buf) {
         final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.copiedBuffer(buf.position(0)));
         if (player instanceof ServerPlayer) {
             final ServerPlayer server = (ServerPlayer) player;

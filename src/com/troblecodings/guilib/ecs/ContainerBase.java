@@ -1,12 +1,14 @@
 package com.troblecodings.guilib.ecs;
 
+import com.troblecodings.core.interfaces.INetworkSync;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ContainerBase extends AbstractContainerMenu {
+public class ContainerBase extends AbstractContainerMenu implements INetworkSync {
 
     private final GuiInfo info;
 
@@ -19,9 +21,9 @@ public class ContainerBase extends AbstractContainerMenu {
     @SuppressWarnings("resource")
     @OnlyIn(Dist.CLIENT)
     public void update() {
-        ((GuiBase)Minecraft.getInstance().screen).updateFromContainer();
+        ((GuiBase) Minecraft.getInstance().screen).updateFromContainer();
     }
-    
+
     @Override
     public boolean stillValid(Player player) {
         return true;
@@ -30,8 +32,7 @@ public class ContainerBase extends AbstractContainerMenu {
     public GuiInfo getInfo() {
         return info;
     }
-    
-    
+
     public Player getPlayer() {
         return info.player;
     }
