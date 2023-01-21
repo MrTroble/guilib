@@ -8,7 +8,6 @@ import com.troblecodings.core.interfaces.INetworkSync;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
@@ -40,6 +39,7 @@ public class NetworkHandler {
         final AbstractContainerMenu menu = event.getSource().get().getSender().containerMenu;
         if (menu instanceof INetworkSync) {
             ((INetworkSync) menu).deserializeServer(event.getPayload().nioBuffer());
+            event.getSource().get().setPacketHandled(true);
         }
     }
 
@@ -49,6 +49,7 @@ public class NetworkHandler {
         final AbstractContainerMenu menu = mc.player.containerMenu;
         if (menu instanceof INetworkSync) {
             ((INetworkSync) menu).deserializeClient(event.getPayload().nioBuffer());
+            event.getSource().get().setPacketHandled(true);
         }
     }
 
