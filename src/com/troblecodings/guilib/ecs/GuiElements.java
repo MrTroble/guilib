@@ -135,7 +135,8 @@ public final class GuiElements {
         orthogonal.setBounds(entity, insets);
         entity.add(button);
 
-        button.add(new UITexture(GuiBase.CREATIVE_TAB, 232.0f/256.0f, 0, 244.0f/256.0f, 15.0f/256.0f));
+        button.add(new UITexture(GuiBase.CREATIVE_TAB, 232.0f / 256.0f, 0, 244.0f / 256.0f,
+                15.0f / 256.0f));
         entity.add(new UIColor(0xFF3d3d3d));
 
         entity.add(new UIScrollBar(scrollbox, insets, input -> {
@@ -224,6 +225,7 @@ public final class GuiElements {
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
             final int value) {
+        enumerable.setIndex(value);
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
         middle.setInheritWidth(true);
@@ -242,7 +244,7 @@ public final class GuiElements {
         middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base
                 .push(createSelectionScreen(enumerable, property))));
 
-        acceptOr.accept(0);
+        acceptOr.accept(value);
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
         final String desc = property.getDescriptionForName();

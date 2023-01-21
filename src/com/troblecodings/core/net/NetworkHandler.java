@@ -46,9 +46,9 @@ public class NetworkHandler {
     @SubscribeEvent
     public void serverEvent(final ServerCustomPayloadEvent event) {
         final Minecraft mc = Minecraft.getInstance();
-        final Screen screen = mc.screen;
-        if (screen instanceof INetworkSync) {
-            ((INetworkSync) screen).deserializeClient(event.getPayload().nioBuffer());
+        final AbstractContainerMenu menu = mc.player.containerMenu;
+        if (menu instanceof INetworkSync) {
+            ((INetworkSync) menu).deserializeClient(event.getPayload().nioBuffer());
         }
     }
 

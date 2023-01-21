@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBase extends AbstractContainerScreen<ContainerBase> implements INetworkSync {
+public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
