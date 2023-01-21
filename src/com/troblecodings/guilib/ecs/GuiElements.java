@@ -18,6 +18,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 import com.troblecodings.guilib.ecs.entitys.render.UILabel;
 import com.troblecodings.guilib.ecs.entitys.render.UIScissor;
+import com.troblecodings.guilib.ecs.entitys.render.UITexture;
 import com.troblecodings.guilib.ecs.entitys.render.UIToolTip;
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
@@ -115,8 +116,8 @@ public final class GuiElements {
         orthogonal.setBounds(entity, insets);
         entity.add(button);
 
-        button.add(new UIColor(0xFFFF00FF));
-        entity.add(new UIColor(0xFF0000FF));
+        button.add(new UITexture(GuiBase.CREATIVE_TAB, 232.0f/256.0f, 0, 244.0f/256.0f, 15.0f/256.0f));
+        entity.add(new UIColor(0xFF3d3d3d));
 
         entity.add(new UIScrollBar(scrollbox, insets, input -> {
             final int position = (int) (Math.floor((mode.getBounds(entity) - insets) * input));
@@ -143,7 +144,7 @@ public final class GuiElements {
             listWithScroll.setInheritWidth(true);
             listWithScroll.add(new UIBox(UIBox.HBOX, 2));
             listWithScroll.add(new UIScissor());
-            listWithScroll.add(new UIBorder(0xFF000000));
+            listWithScroll.add(new UIBorder(0xFF00FFFF));
             searchPanel.add(listWithScroll);
 
             final UIEntity list = new UIEntity();
