@@ -5,6 +5,7 @@ import java.util.Stack;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.troblecodings.core.interfaces.INetworkSync;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -20,7 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBase extends AbstractContainerScreen<ContainerBase> {
+public class GuiBase extends AbstractContainerScreen<ContainerBase> implements INetworkSync {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -104,15 +105,16 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     public void updateFromContainer() {
-        
+
     }
-    
+
     private void updateSingle(UIEntity entity) {
         entity.setWidth(GUI_MIN_WIDTH);
         entity.setHeight(this.ySize - GUI_INSET);
         entity.setX(this.guiLeft + GUI_INSET);
         entity.setY(this.guiTop + GUI_INSET);
-        entity.updateEvent(new UpdateEvent(width, height, this.minecraft.getWindow().getGuiScale(), 1, this));
+        entity.updateEvent(
+                new UpdateEvent(width, height, this.minecraft.getWindow().getGuiScale(), 1, this));
     }
 
     public void push(UIEntity entity) {
@@ -151,7 +153,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, 0, 0, character));
         return super.charTyped(character, typedChar);
     }
-    
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
         lastButton = mouseButton;
@@ -185,6 +187,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {}
+    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
+    }
 
 }
