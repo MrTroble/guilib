@@ -7,19 +7,19 @@ import net.minecraft.world.Nameable;
 
 public interface NamableWrapper extends Nameable, StringRepresentable {
 
-	default String getNameAsStringWrapper() {
-		return getName().getContents();
-	}
-	
-	String getNameWrapper();
-	
-	@Override
-	default Component getName() {
-		return new TranslatableComponent(getNameWrapper());
-	}
-	
-	@Override
-	default String getSerializedName() {
-		return getNameWrapper();
-	}
+    default String getNameAsStringWrapper() {
+        return getName().getContents();
+    }
+
+    String getNameWrapper();
+
+    @Override
+    default Component getName() {
+        return new TranslatableComponent(getNameWrapper());
+    }
+
+    @Override
+    default String getSerializedName() {
+        return getNameWrapper();
+    }
 }
