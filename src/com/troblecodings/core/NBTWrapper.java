@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 public class NBTWrapper {
     public CompoundTag tag;
 
-    public NBTWrapper(CompoundTag tag) {
+    public NBTWrapper(final CompoundTag tag) {
         super();
         this.tag = tag;
     }
@@ -21,66 +21,66 @@ public class NBTWrapper {
         this(new CompoundTag());
     }
 
-    public boolean contains(String key) {
+    public boolean contains(final String key) {
         return tag.contains(key);
     }
 
-    public void putBoolean(String key, boolean value) {
+    public void putBoolean(final String key, final boolean value) {
         tag.putBoolean(key, value);
     }
 
-    public void putInteger(String key, int value) {
+    public void putInteger(final String key, final int value) {
         tag.putInt(key, value);
     }
 
-    public void putString(String key, String value) {
+    public void putString(final String key, final String value) {
         tag.putString(key, value);
     }
 
-    public void putFloat(String key, float value) {
+    public void putFloat(final String key, final float value) {
         tag.putFloat(key, value);
     }
 
-    public void putList(String key, Iterable<NBTWrapper> value) {
+    public void putList(final String key, final Iterable<NBTWrapper> value) {
         ListTag list = new ListTag();
         value.forEach(tagWrapper -> list.add(tagWrapper.tag));
         tag.put(key, list);
     }
 
-    public void putWrapper(String key, NBTWrapper value) {
+    public void putWrapper(final String key, final NBTWrapper value) {
         tag.put(key, value.tag);
     }
 
-    public void putBlockPos(String key, BlockPos value) {
+    public void putBlockPos(final String key, final BlockPos value) {
         putWrapper(key, getBlockPosWrapper(value));
     }
 
-    public boolean getBoolean(String key) {
+    public boolean getBoolean(final String key) {
         return tag.getBoolean(key);
     }
 
-    public int getInteger(String key) {
+    public int getInteger(final String key) {
         return tag.getInt(key);
     }
 
-    public String getString(String key) {
+    public String getString(final String key) {
         return tag.getString(key);
     }
 
-    public float getFloat(String key) {
+    public float getFloat(final String key) {
         return tag.getFloat(key);
     }
 
-    public BlockPos getBlockPos(String key) {
+    public BlockPos getBlockPos(final String key) {
         return getWrapper(key).getAsPos();
     }
 
-    public List<NBTWrapper> getList(String key) {
+    public List<NBTWrapper> getList(final String key) {
         ListTag list = (ListTag) tag.get(key);
         return list.stream().map(tag -> new NBTWrapper((CompoundTag) tag)).toList();
     }
 
-    public NBTWrapper getWrapper(String key) {
+    public NBTWrapper getWrapper(final String key) {
         return new NBTWrapper((CompoundTag) tag.get(key));
     }
 
@@ -96,7 +96,11 @@ public class NBTWrapper {
         return this.tag.getAllKeys();
     }
 
-    public static NBTWrapper getBlockPosWrapper(BlockPos pos) {
+    public void remove(final String key) {
+        tag.remove(key);
+    }
+
+    public static NBTWrapper getBlockPosWrapper(final BlockPos pos) {
         return new NBTWrapper(NbtUtils.writeBlockPos(pos));
     }
 
