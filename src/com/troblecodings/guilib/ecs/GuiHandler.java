@@ -28,8 +28,7 @@ public final class GuiHandler {
         this.modid = modid;
         this.logger = logger;
         final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.register(this);
-
+        eventBus.register(new RegisterHolder());
     }
 
     @SuppressWarnings("rawtypes")
@@ -67,9 +66,12 @@ public final class GuiHandler {
                         new TextComponent(name)));
     }
 
-    @SubscribeEvent
-    public void registerMenuType(final RegistryEvent.Register<MenuType<?>> event) {
-        final IForgeRegistry<MenuType<?>> registry = event.getRegistry();
-        guiIDS.forEach((_u, type) -> registry.register(type));
+    private final class RegisterHolder {
+        @SubscribeEvent
+        public void registerMenuType(final RegistryEvent.Register<MenuType<?>> event) {
+            final IForgeRegistry<MenuType<?>> registry = event.getRegistry();
+            guiIDS.forEach((_u, type) -> registry.register(type));
+        }
     }
+
 }
