@@ -22,10 +22,10 @@ public class UILabel extends UIComponent {
     private boolean centerX = true;
     private boolean centerY = true;
 
-	public UILabel(final String text) {
+    public UILabel(final String text) {
         this.string = text;
         this.stringColor = DEFAULT_STRING_COLOR;
-        Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         this.renderer = mc.font;
     }
 
@@ -44,9 +44,9 @@ public class UILabel extends UIComponent {
     @Override
     public void update() {
         if (this.centerY)
-            this.restHeight = ((int)this.parent.getHeight() - this.getTextHeight()) / 2;
+            this.restHeight = ((int) this.parent.getHeight() - this.getTextHeight()) / 2;
         if (this.centerX)
-            this.restWidth = ((int)this.parent.getWidth() - this.getTextWidth()) / 2;
+            this.restWidth = ((int) this.parent.getWidth() - this.getTextWidth()) / 2;
     }
 
     public String getText() {

@@ -19,7 +19,7 @@ public interface IIntegerable<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public String getNamedObj(int obj) {
+    default public String getNamedObj(final int obj) {
         return getLocalizedName() + ": " + I18n.get("property.value." + getObjFromID(obj));
     }
 

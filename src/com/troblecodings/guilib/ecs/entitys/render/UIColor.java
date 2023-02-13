@@ -48,7 +48,7 @@ public class UIColor extends UIComponent {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(final int color) {
         this.color = color;
     }
 

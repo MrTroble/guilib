@@ -25,7 +25,7 @@ public class ContainerBase extends AbstractContainerMenu implements INetworkSync
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(final Player player) {
         return true;
     }
 

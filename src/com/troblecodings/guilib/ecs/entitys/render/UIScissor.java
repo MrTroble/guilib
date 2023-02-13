@@ -26,7 +26,7 @@ public class UIScissor extends UIComponent {
     }
 
     @Override
-    public void updateEvent(UpdateEvent lastUpdateEvent) {
+    public void updateEvent(final UpdateEvent lastUpdateEvent) {
         this.height = (int) (parent.getHeight() * lastUpdateEvent.scaleFactor);
         this.width = (int) (parent.getWidth() * lastUpdateEvent.scaleFactor);
         if (this.height < 0)

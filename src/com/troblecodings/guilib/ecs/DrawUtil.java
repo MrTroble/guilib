@@ -138,7 +138,7 @@ public final class DrawUtil {
 
         public static <T> IIntegerable<T> of(final String name, final int count,
                 final ObjGetter<T> get) {
-            return new SizeIntegerables<T>(name, count, get);
+            return new SizeIntegerables<>(name, count, get);
         }
 
         @Override
@@ -231,7 +231,7 @@ public final class DrawUtil {
         }
     }
 
-    public static void drawCenteredString(DrawInfo info, final Font fontRendererIn,
+    public static void drawCenteredString(final DrawInfo info, final Font fontRendererIn,
             final String text, final int x, final int y, final int color) {
         fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
     }

@@ -5,7 +5,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity;
 public interface IBoxMode {
 
     int getBounds(UIEntity entity);
-    
+
     int getPos(UIEntity entity);
 
     double getWorldPos(UIEntity entity);
@@ -21,8 +21,8 @@ public interface IBoxMode {
     void post(UIEntity entity);
 
     int getMin(UIEntity entity);
-    
+
     double choose(double x, double y);
-    
+
     IBoxMode getOrthogonal();
 }

@@ -14,7 +14,7 @@ public class UIRotate extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    	info.stack.mulPose(Quaternion.fromXYZ(rotateX, rotateY, rotateZ));
+        info.stack.mulPose(Quaternion.fromXYZ(rotateX, rotateY, rotateZ));
     }
 
     @Override

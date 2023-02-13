@@ -11,7 +11,7 @@ public class UIScrollBox extends UIComponent {
     private int wholeBounds = 0;
     private IntConsumer consumer;
 
-    public UIScrollBox(IBoxMode mode, int spacer) {
+    public UIScrollBox(final IBoxMode mode, final int spacer) {
         super();
         this.mode = mode;
         this.spacer = spacer;
@@ -21,7 +21,7 @@ public class UIScrollBox extends UIComponent {
         return consumer;
     }
 
-    public void setConsumer(IntConsumer consumer) {
+    public void setConsumer(final IntConsumer consumer) {
         this.consumer = consumer;
     }
 
@@ -45,7 +45,7 @@ public class UIScrollBox extends UIComponent {
     }
 
     @Override
-    public void draw(DrawInfo info) {
+    public void draw(final DrawInfo info) {
     }
 
 }

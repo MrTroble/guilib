@@ -31,7 +31,8 @@ public class UIToolTip extends UIComponent {
     @Override
     public void postDraw(final DrawInfo info) {
         if (this.parent.isHovered()) {
-            final String desc = (Screen.hasShiftDown() || this.descripton.length() < 200) ? this.descripton
+            final String desc = (Screen.hasShiftDown() || this.descripton.length() < 200)
+                    ? this.descripton
                     : I18n.get("gui.keyprompt");
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
@@ -42,7 +43,7 @@ public class UIToolTip extends UIComponent {
     }
 
     @Override
-    public void keyEvent(KeyEvent event) {
+    public void keyEvent(final KeyEvent event) {
     }
 
     @Override

@@ -39,7 +39,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     private int lastButton = -1;
 
-    public GuiBase(GuiInfo info) {
+    public GuiBase(final GuiInfo info) {
         super(info.base, info.inventory, info.component);
         this.entityStack.add(new UIEntity());
         this.entity = entityStack.lastElement();
@@ -95,9 +95,9 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public void render(PoseStack stack, int mx, int my, float tick) {
+    public void render(final PoseStack stack, final int mx, final int my, final float tick) {
         this.renderBackground(stack);
-        DrawInfo info = new DrawInfo(mx, my, stack, tick);
+        final DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> entity.draw(info));
         this.entityStack.lastElement().postDraw(info);
@@ -107,7 +107,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
 
     }
 
-    private void updateSingle(UIEntity entity) {
+    private void updateSingle(final UIEntity entity) {
         entity.setWidth(GUI_MIN_WIDTH);
         entity.setHeight(this.ySize - GUI_INSET);
         entity.setX(this.guiLeft + GUI_INSET);
@@ -116,7 +116,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
                 new UpdateEvent(width, height, this.minecraft.getWindow().getGuiScale(), 1, this));
     }
 
-    public void push(UIEntity entity) {
+    public void push(final UIEntity entity) {
         this.entityStack.lastElement().setHoveringEnabled(false);
         entity.setHoveringEnabled(true);
         this.entityStack.push(entity);
@@ -139,7 +139,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean keyPressed(int typedChar, int keyCode, int time) {
+    public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
         if (keyCode == 1) {
             this.mc.player.closeContainer();
         }
@@ -148,13 +148,13 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean charTyped(char character, int typedChar) {
+    public boolean charTyped(final char character, final int typedChar) {
         this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, 0, 0, character));
         return super.charTyped(character, typedChar);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+    public boolean mouseClicked(final double mouseX, final double mouseY, final int mouseButton) {
         lastButton = mouseButton;
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
@@ -162,22 +162,22 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
+    public boolean mouseReleased(final double mouseX, final double mouseY, final int mouseButton) {
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
         return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int clickedMouseButton,
-            double p_94702_, double p_94703_) {
+    public boolean mouseDragged(final double mouseX, final double mouseY,
+            final int clickedMouseButton, final double p_94702_, final double p_94703_) {
         this.entityStack.lastElement().mouseEvent(
                 new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
         return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+    public boolean mouseScrolled(final double mouseX, final double mouseY, final double scroll) {
         if (scroll != 0) {
             this.entityStack.lastElement()
                     .mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
@@ -186,7 +186,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
+    protected void renderBg(final PoseStack p_97787_, final float p_97788_, final int p_97789_,
+            final int p_97790_) {
     }
 
 }

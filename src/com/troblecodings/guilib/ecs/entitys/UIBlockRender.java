@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class UIBlockRender extends UIComponent {
 
-    private final AtomicReference<BufferBuilder> model = new AtomicReference<BufferBuilder>(
+    private final AtomicReference<BufferBuilder> model = new AtomicReference<>(
             new BufferBuilder(500));
 
     private final TextureManager manager;
@@ -25,7 +25,7 @@ public class UIBlockRender extends UIComponent {
     private Vec3 vector;
 
     public UIBlockRender() {
-        Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         manager = mc.getTextureManager();
         shapes = mc.getBlockRenderer().getBlockModelShaper();
     }

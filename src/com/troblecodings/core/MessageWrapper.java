@@ -7,16 +7,16 @@ import net.minecraft.world.entity.player.Player;
 
 public interface MessageWrapper {
 
-	default void messageWrapper(Player player, String message) {
-		internalMessage(player, new TextComponent(message));
-	}
-	
-	default void translateMessageWrapper(Player player, String message) {
-		internalMessage(player, new TranslatableComponent(message));
-	}
-	
-	default void internalMessage(Player player, Component comp) {
-		player.sendMessage(comp, player.getUUID());
-	}
-	
+    default void messageWrapper(final Player player, final String message) {
+        internalMessage(player, new TextComponent(message));
+    }
+
+    default void translateMessageWrapper(final Player player, final String message) {
+        internalMessage(player, new TranslatableComponent(message));
+    }
+
+    default void internalMessage(final Player player, final Component comp) {
+        player.sendMessage(comp, player.getUUID());
+    }
+
 }

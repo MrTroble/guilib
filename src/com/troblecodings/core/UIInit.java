@@ -20,7 +20,7 @@ public final class UIInit {
     /**
      * Initializes the GUI system must be called by the mod in it's according
      * initialization
-     * 
+     *
      * @param modid , the modid of the owning mod
      */
     public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
@@ -31,7 +31,7 @@ public final class UIInit {
     /**
      * Initializes the GUI system must be called by the mod in it's according
      * initialization
-     * 
+     *
      * @param modid , the modid of the owning mod
      * @param debug , whether debugging should be enabled or not
      */
@@ -44,7 +44,7 @@ public final class UIInit {
 
     /**
      * Checks if debugging is enabled or not
-     * 
+     *
      * @return true if debug is enabled false otherwise
      */
     public static boolean isDebugEnabled() {

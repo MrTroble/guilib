@@ -12,7 +12,7 @@ public class UIEnumerable extends UIComponent {
     private int index;
     private int max;
     private int min;
-    private String id;
+    private final String id;
 
     public UIEnumerable(final int max, final String id) {
         this.max = max;

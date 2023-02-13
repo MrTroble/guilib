@@ -38,7 +38,7 @@ public class GuiInfo {
         return (T) world.getBlockEntity(pos);
     }
 
-    public GuiInfo with(Component component) {
+    public GuiInfo with(final Component component) {
         this.component = component;
         return this;
     }

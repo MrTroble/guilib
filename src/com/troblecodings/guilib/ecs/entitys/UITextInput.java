@@ -22,7 +22,7 @@ public class UITextInput extends UIComponent {
     private Predicate<String> validator = string -> true;
 
     public UITextInput(final String id) {
-        Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
         this.textInput.setCanLoseFocus(false);
         this.textInput.setFocus(false);
@@ -38,8 +38,8 @@ public class UITextInput extends UIComponent {
 
     @Override
     public void update() {
-        textInput.setWidth((int)this.parent.getWidth());
-        textInput.setHeight((int)this.parent.getHeight());
+        textInput.setWidth((int) this.parent.getWidth());
+        textInput.setHeight((int) this.parent.getHeight());
         textInput.setMessage(textInput.getMessage());
     }
 
@@ -53,9 +53,9 @@ public class UITextInput extends UIComponent {
 
     @Override
     public void keyEvent(final KeyEvent event) {
-        if(event.character == 0)
+        if (event.character == 0)
             this.textInput.keyPressed(event.typedChar, event.keyCode, event.time);
-        if(event.character != 0)
+        if (event.character != 0)
             this.textInput.charTyped(event.character, event.typedChar);
     }
 
@@ -93,6 +93,7 @@ public class UITextInput extends UIComponent {
     }
 
     public void setText(final String text) {
-        this.textInput.setMessage(new TextComponent(text));;
+        this.textInput.setMessage(new TextComponent(text));
+
     }
 }

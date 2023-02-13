@@ -25,7 +25,7 @@ public class UIScale extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    	info.stack.scale(this.scaleX, this.scaleY, this.scaleZ);
+        info.stack.scale(this.scaleX, this.scaleY, this.scaleZ);
     }
 
     @Override

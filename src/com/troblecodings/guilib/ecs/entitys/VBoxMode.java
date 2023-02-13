@@ -6,7 +6,7 @@ public class VBoxMode implements IBoxMode {
 
     @Override
     public int getBounds(final UIEntity entity) {
-        return (int)entity.getHeight();
+        return (int) entity.getHeight();
     }
 
     @Override
@@ -32,31 +32,31 @@ public class VBoxMode implements IBoxMode {
 
     @Override
     public int getMin(final UIEntity entity) {
-        return (int)entity.getMinHeight();
+        return (int) entity.getMinHeight();
     }
 
     @Override
-    public double choose(double x, double y) {
+    public double choose(final double x, final double y) {
         return y;
     }
 
     @Override
-    public int getPos(UIEntity entity) {
+    public int getPos(final UIEntity entity) {
         return (int) entity.getY();
     }
 
     @Override
-    public void inheritsBounds(UIEntity entity, boolean inherit) {
+    public void inheritsBounds(final UIEntity entity, final boolean inherit) {
         entity.setInheritHeight(inherit);
     }
-    
+
     @Override
     public IBoxMode getOrthogonal() {
         return UIBox.HBOX;
     }
 
     @Override
-    public double getWorldPos(UIEntity entity) {
+    public double getWorldPos(final UIEntity entity) {
         return entity.getWorldY();
     }
 

@@ -110,22 +110,22 @@ public final class GuiElements {
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer) {
-        Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8,
                 0);
     }
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int value) {
-        Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getInstance();
         return createEnumElement(enumerable, property, consumer, property.getMaxWidth(mc.font) + 8,
                 value);
     }
 
     public static UIEntity createScrollBar(final UIScrollBox scrollbox, final int insets,
             final UIScroll scroll) {
-        IBoxMode mode = scrollbox.getMode();
-        IBoxMode orthogonal = mode.getOrthogonal();
+        final IBoxMode mode = scrollbox.getMode();
+        final IBoxMode orthogonal = mode.getOrthogonal();
         final UIEntity entity = new UIEntity();
         final UIEntity button = new UIEntity();
         mode.inheritsBounds(entity, true);
@@ -195,7 +195,7 @@ public final class GuiElements {
         });
     }
 
-    public static UIEntity createScreen(Consumer<UIEntity> entityConsumer) {
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {
         final int insets = 40;
 
         final UIEntity entity = new UIEntity();

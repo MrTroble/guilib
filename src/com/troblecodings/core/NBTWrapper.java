@@ -42,7 +42,7 @@ public class NBTWrapper {
     }
 
     public void putList(final String key, final Iterable<NBTWrapper> value) {
-        ListTag list = new ListTag();
+        final ListTag list = new ListTag();
         value.forEach(tagWrapper -> list.add(tagWrapper.tag));
         tag.put(key, list);
     }
@@ -76,7 +76,7 @@ public class NBTWrapper {
     }
 
     public List<NBTWrapper> getList(final String key) {
-        ListTag list = (ListTag) tag.get(key);
+        final ListTag list = (ListTag) tag.get(key);
         return list.stream().map(tag -> new NBTWrapper((CompoundTag) tag)).toList();
     }
 

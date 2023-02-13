@@ -41,8 +41,8 @@ public final class GuiHandler {
         if (!guiIDS.containsKey(clazz))
             throw new IllegalArgumentException("Register server side before client!");
         guiBases.put(clazz, gui);
-        MenuScreens.ScreenConstructor<ContainerBase, GuiBase> constructor = (base, inventory,
-                component) -> gui.apply(((ContainerBase) base).getInfo().with(component));
+        final MenuScreens.ScreenConstructor<ContainerBase, GuiBase> constructor = (base, inventory,
+                component) -> gui.apply(base.getInfo().with(component));
         MenuScreens.register(guiIDS.get(clazz), constructor);
     }
 

@@ -18,7 +18,8 @@ public class UIScrollBar extends UIComponent {
     private boolean wasClicked = false;
     private final UIScroll scroll;
 
-    public UIScrollBar(UIScrollBox box, int inset, DoubleConsumer consumer, UIScroll scroll) {
+    public UIScrollBar(final UIScrollBox box, final int inset, final DoubleConsumer consumer,
+            final UIScroll scroll) {
         this.box = box;
         this.inset = inset;
         this.consumer = consumer;
@@ -27,16 +28,16 @@ public class UIScrollBar extends UIComponent {
         this.internalValue = 0;
     }
 
-    private void onScroll(double in) {
+    private void onScroll(final double in) {
         internalValue = clamp(internalValue - (in * 0.05));
         consumer.accept(internalValue);
     }
 
-    private double clamp(double in) {
+    private double clamp(final double in) {
         return Math.min(1.0f, Math.max(0.0f, in));
     }
 
-    private void updateValue(double data) {
+    private void updateValue(final double data) {
         final IBoxMode mode = box.getMode();
         final double pos = data - mode.getWorldPos(parent);
         final double localValue = pos / (mode.getBounds(parent) - inset);
@@ -49,7 +50,7 @@ public class UIScrollBar extends UIComponent {
     }
 
     @Override
-    public void mouseEvent(MouseEvent event) {
+    public void mouseEvent(final MouseEvent event) {
         if (parent.isHovered()) {
             if (event.state.equals(EnumMouseState.CLICKED)) {
                 wasClicked = true;
@@ -64,7 +65,7 @@ public class UIScrollBar extends UIComponent {
     }
 
     @Override
-    public void draw(DrawInfo info) {
+    public void draw(final DrawInfo info) {
     }
 
     @Override

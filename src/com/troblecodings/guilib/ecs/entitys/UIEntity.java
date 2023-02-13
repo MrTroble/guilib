@@ -266,7 +266,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         public final GuiBase base;
 
         public UpdateEvent(final int width, final int height, final double scaleFactor,
-                final int guiScale, GuiBase base) {
+                final int guiScale, final GuiBase base) {
             this.width = width;
             this.height = height;
             this.scaleFactor = scaleFactor;
@@ -282,7 +282,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         public final int time;
         public final char character;
 
-        public KeyEvent(int typedChar, int keyCode, int time, char character) {
+        public KeyEvent(final int typedChar, final int keyCode, final int time,
+                final char character) {
             super();
             this.typedChar = typedChar;
             this.keyCode = keyCode;
@@ -290,7 +291,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
             this.character = character;
         }
 
-        public KeyEvent(int typedChar, int keyCode, int time) {
+        public KeyEvent(final int typedChar, final int keyCode, final int time) {
             this(typedChar, keyCode, time, (char) 0);
         }
 
@@ -318,7 +319,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
             this.inputLayer = inputLayer;
         }
 
-        public MouseEvent promote(int value) {
+        public MouseEvent promote(final int value) {
             return new MouseEvent(x, y, key, state, this.inputLayer + value);
         }
     }
@@ -372,7 +373,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         return layoutable;
     }
 
-    public void setLayoutable(boolean layoutable) {
+    public void setLayoutable(final boolean layoutable) {
         this.layoutable = layoutable;
     }
 
@@ -380,7 +381,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         return enableHovering;
     }
 
-    public void setHoveringEnabled(boolean enableHovering) {
+    public void setHoveringEnabled(final boolean enableHovering) {
         if (!enableHovering)
             this.hovered = false;
         this.enableHovering = enableHovering;

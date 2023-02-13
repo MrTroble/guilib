@@ -6,7 +6,7 @@ public class HBoxMode implements IBoxMode {
 
     @Override
     public int getBounds(final UIEntity entity) {
-        return (int)entity.getWidth();
+        return (int) entity.getWidth();
     }
 
     @Override
@@ -32,21 +32,21 @@ public class HBoxMode implements IBoxMode {
 
     @Override
     public int getMin(final UIEntity entity) {
-        return (int)entity.getMinWidth();
+        return (int) entity.getMinWidth();
     }
 
     @Override
-    public double choose(double x, double y) {
+    public double choose(final double x, final double y) {
         return x;
     }
 
     @Override
-    public int getPos(UIEntity entity) {
+    public int getPos(final UIEntity entity) {
         return (int) entity.getX();
     }
 
     @Override
-    public void inheritsBounds(UIEntity entity, boolean inherit) {
+    public void inheritsBounds(final UIEntity entity, final boolean inherit) {
         entity.setInheritWidth(inherit);
     }
 
@@ -56,7 +56,7 @@ public class HBoxMode implements IBoxMode {
     }
 
     @Override
-    public double getWorldPos(UIEntity entity) {
+    public double getWorldPos(final UIEntity entity) {
         return entity.getWorldX();
     }
 }

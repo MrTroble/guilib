@@ -16,31 +16,31 @@ public class DrawInfo {
     public final PoseStack stack;
     public final float tick;
 
-    public DrawInfo(int mouseX, int mouseY, PoseStack stack, float tick) {
+    public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
         super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.stack = stack;
         this.tick = tick;
     }
-    
+
     public void applyColor() {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
-    
+
     public void push() {
         this.stack.pushPose();
     }
-    
+
     public void pop() {
         this.stack.popPose();
     }
 
-    public void translate(double x, double y, double z) {
+    public void translate(final double x, final double y, final double z) {
         this.stack.translate(x, y, z);
     }
 
-    public void scale(double x, double y, double z) {
+    public void scale(final double x, final double y, final double z) {
         this.stack.scale((float) x, (float) y, (float) z);
     }
 
@@ -57,7 +57,7 @@ public class DrawInfo {
         this.color(1, 1, 1, 1);
     }
 
-    public void color(double r, double g, double b, double a) {
+    public void color(final double r, final double g, final double b, final double a) {
         RenderSystem.setShaderColor((float) r, (float) g, (float) b, (float) a);
     }
 
@@ -78,16 +78,16 @@ public class DrawInfo {
         RenderSystem.disableDepthTest();
     }
 
-    public void scissorOn(int x, int y, int width, int height) {
+    public void scissorOn(final int x, final int y, final int width, final int height) {
         RenderSystem.enableScissor(x, y, width, height);
     }
-    
+
     public void scissorOff() {
         RenderSystem.disableScissor();
     }
-    
-    public BufferWrapper builder(VertexFormat.Mode mode, VertexFormat format) {
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
+
+    public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
+        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
         builder.begin(mode, format);
         return new BufferWrapper(builder, this.stack.last().pose());
     }
