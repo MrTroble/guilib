@@ -92,7 +92,7 @@ public class NBTWrapper {
         return new NBTWrapper(this.tag.copy());
     }
 
-    public Set<String> keys() {
+    public Set<String> keySet() {
         return this.tag.getAllKeys();
     }
 

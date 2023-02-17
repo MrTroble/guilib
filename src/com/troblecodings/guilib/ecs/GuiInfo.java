@@ -15,7 +15,7 @@ public class GuiInfo {
     public final MenuType<?> type;
     public final int id;
     public final Level world;
-    public final Player player;
+    public Player player;
     public final Inventory inventory;
     public Component component = new TextComponent("");
     @Nullable
