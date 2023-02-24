@@ -2,13 +2,16 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 
 public class DrawInfo {
     public final int mouseX;
@@ -57,6 +60,11 @@ public class DrawInfo {
         this.color(1, 1, 1, 1);
     }
 
+    public void color(final int color) {
+        this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
+                FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
+    }
+
     public void color(final double r, final double g, final double b, final double a) {
         RenderSystem.setShaderColor((float) r, (float) g, (float) b, (float) a);
     }
@@ -84,6 +92,25 @@ public class DrawInfo {
 
     public void scissorOff() {
         RenderSystem.disableScissor();
+    }
+
+    private double[] normalVector(final double[] vectors, final int offset, final double multiple) {
+        final double xR = vectors[offset] - vectors[offset + 2];
+        final double yR = vectors[offset + 1] - vectors[offset + 3];
+        final double value = Math.hypot(xR, yR);
+        return new double[] {
+                -(yR / value) * multiple, (xR / value) * multiple
+        };
+    }
+
+    public void lines(final float width, final double[] lines) {
+        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
+        RenderSystem.lineWidth(width);
+        final BufferWrapper bufferbuilder = this.builder(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        for (int i = 0; i < lines.length; i += 2) {
+            bufferbuilder.pos(lines[i], lines[i + 1], 0.0D).color(0, 0, 0, 255).normal(1.0F, 0.0F, 0.0F).end();
+        }
+        this.end();
     }
 
     public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {

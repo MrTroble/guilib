@@ -21,6 +21,11 @@ public class BufferWrapper {
         return this;
     }
 
+    public BufferWrapper normal(final float x, final float y, final float z) {
+        builder.normal(x, y, z);
+        return this;
+    }
+
     public BufferWrapper color(final int color) {
         return this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
                 FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
