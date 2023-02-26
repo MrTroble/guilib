@@ -26,6 +26,8 @@ public class UIComponentEntity extends UIComponent {
     @Override
     public void update() {
         this.entity.update();
+        this.entity.setWidth(this.parent.getWidth());
+        this.entity.setHeight(this.parent.getHeight());
     }
 
     @Override
