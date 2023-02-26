@@ -6,7 +6,6 @@ import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,9 +17,8 @@ public class UITexture extends UIComponent {
     private final double u, v, mu, mv;
     private final ResourceLocation texture;
 
-    @SuppressWarnings("deprecation")
     public UITexture(final TextureAtlasSprite sprite) {
-        this(TextureAtlas.LOCATION_BLOCKS, sprite.getU0(), sprite.getV0(), sprite.getU1(),
+        this(sprite.atlas().location(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
                 sprite.getV1());
     }
 
