@@ -249,6 +249,11 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         this.inheritWidth = inheritWidth;
     }
 
+    public void setInherits(final boolean inherit) {
+        this.inheritHeight = inherit;
+        this.inheritWidth = inherit;
+    }
+
     public UpdateEvent getLastUpdateEvent() {
         return lastUpdateEvent;
     }
