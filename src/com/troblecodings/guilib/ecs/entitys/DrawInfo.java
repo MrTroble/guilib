@@ -29,6 +29,7 @@ public class DrawInfo {
 
     public void applyColor() {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        color();
     }
 
     public void push() {
