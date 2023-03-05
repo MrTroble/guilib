@@ -1,6 +1,5 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
@@ -37,7 +36,6 @@ public class UIColor extends UIComponent {
                     (int) parent.getHeight() + insets, this.color);
             info.end();
             info.blendOff();
-            System.out.println(RenderSystem.getShader().getName());
         }
     }
 
