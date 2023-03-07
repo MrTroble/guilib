@@ -44,9 +44,11 @@ public class UILabel extends UIComponent {
     @Override
     public void update() {
         if (this.centerY)
-            this.restHeight = (int) (((int) this.parent.getHeight() - this.getTextHeight() * parent.getScaleY()) / 2);
+            this.restHeight = (int) (((int) this.parent.getHeight()
+                    - this.getTextHeight() * parent.getScaleY()) / 2);
         if (this.centerX)
-            this.restWidth = (int) (((int) this.parent.getWidth() - this.getTextWidth() * parent.getScaleX()) / 2);
+            this.restWidth = (int) (((int) this.parent.getWidth()
+                    - this.getTextWidth() * parent.getScaleX()) / 2);
     }
 
     public String getText() {

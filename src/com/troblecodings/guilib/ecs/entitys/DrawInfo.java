@@ -107,15 +107,18 @@ public class DrawInfo {
     public void lines(final float width, final double[] lines) {
         RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
         RenderSystem.lineWidth(width);
-        final BufferWrapper bufferbuilder = this.builder(Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        final BufferWrapper bufferbuilder = this.builder(Mode.LINES,
+                DefaultVertexFormat.POSITION_COLOR_NORMAL);
         for (int i = 0; i < lines.length; i += 4) {
             final double xR = lines[i] - lines[i + 2];
-            final double yR =  lines[i + 1] - lines[i + 3];
+            final double yR = lines[i + 1] - lines[i + 3];
             final double hypot = Math.hypot(xR, yR);
-            final float normalX = Math.abs((float)(xR / hypot));
-            final float normalY =  Math.abs((float)(yR / hypot));
-            bufferbuilder.pos(lines[i], lines[i + 1], 0.0D).color(0, 0, 0, 255).normal(normalX, normalY, 0.0F).end();
-            bufferbuilder.pos(lines[i + 2], lines[i + 3], 0.0D).color(0, 0, 0, 255).normal(normalX, normalY, 0.0F).end();
+            final float normalX = Math.abs((float) (xR / hypot));
+            final float normalY = Math.abs((float) (yR / hypot));
+            bufferbuilder.pos(lines[i], lines[i + 1], 0.0D).color(0, 0, 0, 255)
+                    .normal(normalX, normalY, 0.0F).end();
+            bufferbuilder.pos(lines[i + 2], lines[i + 3], 0.0D).color(0, 0, 0, 255)
+                    .normal(normalX, normalY, 0.0F).end();
         }
         this.end();
     }
