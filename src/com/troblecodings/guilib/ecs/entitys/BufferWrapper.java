@@ -45,8 +45,8 @@ public class BufferWrapper {
         builder.endVertex();
     }
 
-    public BufferWrapper quad(final int xLeft, final int xRight, final int yTop, final int yBottom,
-            final int color) {
+    public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
+            final float yBottom, final int color) {
         builder.vertex(matrix, xRight, yTop, 0).color(color).endVertex();
         builder.vertex(matrix, xLeft, yTop, 0).color(color).endVertex();
         builder.vertex(matrix, xLeft, yBottom, 0).color(color).endVertex();
@@ -54,8 +54,9 @@ public class BufferWrapper {
         return this;
     }
 
-    public BufferWrapper quad(final int xLeft, final int xRight, final int yTop, final int yBottom,
-            final float uStart, final float uEnd, final float vStart, final float vEnd) {
+    public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
+            final float yBottom, final float uStart, final float uEnd, final float vStart,
+            final float vEnd) {
         builder.vertex(matrix, xRight, yTop, 0).uv((uEnd), (vStart)).endVertex();
         builder.vertex(matrix, xLeft, yTop, 0).uv((uStart), (vStart)).endVertex();
         builder.vertex(matrix, xLeft, yBottom, 0).uv((uStart), (vEnd)).endVertex();
@@ -63,8 +64,9 @@ public class BufferWrapper {
         return this;
     }
 
-    public BufferWrapper quadNonNormalized(final int xLeft, final int xRight, final int yTop,
-            final int yBottom, final int uStart, final int uEnd, final int vStart, final int vEnd) {
+    public BufferWrapper quadNonNormalized(final float xLeft, final float xRight, final float yTop,
+            final float yBottom, final int uStart, final int uEnd, final int vStart,
+            final int vEnd) {
         final float offset = 1f / 256.0f;
         return quad(xLeft, xRight, yTop, yBottom, uStart * offset, uEnd * offset, vStart * offset,
                 vEnd * offset);

@@ -95,30 +95,26 @@ public class DrawInfo {
         RenderSystem.disableScissor();
     }
 
-    private double[] normalVector(final double[] vectors, final int offset, final double multiple) {
-        final double xR = vectors[offset] - vectors[offset + 2];
-        final double yR = vectors[offset + 1] - vectors[offset + 3];
-        final double value = Math.hypot(xR, yR);
-        return new double[] {
-                -(yR / value) * multiple, (xR / value) * multiple
-        };
+    public void singleLine(final BufferWrapper wrapper, final float xLeft, final float xRight,
+            final float yTop, final float yBottom, final float width) {
+        final double deltaX = xLeft - xRight;
+        final double deltaY = yTop - yBottom;
+        final double hypot = Math.hypot(deltaX, deltaY);
+        final float normalX = Math.abs((float) (deltaX / hypot)) * (width / 2);
+        final float normalY = Math.abs((float) (deltaY / hypot)) * (width / 2);
+        wrapper.pos(xLeft - normalY, yTop - normalX, 0).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
+        wrapper.pos(xRight + normalY, yBottom + normalX, 0).end();
     }
 
-    public void lines(final float width, final double[] lines) {
-        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
-        RenderSystem.lineWidth(width);
-        final BufferWrapper bufferbuilder = this.builder(Mode.LINES,
-                DefaultVertexFormat.POSITION_COLOR_NORMAL);
+    public void lines(final float width, final float[] lines) {
+        final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
+                DefaultVertexFormat.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
-            final double xR = lines[i] - lines[i + 2];
-            final double yR = lines[i + 1] - lines[i + 3];
-            final double hypot = Math.hypot(xR, yR);
-            final float normalX = Math.abs((float) (xR / hypot));
-            final float normalY = Math.abs((float) (yR / hypot));
-            bufferbuilder.pos(lines[i], lines[i + 1], 0.0D).color(0, 0, 0, 255)
-                    .normal(normalX, normalY, 0.0F).end();
-            bufferbuilder.pos(lines[i + 2], lines[i + 3], 0.0D).color(0, 0, 0, 255)
-                    .normal(normalX, normalY, 0.0F).end();
+            singleLine(bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3], width);
         }
         this.end();
     }

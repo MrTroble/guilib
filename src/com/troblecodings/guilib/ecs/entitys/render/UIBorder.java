@@ -6,8 +6,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class UIBorder extends UILines {
 
-    private static final double[] BORDER_COORDINATES = new double[] {
-            0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1
+    private static final float[] BORDER_COORDINATES = new float[] {
+            0, 1, 1, 1, //
+            0, 0, 1, 0, //
+            1, 1, 1, 0, //
+            0, 1, 0, 0
     };
 
     public UIBorder(final int color) {
