@@ -111,6 +111,7 @@ public class DrawInfo {
     }
 
     public void lines(final float width, final float[] lines) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
         final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
                 DefaultVertexFormat.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
