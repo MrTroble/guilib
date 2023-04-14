@@ -22,8 +22,9 @@ public class UILines extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        info.color(this.color);
-        info.lines(this.width, this.lineCache);
+        info.depthOn();
+        info.lines(this.color, this.width, this.lineCache);
+        info.depthOff();
     }
 
     @Override

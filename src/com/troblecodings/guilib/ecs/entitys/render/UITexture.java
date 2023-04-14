@@ -37,6 +37,7 @@ public class UITexture extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
+        info.depthOn();
         info.applyTexture(texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
@@ -48,6 +49,7 @@ public class UITexture extends UIComponent {
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
         bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
         info.end();
+        info.depthOff();
     }
 
     @Override

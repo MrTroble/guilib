@@ -95,27 +95,28 @@ public class DrawInfo {
         RenderSystem.disableScissor();
     }
 
-    public void singleLine(final BufferWrapper wrapper, final float xLeft, final float xRight,
-            final float yTop, final float yBottom, final float width) {
+    public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
+            final float xRight, final float yTop, final float yBottom, final float width) {
         final double deltaX = xLeft - xRight;
         final double deltaY = yTop - yBottom;
         final double hypot = Math.hypot(deltaX, deltaY);
         final float normalX = Math.abs((float) (deltaX / hypot)) * (width / 2);
         final float normalY = Math.abs((float) (deltaY / hypot)) * (width / 2);
-        wrapper.pos(xLeft - normalY, yTop - normalX, 0).end();
-        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
-        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
-        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
-        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
-        wrapper.pos(xRight + normalY, yBottom + normalX, 0).end();
+        wrapper.pos(xLeft - normalY, yTop - normalX, 0).color(color).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).color(color).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).color(color).end();
+        wrapper.pos(xRight + normalY, yBottom + normalX, 0).color(color).end();
     }
 
-    public void lines(final float width, final float[] lines) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+    public void lines(final int color, final float width, final float[] lines) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormat.POSITION);
+                DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < lines.length; i += 4) {
-            singleLine(bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3], width);
+            singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
+                    width);
         }
         this.end();
     }
