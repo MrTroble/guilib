@@ -223,6 +223,7 @@ public final class DrawUtil {
         final BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         final IVertexConsumer consumer = new VertexBufferConsumer(builder);
         for (final BakedQuad quad : lst) {
+            @SuppressWarnings("unused")
             final int k = quad.isTinted()
                     ? (blockColors.getColor(ebs, null, null, quad.getTintIndex()) + 0xFF000000)
                     : 0xFFFFFFFF;

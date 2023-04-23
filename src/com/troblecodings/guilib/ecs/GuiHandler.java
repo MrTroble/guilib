@@ -22,6 +22,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public final class GuiHandler {
 
     private final String modid;
+    @SuppressWarnings("unused")
     private final Logger logger;
 
     public GuiHandler(final String modid, final Logger logger) {
