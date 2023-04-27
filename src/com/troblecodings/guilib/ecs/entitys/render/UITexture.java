@@ -1,13 +1,12 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,7 +42,7 @@ public class UITexture extends UIComponent {
         final double h = this.parent.getHeight();
 
         final BufferWrapper bufferbuilder = info.builder(Mode.QUADS,
-                DefaultVertexFormat.POSITION_TEX);
+                DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();

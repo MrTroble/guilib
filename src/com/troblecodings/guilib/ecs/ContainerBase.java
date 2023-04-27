@@ -3,12 +3,12 @@ package com.troblecodings.guilib.ecs;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ContainerBase extends AbstractContainerMenu implements INetworkSync {
+public class ContainerBase extends Container implements INetworkSync {
 
     private final GuiInfo info;
 
@@ -25,7 +25,7 @@ public class ContainerBase extends AbstractContainerMenu implements INetworkSync
     }
 
     @Override
-    public boolean stillValid(final Player player) {
+    public boolean stillValid(final PlayerEntity player) {
         return true;
     }
 
@@ -33,7 +33,7 @@ public class ContainerBase extends AbstractContainerMenu implements INetworkSync
         return info;
     }
 
-    public Player getPlayer() {
+    public PlayerEntity getPlayer() {
         return info.player;
     }
 

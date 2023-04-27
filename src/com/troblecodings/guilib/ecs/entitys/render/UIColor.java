@@ -1,11 +1,11 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,7 +31,7 @@ public class UIColor extends UIComponent {
             info.depthOff();
             info.blendOn();
             final BufferWrapper wrapper = info.builder(Mode.QUADS,
-                    DefaultVertexFormat.POSITION_COLOR);
+                    DefaultVertexFormats.POSITION_COLOR);
             wrapper.quad(-insets, (int) parent.getWidth() + insets, -insets,
                     (int) parent.getHeight() + insets, this.color);
             info.end();

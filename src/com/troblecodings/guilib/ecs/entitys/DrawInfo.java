@@ -1,25 +1,23 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Quaternion;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 
 public class DrawInfo {
     public final int mouseX;
     public final int mouseY;
-    public final PoseStack stack;
+    public final MatrixStack stack;
     public final float tick;
 
-    public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
+    public DrawInfo(final int mouseX, final int mouseY, final MatrixStack stack, final float tick) {
         super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
@@ -28,7 +26,6 @@ public class DrawInfo {
     }
 
     public void applyColor() {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         color();
     }
 
@@ -51,7 +48,7 @@ public class DrawInfo {
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
     }
-
+    
     public void applyTexture(final ResourceLocation location) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, location);
@@ -62,12 +59,13 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
-                FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
+        this.color(color >> 16 & 255, color >> 8 & 255,
+                color & 255, color >>> 24);
     }
 
+    @SuppressWarnings("deprecation")
     public void color(final double r, final double g, final double b, final double a) {
-        RenderSystem.setShaderColor((float) r, (float) g, (float) b, (float) a);
+        RenderSystem.color4f((float) r, (float) g, (float) b, (float) a);
     }
 
     public void blendOn() {
@@ -111,9 +109,8 @@ public class DrawInfo {
     }
 
     public void lines(final int color, final float width, final float[] lines) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormat.POSITION_COLOR);
+                DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
@@ -122,12 +119,12 @@ public class DrawInfo {
     }
 
     public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
-        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
         builder.begin(mode, format);
         return new BufferWrapper(builder, this.stack.last().pose());
     }
 
     public void end() {
-        Tesselator.getInstance().end();
+        Tessellator.getInstance().end();
     }
 }

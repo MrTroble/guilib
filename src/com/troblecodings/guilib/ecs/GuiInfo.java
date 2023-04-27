@@ -2,29 +2,28 @@ package com.troblecodings.guilib.ecs;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 
 public class GuiInfo {
 
-    public final MenuType<?> type;
+    public final ContainerType<?> type;
     public final int id;
-    public final Level world;
-    public Player player;
-    public final Inventory inventory;
-    public Component component = new TextComponent("");
+    public final World world;
+    public PlayerEntity player;
+    public final PlayerInventory inventory;
+    public StringTextComponent component;
     @Nullable
     public final BlockPos pos;
     @Nullable
     public ContainerBase base = null;
 
-    public GuiInfo(final MenuType<?> type, final int id, final Level world, final BlockPos pos,
-            final Player player, final Inventory inventory) {
+    public GuiInfo(final ContainerType<?> type, final int id, final World world, final BlockPos pos,
+            final PlayerEntity player, final PlayerInventory inventory) {
         this.type = type;
         this.id = id;
         this.world = world;
@@ -38,7 +37,7 @@ public class GuiInfo {
         return (T) world.getBlockEntity(pos);
     }
 
-    public GuiInfo with(final Component component) {
+    public GuiInfo with(final StringTextComponent component) {
         this.component = component;
         return this;
     }
