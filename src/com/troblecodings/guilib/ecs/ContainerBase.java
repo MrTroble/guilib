@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ContainerBase extends Container implements INetworkSync {
 
     private final GuiInfo info;
+    private boolean dataSend = false;
 
     public ContainerBase(final GuiInfo info) {
         super(info.type, info.id);
@@ -35,6 +36,18 @@ public class ContainerBase extends Container implements INetworkSync {
 
     public PlayerEntity getPlayer() {
         return info.player;
+    }
+
+    @Override
+    public void broadcastChanges() {
+        if (!dataSend) {
+            sendAllDataToRemote();
+            dataSend = true;
+        }
+        super.broadcastChanges();
+    }
+
+    public void sendAllDataToRemote() {
     }
 
 }

@@ -44,10 +44,10 @@ public class BufferWrapper {
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final int color) {
-        builder.vertex(matrix, xRight, yTop, 0).color(color).endVertex();
-        builder.vertex(matrix, xLeft, yTop, 0).color(color).endVertex();
-        builder.vertex(matrix, xLeft, yBottom, 0).color(color).endVertex();
-        builder.vertex(matrix, xRight, yBottom, 0).color(color).endVertex();
+        builder.vertex(matrix, xRight, yTop, 0).color(color, color, color, color).endVertex();
+        builder.vertex(matrix, xLeft, yTop, 0).color(color, color, color, color).endVertex();
+        builder.vertex(matrix, xLeft, yBottom, 0).color(color, color, color, color).endVertex();
+        builder.vertex(matrix, xRight, yBottom, 0).color(color, color, color, color).endVertex();
         return this;
     }
 

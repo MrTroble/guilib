@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -48,10 +47,10 @@ public class DrawInfo {
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
     }
-    
+
     public void applyTexture(final ResourceLocation location) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, location);
+        // RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        // RenderSystem.setShaderTexture(0, location);
     }
 
     public void color() {
@@ -59,8 +58,7 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(color >> 16 & 255, color >> 8 & 255,
-                color & 255, color >>> 24);
+        this.color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24);
     }
 
     @SuppressWarnings("deprecation")
@@ -109,8 +107,7 @@ public class DrawInfo {
     }
 
     public void lines(final int color, final float width, final float[] lines) {
-        final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormats.POSITION_COLOR);
+        final BufferWrapper bufferbuilder = this.builder(1, DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
@@ -118,7 +115,7 @@ public class DrawInfo {
         this.end();
     }
 
-    public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
+    public BufferWrapper builder(final int mode, final VertexFormat format) {
         final BufferBuilder builder = Tessellator.getInstance().getBuilder();
         builder.begin(mode, format);
         return new BufferWrapper(builder, this.stack.last().pose());

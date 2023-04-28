@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
@@ -200,7 +199,7 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        // BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,

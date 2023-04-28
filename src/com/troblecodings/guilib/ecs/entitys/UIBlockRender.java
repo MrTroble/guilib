@@ -51,7 +51,7 @@ public class UIBlockRender extends UIComponent {
         this.vector = new Vector3d(x, y, z);
         this.texture = manager.getTexture(state.getBlock().getRegistryName());
         final BufferBuilder builder = model.get();
-        builder.begin(Mode.QUADS, DefaultVertexFormats.BLOCK);
+        builder.begin(1, DefaultVertexFormats.BLOCK);
         DrawUtil.addToBuffer(builder, shapes, state);
         builder.building();
     }

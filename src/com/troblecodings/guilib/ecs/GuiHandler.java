@@ -6,7 +6,8 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
@@ -42,9 +43,14 @@ public final class GuiHandler {
         if (!guiIDS.containsKey(clazz))
             throw new IllegalArgumentException("Register server side before client!");
         guiBases.put(clazz, gui);
-        final MenuScreens.ScreenConstructor<ContainerBase, GuiBase> constructor = (base, inventory,
-                component) -> gui.apply(base.getInfo().with(component));
-        MenuScreens.register(guiIDS.get(clazz), constructor);
+        final IScreenFactory<ContainerBase, GuiBase> constructor = (container, inventory,
+                component) -> {
+            return gui.apply(
+                    new GuiInfo(guiIDS.get(clazz), 0, inventory.player.getCommandSenderWorld(),
+                            inventory.player.blockPosition(), inventory.player, inventory)
+                                    .with(component));
+        };
+        ScreenManager.register(guiIDS.get(clazz), constructor);
     }
 
     public <T> void addServer(final Class<T> clazz,
@@ -53,8 +59,9 @@ public final class GuiHandler {
         guiIDS.put(clazz,
                 new ContainerType<>((id,
                         inventory) -> gui.apply(new GuiInfo(guiIDS.get(clazz), id,
-                                inventory.player.getCommandSenderWorld(), null, inventory.player, inventory)))
-                                        .setRegistryName(modid, clazz.getTypeName().toLowerCase()));
+                                inventory.player.getCommandSenderWorld(), null, inventory.player,
+                                inventory))).setRegistryName(modid,
+                                        clazz.getTypeName().toLowerCase()));
     }
 
     public <T> void invokeGui(final Class<T> clazz, final PlayerEntity mcPlayer, final World world,
@@ -71,8 +78,7 @@ public final class GuiHandler {
         @SubscribeEvent
         public void registerMenuType(final RegistryEvent.Register<ContainerType<?>> event) {
             final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
-            guiIDS.forEach((_u, type) -> registry.register(type));
+            guiIDS.values().forEach(registry::register);
         }
     }
-
 }

@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public class GuiInfo {
@@ -16,7 +16,7 @@ public class GuiInfo {
     public final World world;
     public PlayerEntity player;
     public final PlayerInventory inventory;
-    public StringTextComponent component;
+    public ITextComponent component;
     @Nullable
     public final BlockPos pos;
     @Nullable
@@ -37,7 +37,7 @@ public class GuiInfo {
         return (T) world.getBlockEntity(pos);
     }
 
-    public GuiInfo with(final StringTextComponent component) {
+    public GuiInfo with(final ITextComponent component) {
         this.component = component;
         return this;
     }

@@ -41,8 +41,7 @@ public class UITexture extends UIComponent {
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 
-        final BufferWrapper bufferbuilder = info.builder(Mode.QUADS,
-                DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper bufferbuilder = info.builder(1, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
