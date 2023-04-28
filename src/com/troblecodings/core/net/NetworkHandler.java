@@ -13,6 +13,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
+import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkEvent.ClientCustomPayloadEvent;
@@ -53,13 +54,14 @@ public class NetworkHandler {
     }
 
     public void sendTo(final PlayerEntity player, final ByteBuffer buf) {
-        final PacketBuffer buffer = new PacketBuffer(Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
+        final PacketBuffer buffer = new PacketBuffer(
+                Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
         if (player instanceof ServerPlayerEntity) {
             final ServerPlayerEntity server = (ServerPlayerEntity) player;
             server.connection.send(new CCustomPayloadPacket(channelName, buffer));
         } else {
             final Minecraft mc = Minecraft.getInstance();
-            mc.getConnection().send(new CCustomPayloadPacket(channelName, buffer));
+            mc.getConnection().send(new SCustomPayloadPlayPacket(channelName, buffer));
         }
     }
 }
