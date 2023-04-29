@@ -58,10 +58,10 @@ public class NetworkHandler {
                 Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
         if (player instanceof ServerPlayerEntity) {
             final ServerPlayerEntity server = (ServerPlayerEntity) player;
-            server.connection.send(new CCustomPayloadPacket(channelName, buffer));
+            server.connection.send(new SCustomPayloadPlayPacket(channelName, buffer));
         } else {
             final Minecraft mc = Minecraft.getInstance();
-            mc.getConnection().send(new SCustomPayloadPlayPacket(channelName, buffer));
+            mc.getConnection().send(new CCustomPayloadPacket(channelName, buffer));
         }
     }
 }

@@ -7,16 +7,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ContainerBase extends Container implements INetworkSync {
 
     private final GuiInfo info;
-    private boolean dataSend = false;
 
     public ContainerBase(final GuiInfo info) {
         super(info.type, info.id);
         info.base = this;
+        if (info.world.isClientSide) {
+            final Minecraft mc = Minecraft.getInstance();
+            mc.player.containerMenu = this;
+        }
         this.info = info;
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("resource")
@@ -38,13 +45,9 @@ public class ContainerBase extends Container implements INetworkSync {
         return info.player;
     }
 
-    @Override
-    public void broadcastChanges() {
-        if (!dataSend) {
-            sendAllDataToRemote();
-            dataSend = true;
-        }
-        super.broadcastChanges();
+    @SubscribeEvent
+    public void onContainerOpen(final PlayerContainerEvent.Open event) {
+        sendAllDataToRemote();
     }
 
     public void sendAllDataToRemote() {

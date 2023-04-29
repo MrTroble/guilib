@@ -2,6 +2,7 @@ package com.troblecodings.core;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -75,10 +76,10 @@ public class NBTWrapper {
         return getWrapper(key).getAsPos();
     }
 
-    @SuppressWarnings("unchecked")
     public List<NBTWrapper> getList(final String key) {
         final ListNBT list = (ListNBT) tag.get(key);
-        return (List<NBTWrapper>) list.stream().map(tag -> new NBTWrapper((CompoundNBT) tag));
+        return list.stream().map(tag -> new NBTWrapper((CompoundNBT) tag))
+                .collect(Collectors.toList());
     }
 
     public NBTWrapper getWrapper(final String key) {
