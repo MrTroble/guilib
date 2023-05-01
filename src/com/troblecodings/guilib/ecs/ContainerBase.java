@@ -47,7 +47,8 @@ public class ContainerBase extends Container implements INetworkSync {
 
     @SubscribeEvent
     public void onContainerOpen(final PlayerContainerEvent.Open event) {
-        sendAllDataToRemote();
+        if (event.getContainer() == this)
+            sendAllDataToRemote();
     }
 
     public void sendAllDataToRemote() {

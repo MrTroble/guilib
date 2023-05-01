@@ -43,13 +43,8 @@ public final class GuiHandler {
         if (!guiIDS.containsKey(clazz))
             throw new IllegalArgumentException("Register server side before client!");
         guiBases.put(clazz, gui);
-        final IScreenFactory<ContainerBase, GuiBase> constructor = (container, inventory,
-                component) -> {
-            return gui.apply(
-                    new GuiInfo(guiIDS.get(clazz), 0, inventory.player.getCommandSenderWorld(),
-                            inventory.player.blockPosition(), inventory.player, inventory)
-                                    .with(component));
-        };
+        final IScreenFactory<ContainerBase, GuiBase> constructor = (base, inventory,
+                component) -> gui.apply(base.getInfo().with(component));
         ScreenManager.register(guiIDS.get(clazz), constructor);
     }
 
