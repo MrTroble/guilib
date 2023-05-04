@@ -9,7 +9,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,6 +28,7 @@ public class UITextInput extends UIComponent {
         this.textInput.setVisible(true);
         this.textInput.setEditable(true);
         this.textInput.setMaxLength(60);
+        this.textInput.setValue(id);
     }
 
     @Override
@@ -89,11 +89,11 @@ public class UITextInput extends UIComponent {
     }
 
     public String getText() {
-        return this.textInput.getMessage().getContents();
+        return this.textInput.getValue();
     }
 
     public void setText(final String text) {
-        this.textInput.setMessage(new TextComponent(text));
+        this.textInput.setValue(text);
 
     }
 }
