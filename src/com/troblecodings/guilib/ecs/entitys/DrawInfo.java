@@ -101,8 +101,8 @@ public class DrawInfo {
         final double deltaY = yTop - yBottom;
         final double hypot = Math.hypot(deltaX, deltaY);
         final float normalX = Math.abs((float) (deltaX / hypot)) * (width / 2);
-        final float normalY = Math.abs((float) (deltaY / hypot)) * (width / 2);
-        wrapper.pos(xLeft - normalY, yTop - normalX, 0).color(color).end();
+        final float normalY = (float) (deltaY / hypot) * (width / 2);
+        wrapper.pos(xLeft - normalY, yTop - normalX , 0).color(color).end();
         wrapper.pos(xLeft + normalY, yTop + normalX, 0).color(color).end();
         wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
         wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
