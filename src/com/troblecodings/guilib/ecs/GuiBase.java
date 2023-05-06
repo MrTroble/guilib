@@ -14,6 +14,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -186,8 +187,19 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(final PoseStack p_97787_, final float p_97788_, final int p_97789_,
-            final int p_97790_) {
+    protected void renderBg(final PoseStack stack, final float deltaTime, final int mouseX,
+            final int mouseY) {
+    }
+
+    @Override
+    public GuiEventListener getFocused() {
+        final GuiEventListener eventListener = new GuiEventListener() {
+            @Override
+            public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
+                return true;
+            }
+        };
+        return eventListener;
     }
 
 }
