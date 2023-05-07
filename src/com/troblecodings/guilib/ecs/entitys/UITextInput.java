@@ -77,6 +77,7 @@ public class UITextInput extends UIComponent {
 
     public void setOnTextUpdate(final Consumer<String> onTextUpdate) {
         this.onTextUpdate = onTextUpdate;
+        textInput.setResponder(onTextUpdate);
     }
 
     public Predicate<String> getValidator() {
