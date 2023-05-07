@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.troblecodings.guilib.ecs.GuiBase;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -75,8 +76,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     public synchronized void update() {
         if (lastUpdateEvent != null) {
             updateWorld();
-            components.forEach(c -> c.update());
-            children.forEach(c -> c.update());
+            Lists.newArrayList(components).forEach(c -> c.update());
+            Lists.newArrayList(children).forEach(c -> c.update());
         }
     }
 
@@ -97,7 +98,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         this.worldWidth = (int) (this.worldScaleX * this.width);
         this.worldHeight = (int) (this.worldScaleY * this.height);
     }
-    
+
     @Override
     public synchronized void draw(final DrawInfo info) {
         if (isVisible()) {
