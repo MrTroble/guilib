@@ -74,26 +74,30 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @Override
     public synchronized void update() {
         if (lastUpdateEvent != null) {
-            final double cX = this.x * lastUpdateEvent.guiScale;
-            final double cY = this.y * lastUpdateEvent.guiScale;
-            if (this.parent != null) {
-                this.worldScaleX = this.scaleX * parent.getLevelScaleX();
-                this.worldScaleY = this.scaleY * parent.getLevelScaleY();
-                this.worldX = (int) (cX * parent.worldScaleX + parent.getLevelX());
-                this.worldY = (int) (cY * parent.worldScaleY + parent.getLevelY());
-            } else {
-                this.worldScaleX = this.scaleX;
-                this.worldScaleY = this.scaleY;
-                this.worldX = (int) (cX * this.scaleX);
-                this.worldY = (int) (cY * this.scaleY);
-            }
-            this.worldWidth = (int) (this.worldScaleX * this.width);
-            this.worldHeight = (int) (this.worldScaleY * this.height);
-            List.copyOf(components).forEach(c -> c.update());
-            List.copyOf(children).forEach(c -> c.update());
+            updateWorld();
+            components.forEach(c -> c.update());
+            children.forEach(c -> c.update());
         }
     }
 
+    public synchronized void updateWorld() {
+        final double cX = this.x * lastUpdateEvent.guiScale;
+        final double cY = this.y * lastUpdateEvent.guiScale;
+        if (this.parent != null) {
+            this.worldScaleX = this.scaleX * parent.getLevelScaleX();
+            this.worldScaleY = this.scaleY * parent.getLevelScaleY();
+            this.worldX = (int) (cX * parent.worldScaleX + parent.getLevelX());
+            this.worldY = (int) (cY * parent.worldScaleY + parent.getLevelY());
+        } else {
+            this.worldScaleX = this.scaleX;
+            this.worldScaleY = this.scaleY;
+            this.worldX = (int) (cX * this.scaleX);
+            this.worldY = (int) (cY * this.scaleY);
+        }
+        this.worldWidth = (int) (this.worldScaleX * this.width);
+        this.worldHeight = (int) (this.worldScaleY * this.height);
+    }
+    
     @Override
     public synchronized void draw(final DrawInfo info) {
         if (isVisible()) {

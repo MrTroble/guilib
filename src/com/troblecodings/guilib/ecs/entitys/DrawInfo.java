@@ -62,8 +62,8 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
-                FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
+        this.color(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0,
+                FastColor.ARGB32.blue(color) / 255.0, FastColor.ARGB32.alpha(color) / 255.0);
     }
 
     public void color(final double r, final double g, final double b, final double a) {
@@ -102,23 +102,25 @@ public class DrawInfo {
         final double hypot = Math.hypot(deltaX, deltaY);
         final float normalX = Math.abs((float) (deltaX / hypot)) * (width / 2);
         final float normalY = (float) (deltaY / hypot) * (width / 2);
-        wrapper.pos(xLeft - normalY, yTop - normalX , 0).color(color).end();
-        wrapper.pos(xLeft + normalY, yTop + normalX, 0).color(color).end();
-        wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
-        wrapper.pos(xRight - normalY, yBottom - normalX, 0).color(color).end();
-        wrapper.pos(xLeft + normalY, yTop + normalX, 0).color(color).end();
-        wrapper.pos(xRight + normalY, yBottom + normalX, 0).color(color).end();
+        wrapper.pos(xLeft - normalY, yTop - normalX , 0).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
+        wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
+        wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
+        wrapper.pos(xRight + normalY, yBottom + normalX, 0).end();
     }
 
     public void lines(final int color, final float width, final float[] lines) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        this.color(color);
         final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormat.POSITION_COLOR);
+                DefaultVertexFormat.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
         }
         this.end();
+        this.color();
     }
 
     public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
