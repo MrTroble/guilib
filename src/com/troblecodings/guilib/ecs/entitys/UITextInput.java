@@ -29,6 +29,7 @@ public class UITextInput extends UIComponent {
         this.textInput.setEditable(true);
         this.textInput.setMaxLength(60);
         this.textInput.setValue(id);
+        this.textInput.moveCursorTo(0);
     }
 
     @Override
