@@ -156,7 +156,7 @@ public final class GuiElements {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
             searchBar.setHeight(20);
-            searchBar.add(new UITextInput("TEST"));
+            searchBar.add(new UITextInput(""));
             searchPanel.add(searchBar);
 
             final UIEntity listWithScroll = new UIEntity();
