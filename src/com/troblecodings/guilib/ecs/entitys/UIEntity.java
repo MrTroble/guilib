@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.troblecodings.guilib.ecs.GuiBase;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -74,24 +75,28 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @Override
     public synchronized void update() {
         if (lastUpdateEvent != null) {
-            final double cX = this.x * lastUpdateEvent.guiScale;
-            final double cY = this.y * lastUpdateEvent.guiScale;
-            if (this.parent != null) {
-                this.worldScaleX = this.scaleX * parent.getLevelScaleX();
-                this.worldScaleY = this.scaleY * parent.getLevelScaleY();
-                this.worldX = (int) (cX * parent.worldScaleX + parent.getLevelX());
-                this.worldY = (int) (cY * parent.worldScaleY + parent.getLevelY());
-            } else {
-                this.worldScaleX = this.scaleX;
-                this.worldScaleY = this.scaleY;
-                this.worldX = (int) (cX * this.scaleX);
-                this.worldY = (int) (cY * this.scaleY);
-            }
-            this.worldWidth = (int) (this.worldScaleX * this.width);
-            this.worldHeight = (int) (this.worldScaleY * this.height);
-            new ArrayList<UIComponent>(components).forEach(c -> c.update());
-            new ArrayList<UIEntity>(children).forEach(c -> c.update());
+            updateWorld();
+            Lists.newArrayList(components).forEach(c -> c.update());
+            Lists.newArrayList(children).forEach(c -> c.update());
         }
+    }
+
+    public synchronized void updateWorld() {
+        final double cX = this.x * lastUpdateEvent.guiScale;
+        final double cY = this.y * lastUpdateEvent.guiScale;
+        if (this.parent != null) {
+            this.worldScaleX = this.scaleX * parent.getLevelScaleX();
+            this.worldScaleY = this.scaleY * parent.getLevelScaleY();
+            this.worldX = (int) (cX * parent.worldScaleX + parent.getLevelX());
+            this.worldY = (int) (cY * parent.worldScaleY + parent.getLevelY());
+        } else {
+            this.worldScaleX = this.scaleX;
+            this.worldScaleY = this.scaleY;
+            this.worldX = (int) (cX * this.scaleX);
+            this.worldY = (int) (cY * this.scaleY);
+        }
+        this.worldWidth = (int) (this.worldScaleX * this.width);
+        this.worldHeight = (int) (this.worldScaleY * this.height);
     }
 
     @Override

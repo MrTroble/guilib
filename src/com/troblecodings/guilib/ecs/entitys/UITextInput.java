@@ -8,6 +8,8 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,6 +31,7 @@ public class UITextInput extends UIComponent {
         this.textInput.setEditable(true);
         this.textInput.setMaxLength(60);
         this.textInput.setValue(id);
+        this.textInput.moveCursorTo(0);
     }
 
     @Override
@@ -77,6 +80,7 @@ public class UITextInput extends UIComponent {
 
     public void setOnTextUpdate(final Consumer<String> onTextUpdate) {
         this.onTextUpdate = onTextUpdate;
+        textInput.setResponder(onTextUpdate);
     }
 
     public Predicate<String> getValidator() {

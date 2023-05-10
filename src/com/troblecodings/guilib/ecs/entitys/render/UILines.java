@@ -11,13 +11,15 @@ public class UILines extends UIComponent {
     private final float[] lineCache;
     private final float width;
     private int color;
+    private double oldWidth = -1;
+    private double oldHeight = -1;
 
     public UILines(final float[] lines, final float width) {
         super();
         this.lines = Arrays.copyOf(lines, lines.length);
         this.lineCache = new float[lines.length];
         this.width = width;
-        this.color = 0xFFFFFFFF;
+        this.color = 0xFF000000;
     }
 
     @Override
@@ -29,9 +31,13 @@ public class UILines extends UIComponent {
 
     @Override
     public void update() {
-        for (int i = 0; i < lines.length; i += 2) {
-            this.lineCache[i] = this.lines[i] * (float) parent.getWidth();
-            this.lineCache[i + 1] = this.lines[i + 1] * (float) parent.getHeight();
+        if (oldWidth != parent.getWidth() || oldHeight != parent.getHeight()) {
+            oldWidth = parent.getWidth();
+            oldHeight = parent.getHeight();
+            for (int i = 0; i < lines.length; i += 2) {
+                this.lineCache[i] = this.lines[i] * (float) oldWidth;
+                this.lineCache[i + 1] = this.lines[i + 1] * (float) oldHeight;
+            }
         }
     }
 

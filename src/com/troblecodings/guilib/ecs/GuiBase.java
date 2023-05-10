@@ -12,10 +12,16 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
+<<<<<<< HEAD
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.resources.ResourceLocation;
+=======
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+>>>>>>> port/1.16.5
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -186,10 +192,10 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(final MatrixStack stack, final float deltaTime, final int mouseX,
+    protected void renderBg(final PoseStack stack, final float deltaTime, final int mouseX,
             final int mouseY) {
     }
-    
+
     @Override
     public IGuiEventListener getFocused() {
         final IGuiEventListener eventListener = new IGuiEventListener() {
