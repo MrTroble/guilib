@@ -1,7 +1,7 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +29,7 @@ public interface IIntegerable<T> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public int getMaxWidth(final FontRenderer render) {
+    default public int getMaxWidth(final Font render) {
         int ret = 0;
         for (int i = 0; i < this.count(); i++) {
             final int newVal = render.width(getNamedObj(i));

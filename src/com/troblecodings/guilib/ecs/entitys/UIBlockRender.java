@@ -2,16 +2,17 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.DrawUtil;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.Texture;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class UIBlockRender extends UIComponent {
 
@@ -19,9 +20,9 @@ public class UIBlockRender extends UIComponent {
             new BufferBuilder(500));
 
     private final TextureManager manager;
-    private final BlockModelShapes shapes;
-    private Texture texture;
-    private Vector3d vector;
+    private final BlockModelShaper shapes;
+    private AbstractTexture texture;
+    private Vec3 vector;
 
     public UIBlockRender() {
         final Minecraft mc = Minecraft.getInstance();
@@ -34,7 +35,7 @@ public class UIBlockRender extends UIComponent {
         if (this.texture == null)
             return;
         this.texture.bind();
-        info.stack.translate(-0.5f + vector.x(), -0.5f + vector.y(), -0.5f + vector.z());
+        info.stack.translate(-0.5f + vector.x, -0.5f + vector.y, -0.5f + vector.z);
         DrawUtil.draw(model.get());
     }
 
@@ -48,10 +49,10 @@ public class UIBlockRender extends UIComponent {
 
     public void setBlockState(final BlockState state, final double x, final double y,
             final double z) {
-        this.vector = new Vector3d(x, y, z);
+        this.vector = new Vec3(x, y, z);
         this.texture = manager.getTexture(state.getBlock().getRegistryName());
         final BufferBuilder builder = model.get();
-        builder.begin(1, DefaultVertexFormats.BLOCK);
+        builder.begin(Mode.QUADS, DefaultVertexFormat.BLOCK);
         DrawUtil.addToBuffer(builder, shapes, state);
         builder.building();
     }

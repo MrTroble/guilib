@@ -10,21 +10,19 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UITextInput extends UIComponent {
 
-    private final TextFieldWidget textInput;
+    private final EditBox textInput;
     private Consumer<String> onTextUpdate;
     private Predicate<String> validator = string -> true;
 
     public UITextInput(final String id) {
         final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new TextFieldWidget(mc.font, 0, 0, 0, 0, new TranslationTextComponent(id));
+        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
         this.textInput.setCanLoseFocus(false);
         this.textInput.setFocus(false);
         this.textInput.setVisible(true);

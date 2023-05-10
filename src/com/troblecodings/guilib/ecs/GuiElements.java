@@ -25,9 +25,9 @@ import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -79,14 +79,14 @@ public final class GuiElements {
         middle.setHeight(20);
         middle.setInheritWidth(true);
 
-        final SoundHandler handler = Minecraft.getInstance().getSoundManager();
+        final SoundManager handler = Minecraft.getInstance().getSoundManager();
 
         final UICheckBox middleButton = new UICheckBox(property.getName());
         middleButton.setChecked(defaultValue == 0 ? false : true);
         final UIClickable clickable = new UIClickable(e -> {
             middleButton.setChecked(!middleButton.isChecked());
             consumer.accept(middleButton.isChecked() ? 1 : 0);
-            handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
+            handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
         });
         middleButton.setOnChange(consumer);
         middleButton.setText(property.getLocalizedName());
@@ -269,7 +269,7 @@ public final class GuiElements {
         final UILabel middleButton = new UILabel("DDDD");
         middle.add(middleButton);
 
-        final SoundHandler handler = Minecraft.getInstance().getSoundManager();
+        final SoundManager handler = Minecraft.getInstance().getSoundManager();
 
         final UIEnumerable enumerable = new UIEnumerable(0, "pageselect");
         final IntConsumer acceptOn = in -> {
@@ -307,7 +307,7 @@ public final class GuiElements {
             if (id <= min)
                 return;
             enumerable.setIndex(id - 1);
-            handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
+            handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
         });
         left.add(leftButton);
         left.add(leftclickable);
@@ -322,7 +322,7 @@ public final class GuiElements {
             if (id >= max)
                 return;
             enumerable.setIndex(id + 1);
-            handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
+            handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
         });
         right.add(rightButton);
         right.add(rightclickable);
@@ -352,13 +352,13 @@ public final class GuiElements {
 
     public static UIEntity createButton(final String name, final int width,
             final Consumer<UIEntity> consumer) {
-        final SoundHandler handler = Minecraft.getInstance().getSoundManager();
+        final SoundManager handler = Minecraft.getInstance().getSoundManager();
         final UIEntity settingsEnt = new UIEntity();
         settingsEnt.setHeight(20);
         settingsEnt.setWidth(width);
         settingsEnt.add(new UIButton(name));
         settingsEnt.add(new UIClickable(consumer.andThen(
-                e -> handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f)))));
+                e -> handler.play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f)))));
         return settingsEnt;
     }
 

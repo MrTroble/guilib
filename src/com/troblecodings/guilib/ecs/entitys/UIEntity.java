@@ -178,8 +178,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     @Override
     public synchronized void updateEvent(final UpdateEvent event) {
         this.lastUpdateEvent = event;
-        new ArrayList<UIEntity>(children).forEach(c -> c.update());
-        new ArrayList<UIComponent>(components).forEach(c -> c.update());
+        List.copyOf(this.children).forEach(c -> c.updateEvent(event));
+        List.copyOf(this.components).forEach(c -> c.updateEvent(event));
         update();
     }
 

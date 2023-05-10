@@ -5,9 +5,9 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -36,7 +36,7 @@ public class UIToolTip extends UIComponent {
                     : I18n.get("gui.keyprompt");
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
-                base.base.renderTooltip(info.stack, new StringTextComponent(desc), info.mouseX,
+                base.base.renderTooltip(info.stack, new TextComponent(desc), info.mouseX,
                         info.mouseY);
             }
         }

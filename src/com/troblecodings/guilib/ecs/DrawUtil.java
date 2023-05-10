@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.Direction;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
@@ -199,10 +200,10 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        // BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
+    public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
             final BlockState ebs) {
         addToBuffer(builder, manager, ebs, 0);
     }
@@ -210,10 +211,10 @@ public final class DrawUtil {
     private static final Random random = new Random();
 
     @SuppressWarnings("deprecation")
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
+    public static void addToBuffer(final BufferBuilder builder, final BlockModelShaper manager,
             final BlockState ebs, final int color) {
         assert ebs != null;
-        final IBakedModel mdl = manager.getBlockModel(ebs);
+        final BakedModel mdl = manager.getBlockModel(ebs);
         final List<BakedQuad> lst = new ArrayList<>();
         lst.addAll(mdl.getQuads(ebs, null, random));
         for (final Direction face : Direction.values())
@@ -231,7 +232,7 @@ public final class DrawUtil {
         }
     }
 
-    public static void drawCenteredString(final DrawInfo info, final FontRenderer fontRendererIn,
+    public static void drawCenteredString(final DrawInfo info, final Font fontRendererIn,
             final String text, final int x, final int y, final int color) {
         fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
     }

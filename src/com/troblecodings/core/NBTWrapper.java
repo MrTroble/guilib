@@ -2,24 +2,23 @@ package com.troblecodings.core;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.item.ItemStack;
 
 public class NBTWrapper {
-    public CompoundNBT tag;
+    public CompoundTag tag;
 
-    public NBTWrapper(final CompoundNBT tag) {
+    public NBTWrapper(final CompoundTag tag) {
         super();
         this.tag = tag;
     }
 
     public NBTWrapper() {
-        this(new CompoundNBT());
+        this(new CompoundTag());
     }
 
     public boolean contains(final String key) {
@@ -43,7 +42,7 @@ public class NBTWrapper {
     }
 
     public void putList(final String key, final Iterable<NBTWrapper> value) {
-        final ListNBT list = new ListNBT();
+        final ListTag list = new ListTag();
         value.forEach(tagWrapper -> list.add(tagWrapper.tag));
         tag.put(key, list);
     }
@@ -77,17 +76,16 @@ public class NBTWrapper {
     }
 
     public List<NBTWrapper> getList(final String key) {
-        final ListNBT list = (ListNBT) tag.get(key);
-        return list.stream().map(tag -> new NBTWrapper((CompoundNBT) tag))
-                .collect(Collectors.toList());
+        final ListTag list = (ListTag) tag.get(key);
+        return list.stream().map(tag -> new NBTWrapper((CompoundTag) tag)).toList();
     }
 
     public NBTWrapper getWrapper(final String key) {
-        return new NBTWrapper((CompoundNBT) tag.get(key));
+        return new NBTWrapper((CompoundTag) tag.get(key));
     }
 
     public BlockPos getAsPos() {
-        return NBTUtil.readBlockPos(tag);
+        return NbtUtils.readBlockPos(tag);
     }
 
     public NBTWrapper copy() {
@@ -103,7 +101,7 @@ public class NBTWrapper {
     }
 
     public static NBTWrapper getBlockPosWrapper(final BlockPos pos) {
-        return new NBTWrapper(NBTUtil.writeBlockPos(pos));
+        return new NBTWrapper(NbtUtils.writeBlockPos(pos));
     }
 
     public static NBTWrapper getOrCreateWrapper(final ItemStack stack) {

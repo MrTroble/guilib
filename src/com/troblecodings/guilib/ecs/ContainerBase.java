@@ -3,27 +3,19 @@ package com.troblecodings.guilib.ecs;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class ContainerBase extends Container implements INetworkSync {
+public class ContainerBase extends AbstractContainerMenu implements INetworkSync {
 
     private final GuiInfo info;
 
     public ContainerBase(final GuiInfo info) {
         super(info.type, info.id);
         info.base = this;
-        if (info.world.isClientSide) {
-            final Minecraft mc = Minecraft.getInstance();
-            mc.player.containerMenu = this;
-        }
         this.info = info;
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("resource")
@@ -33,7 +25,7 @@ public class ContainerBase extends Container implements INetworkSync {
     }
 
     @Override
-    public boolean stillValid(final PlayerEntity player) {
+    public boolean stillValid(final Player player) {
         return true;
     }
 
@@ -41,17 +33,8 @@ public class ContainerBase extends Container implements INetworkSync {
         return info;
     }
 
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return info.player;
-    }
-
-    @SubscribeEvent
-    public void onContainerOpen(final PlayerContainerEvent.Open event) {
-        if (event.getContainer() == this)
-            sendAllDataToRemote();
-    }
-
-    public void sendAllDataToRemote() {
     }
 
 }
