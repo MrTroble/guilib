@@ -49,7 +49,7 @@ public class DrawInfo {
         this.stack.mulPose(quaternion);
     }
 
-    public void applyTexture(final ResourceLocation location) {
+    public void applyTexture(final ResourceLocation creativeTab) {
         // RenderSystem.setShader(GameRenderer::getPositionTexShader);
         // RenderSystem.setShaderTexture(0, location);
     }
@@ -61,8 +61,6 @@ public class DrawInfo {
     public void color(final int color) {
         this.color(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0,
                 FastColor.ARGB32.blue(color) / 255.0, FastColor.ARGB32.alpha(color) / 255.0);
-        // this.color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24);
-
     }
 
     @SuppressWarnings("deprecation")
@@ -111,10 +109,8 @@ public class DrawInfo {
     }
 
     public void lines(final int color, final float width, final float[] lines) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormat.POSITION);
+        final BufferWrapper bufferbuilder = this.builder(1, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);

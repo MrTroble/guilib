@@ -357,8 +357,8 @@ public final class GuiElements {
         settingsEnt.setHeight(20);
         settingsEnt.setWidth(width);
         settingsEnt.add(new UIButton(name));
-        settingsEnt.add(new UIClickable(consumer.andThen(
-                e -> handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f)))));
+        settingsEnt.add(new UIClickable(consumer
+                .andThen(e -> handler.play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f)))));
         return settingsEnt;
     }
 
