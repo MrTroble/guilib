@@ -8,13 +8,10 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
-<<<<<<< HEAD
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TranslatableComponent;
-=======
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.TranslationTextComponent;
->>>>>>> port/1.16.5
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
