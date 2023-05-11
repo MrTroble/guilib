@@ -60,7 +60,7 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(color >> 16, color >> 8, color, color >>> 24);
+        this.color((color >> 16 & 255) / 255, (color >> 8 & 255) / 255, (color & 255) / 255, (color >>> 24) / 255);
     }
 
     @SuppressWarnings("deprecation")
