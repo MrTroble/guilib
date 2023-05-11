@@ -3,10 +3,12 @@ package com.troblecodings.guilib.ecs.entitys;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 
 public class DrawInfo {
@@ -45,6 +47,10 @@ public class DrawInfo {
 
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
+    }
+
+    public void applyTexture(final ResourceLocation location) {
+        Minecraft.getInstance().getTextureManager().bind(location);
     }
 
     public void color() {

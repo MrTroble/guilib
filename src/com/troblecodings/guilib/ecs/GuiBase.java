@@ -61,7 +61,7 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
 
     private void drawBack(final DrawInfo info, final int xLeft, final int xRight, final int yTop,
             final int yBottom) {
-        Minecraft.getInstance().getTextureManager().bind(CREATIVE_TAB);
+        info.applyTexture(CREATIVE_TAB);
         info.color();
         info.blendOn();
         info.depthOn();
