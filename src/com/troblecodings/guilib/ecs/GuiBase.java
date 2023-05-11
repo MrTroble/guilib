@@ -65,7 +65,7 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
         info.color();
         info.blendOn();
         info.depthOn();
-        final BufferWrapper builder = info.builder(1, DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper builder = info.builder(7, DefaultVertexFormats.POSITION_TEX);
         final int inset = 8;
         final int topOffset = 32;
         final int leftOffset = 20;
