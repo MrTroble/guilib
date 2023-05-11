@@ -2,6 +2,8 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.lwjgl.opengl.GL11;
+
 import com.troblecodings.guilib.ecs.DrawUtil;
 
 import net.minecraft.block.BlockState;
@@ -51,7 +53,7 @@ public class UIBlockRender extends UIComponent {
         this.vector = new Vector3d(x, y, z);
         this.texture = manager.getTexture(state.getBlock().getRegistryName());
         final BufferBuilder builder = model.get();
-        builder.begin(1, DefaultVertexFormats.BLOCK);
+        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         DrawUtil.addToBuffer(builder, shapes, state);
         builder.building();
     }

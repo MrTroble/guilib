@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import org.lwjgl.opengl.GL11;
+
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
@@ -37,16 +39,18 @@ public class UITexture extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         info.depthOn();
+        info.blendOn();
         info.applyTexture(texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 
-        final BufferWrapper bufferbuilder = info.builder(1, DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper bufferbuilder = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
         bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
         info.end();
+        info.blendOff();
         info.depthOff();
     }
 

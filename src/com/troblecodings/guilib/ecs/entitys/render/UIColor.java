@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import org.lwjgl.opengl.GL11;
+
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
@@ -29,7 +31,7 @@ public class UIColor extends UIComponent {
             info.applyColor();
             info.depthOff();
             info.blendOn();
-            final BufferWrapper wrapper = info.builder(1, DefaultVertexFormats.POSITION_COLOR);
+            final BufferWrapper wrapper = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
             wrapper.quad(-insets, (int) parent.getWidth() + insets, -insets,
                     (int) parent.getHeight() + insets, this.color);
             info.end();

@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -58,7 +60,7 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24);
+        this.color(color >> 16, color >> 8, color, color >>> 24);
     }
 
     @SuppressWarnings("deprecation")
@@ -90,6 +92,14 @@ public class DrawInfo {
     public void scissorOff() {
         RenderSystem.disableScissor();
     }
+    
+    public void alphaOn() {
+        RenderSystem.enableAlphaTest();
+    }
+    
+    public void alphaOff() {
+        RenderSystem.disableAlphaTest();
+    }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
             final float xRight, final float yTop, final float yBottom, final float width) {
@@ -108,7 +118,7 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(1, DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
