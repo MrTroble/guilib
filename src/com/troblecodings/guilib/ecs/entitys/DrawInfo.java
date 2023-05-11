@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 
@@ -59,8 +58,7 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0,
-                FastColor.ARGB32.blue(color) / 255.0, FastColor.ARGB32.alpha(color) / 255.0);
+        this.color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24);
     }
 
     @SuppressWarnings("deprecation")
