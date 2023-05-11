@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -199,7 +200,7 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        // BufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        WorldVertexBufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,

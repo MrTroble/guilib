@@ -37,7 +37,7 @@ public class UIButton extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
-            info.applyTexture(BUTTON_TEXTURES);
+            Minecraft.getInstance().getTextureManager().bind(BUTTON_TEXTURES);
             info.color();
             info.depthOff();
             final int offsetV = enabled ? (parent.isHovered() ? 2 : 1) : 0;

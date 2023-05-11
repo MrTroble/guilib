@@ -4,6 +4,7 @@ import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +38,7 @@ public class UITexture extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         info.depthOn();
-        info.applyTexture(texture);
+        Minecraft.getInstance().getTextureManager().bind(this.texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 

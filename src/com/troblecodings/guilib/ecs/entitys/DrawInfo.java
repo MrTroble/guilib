@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 
 public class DrawInfo {
@@ -46,11 +45,6 @@ public class DrawInfo {
 
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
-    }
-
-    public void applyTexture(final ResourceLocation creativeTab) {
-        // RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        // RenderSystem.setShaderTexture(0, location);
     }
 
     public void color() {

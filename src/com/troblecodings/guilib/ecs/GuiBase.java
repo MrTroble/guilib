@@ -61,7 +61,7 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
 
     private void drawBack(final DrawInfo info, final int xLeft, final int xRight, final int yTop,
             final int yBottom) {
-        info.applyTexture(CREATIVE_TAB);
+        Minecraft.getInstance().getTextureManager().bind(CREATIVE_TAB);
         info.color();
         info.blendOn();
         info.depthOn();
@@ -186,10 +186,8 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_,
-            int p_230450_4_) {
-        // TODO Auto-generated method stub
-
+    protected void renderBg(final MatrixStack stack, final float deltaTime, final int mouseX,
+            final int mouseY) {
     }
 
     @Override
