@@ -53,7 +53,13 @@ public class DrawInfo {
     }
 
     public void applyTexture(final ResourceLocation location) {
+        RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bind(location);
+        
+    }
+    
+    public void disableTexture() {
+        RenderSystem.disableTexture();
     }
 
     public void color() {

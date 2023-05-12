@@ -52,6 +52,7 @@ public class UITexture extends UIComponent {
         info.end();
         info.blendOff();
         info.depthOff();
+        info.disableTexture();
     }
 
     @Override
