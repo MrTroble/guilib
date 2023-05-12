@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -60,7 +61,8 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color((color >> 16 & 255) / 255, (color >> 8 & 255) / 255, (color & 255) / 255, (color >>> 24) / 255);
+        this.color(UIColor.red(color) / 255, UIColor.green(color) / 255, UIColor.blue(color) / 255,
+                UIColor.alpha(color) / 255);
     }
 
     @SuppressWarnings("deprecation")

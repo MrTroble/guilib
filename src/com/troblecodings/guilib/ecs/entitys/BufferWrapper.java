@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.troblecodings.guilib.ecs.entitys.render.UIColor;
+
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.vector.Matrix4f;
 
@@ -25,7 +27,8 @@ public class BufferWrapper {
     }
 
     public BufferWrapper color(final int color) {
-        return this.color((color >> 16 & 255) /255 , (color >> 8 & 255) / 255, (color & 255) / 255, (color >>> 24) / 255);
+        return this.color(UIColor.red(color), UIColor.green(color),
+                UIColor.blue(color), UIColor.alpha(color));
     }
 
     public BufferWrapper color(final float r, final float g, final float b, final float a) {
@@ -44,10 +47,10 @@ public class BufferWrapper {
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final int color) {
-        builder.vertex(matrix, xRight, yTop, 0).color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24 & 255).endVertex();
-        builder.vertex(matrix, xLeft, yTop, 0).color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24 & 255).endVertex();
-        builder.vertex(matrix, xLeft, yBottom, 0).color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24 & 255).endVertex();
-        builder.vertex(matrix, xRight, yBottom, 0).color(color >> 16 & 255, color >> 8 & 255, color & 255, color >>> 24 & 255).endVertex();
+        builder.vertex(matrix, xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(matrix, xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(matrix, xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(matrix, xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
         return this;
     }
 
