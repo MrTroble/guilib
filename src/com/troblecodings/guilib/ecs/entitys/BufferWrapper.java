@@ -3,7 +3,7 @@ package com.troblecodings.guilib.ecs.entitys;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.renderer.Matrix4f;
 
 public class BufferWrapper {
 
@@ -17,7 +17,7 @@ public class BufferWrapper {
     }
 
     public BufferWrapper pos(final double x, final double y, final double z) {
-        builder.vertex(matrix, (float) x, (float) y, (float) z);
+        builder.vertex((float) x, (float) y, (float) z);
         return this;
     }
 
@@ -47,20 +47,20 @@ public class BufferWrapper {
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final int color) {
-        builder.vertex(matrix, xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(matrix, xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(matrix, xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(matrix, xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
         return this;
     }
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final float uStart, final float uEnd, final float vStart,
             final float vEnd) {
-        builder.vertex(matrix, xRight, yTop, 0).uv((uEnd), (vStart)).endVertex();
-        builder.vertex(matrix, xLeft, yTop, 0).uv((uStart), (vStart)).endVertex();
-        builder.vertex(matrix, xLeft, yBottom, 0).uv((uStart), (vEnd)).endVertex();
-        builder.vertex(matrix, xRight, yBottom, 0).uv((uEnd), (vEnd)).endVertex();
+        builder.vertex(xRight, yTop, 0).uv((uEnd), (vStart)).endVertex();
+        builder.vertex(xLeft, yTop, 0).uv((uStart), (vStart)).endVertex();
+        builder.vertex(xLeft, yBottom, 0).uv((uStart), (vEnd)).endVertex();
+        builder.vertex(xRight, yBottom, 0).uv((uEnd), (vEnd)).endVertex();
         return this;
     }
 

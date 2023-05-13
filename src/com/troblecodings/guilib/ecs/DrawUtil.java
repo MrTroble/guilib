@@ -200,7 +200,8 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        WorldVertexBufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        final WorldVertexBufferUploader worldVertexBufferUploader = new WorldVertexBufferUploader();
+        worldVertexBufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,

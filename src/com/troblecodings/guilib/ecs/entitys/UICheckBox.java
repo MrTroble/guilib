@@ -8,7 +8,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class UICheckBox extends UIComponent {

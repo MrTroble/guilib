@@ -16,7 +16,7 @@ public interface MessageWrapper {
     }
 
     default void internalMessage(final PlayerEntity player, final ITextComponent comp) {
-        player.sendMessage(comp, player.getUUID());
+        player.sendMessage(comp);
     }
 
 }

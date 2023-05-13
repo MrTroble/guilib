@@ -9,7 +9,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,7 +21,7 @@ public class UITextInput extends UIComponent {
 
     public UITextInput(final String id) {
         final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new TextFieldWidget(mc.font, 0, 0, 0, 0, new TranslationTextComponent(id));
+        this.textInput = new TextFieldWidget(mc.font, 0, 0, 0, 0, id);
         this.textInput.setCanLoseFocus(false);
         this.textInput.setFocus(false);
         this.textInput.setVisible(true);

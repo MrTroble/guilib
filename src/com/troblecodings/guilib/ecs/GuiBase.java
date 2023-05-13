@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBase extends ContainerScreen<ContainerBase> {
+public abstract class GuiBase extends ContainerScreen<ContainerBase> {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -116,7 +116,7 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
         entity.setX(this.guiLeft + GUI_INSET);
         entity.setY(this.guiTop + GUI_INSET);
         entity.updateEvent(
-                new UpdateEvent(width, height, this.minecraft.getWindow().getGuiScale(), 1, this));
+                new UpdateEvent(width, height, this.minecraft.window.getGuiScale(), 1, this));
     }
 
     public void push(final UIEntity entity) {
