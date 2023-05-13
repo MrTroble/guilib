@@ -1,11 +1,10 @@
 package com.troblecodings.core.interfaces;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.Nameable;
+import net.minecraft.util.INameable;
+import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.text.TranslationTextComponent;
 
-public interface NamableWrapper extends Nameable, StringRepresentable {
+public interface NamableWrapper extends INameable, IStringSerializable {
 
     default String getNameAsStringWrapper() {
         return getName().getContents();
@@ -14,8 +13,8 @@ public interface NamableWrapper extends Nameable, StringRepresentable {
     String getNameWrapper();
 
     @Override
-    default Component getName() {
-        return new TranslatableComponent(getNameWrapper());
+    default TranslationTextComponent getName() {
+        return new TranslationTextComponent(getNameWrapper());
     }
 
     @Override

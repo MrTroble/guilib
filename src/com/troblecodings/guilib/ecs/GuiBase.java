@@ -2,9 +2,9 @@ package com.troblecodings.guilib.ecs;
 
 import java.util.Stack;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -14,14 +14,15 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBase extends AbstractContainerScreen<ContainerBase> {
+public class GuiBase extends ContainerScreen<ContainerBase> {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -66,7 +67,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         info.color();
         info.blendOn();
         info.depthOn();
-        final BufferWrapper builder = info.builder(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        final BufferWrapper builder = info.builder(GL11.GL_QUADS,
+                DefaultVertexFormats.POSITION_TEX);
         final int inset = 8;
         final int topOffset = 32;
         final int leftOffset = 20;
@@ -96,7 +98,7 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public void render(final PoseStack stack, final int mx, final int my, final float tick) {
+    public void render(final MatrixStack stack, final int mx, final int my, final float tick) {
         this.renderBackground(stack);
         final DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
@@ -187,13 +189,13 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(final PoseStack stack, final float deltaTime, final int mouseX,
+    protected void renderBg(final MatrixStack stack, final float deltaTime, final int mouseX,
             final int mouseY) {
     }
 
     @Override
-    public GuiEventListener getFocused() {
-        final GuiEventListener eventListener = new GuiEventListener() {
+    public IGuiEventListener getFocused() {
+        final IGuiEventListener eventListener = new IGuiEventListener() {
             @Override
             public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
                 return true;

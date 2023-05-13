@@ -1,21 +1,21 @@
 package com.troblecodings.core;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public interface MessageWrapper {
 
-    default void messageWrapper(final Player player, final String message) {
-        internalMessage(player, new TextComponent(message));
+    default void messageWrapper(final PlayerEntity player, final String message) {
+        internalMessage(player,new StringTextComponent(message));
     }
 
-    default void translateMessageWrapper(final Player player, final String message) {
-        internalMessage(player, new TranslatableComponent(message));
+    default void translateMessageWrapper(final PlayerEntity player, final String message) {
+        internalMessage(player, new TranslationTextComponent(message));
     }
 
-    default void internalMessage(final Player player, final Component comp) {
+    default void internalMessage(final PlayerEntity player, final ITextComponent comp) {
         player.sendMessage(comp, player.getUUID());
     }
 
