@@ -2,8 +2,7 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.math.Matrix4f;
-
-import net.minecraft.util.FastColor;
+import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 public class BufferWrapper {
 
@@ -27,8 +26,8 @@ public class BufferWrapper {
     }
 
     public BufferWrapper color(final int color) {
-        return this.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color),
-                FastColor.ARGB32.blue(color), FastColor.ARGB32.alpha(color));
+        return this.color(UIColor.red(color), UIColor.green(color), UIColor.blue(color),
+                UIColor.alpha(color));
     }
 
     public BufferWrapper color(final float r, final float g, final float b, final float a) {

@@ -51,5 +51,21 @@ public class UIColor extends UIComponent {
     public void setColor(final int color) {
         this.color = color;
     }
+    
+    public static int alpha(final int color) {
+        return color >>> 24;
+    }
+    
+    public static int red(final int color) {
+        return color >> 16 & 255;
+    }
+    
+    public static int green(final int color) {
+        return color >> 8 & 255;
+    }
+    
+    public static int blue(final int color) {
+        return color & 255;
+    }
 
 }

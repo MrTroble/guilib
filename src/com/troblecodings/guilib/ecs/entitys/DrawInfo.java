@@ -8,10 +8,10 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
+import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 
 public class DrawInfo {
     public final int mouseX;
@@ -57,13 +57,17 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, location);
     }
 
+    public void disableTexture() {
+        RenderSystem.disableTexture();
+    }
+
     public void color() {
         this.color(1, 1, 1, 1);
     }
 
     public void color(final int color) {
-        this.color(FastColor.ARGB32.red(color) / 255.0, FastColor.ARGB32.green(color) / 255.0,
-                FastColor.ARGB32.blue(color) / 255.0, FastColor.ARGB32.alpha(color) / 255.0);
+        this.color(UIColor.red(color) / 255, UIColor.green(color) / 255, UIColor.blue(color) / 255,
+                UIColor.alpha(color) / 255);
     }
 
     public void color(final double r, final double g, final double b, final double a) {
@@ -102,7 +106,7 @@ public class DrawInfo {
         final double hypot = Math.hypot(deltaX, deltaY);
         final float normalX = Math.abs((float) (deltaX / hypot)) * (width / 2);
         final float normalY = (float) (deltaY / hypot) * (width / 2);
-        wrapper.pos(xLeft - normalY, yTop - normalX , 0).end();
+        wrapper.pos(xLeft - normalY, yTop - normalX, 0).end();
         wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
         wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
         wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
