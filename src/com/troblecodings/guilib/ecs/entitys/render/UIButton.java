@@ -6,11 +6,11 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class UIButton extends UIComponent {
@@ -24,7 +24,7 @@ public class UIButton extends UIComponent {
 
     private String text;
     private boolean enabled;
-    private final Font fontrenderer;
+    private final FontRenderer fontrenderer;
 
     public UIButton(final String text) {
         final Minecraft mc = Minecraft.getInstance();
