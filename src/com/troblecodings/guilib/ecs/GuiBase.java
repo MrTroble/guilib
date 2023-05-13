@@ -2,6 +2,8 @@ package com.troblecodings.guilib.ecs;
 
 import java.util.Stack;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
@@ -65,7 +67,8 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
         info.color();
         info.blendOn();
         info.depthOn();
-        final BufferWrapper builder = info.builder(7, DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper builder = info.builder(GL11.GL_QUADS,
+                DefaultVertexFormats.POSITION_TEX);
         final int inset = 8;
         final int topOffset = 32;
         final int leftOffset = 20;
