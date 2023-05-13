@@ -16,13 +16,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class UITextInput extends UIComponent {
 
-    private final TextFieldWidget textInput;
+    private final EditBox textInput;
     private Consumer<String> onTextUpdate;
     private Predicate<String> validator = string -> true;
 
     public UITextInput(final String id) {
         final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new TextFieldWidget(mc.font, 0, 0, 0, 0, new TranslationTextComponent(id));
+        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
         this.textInput.setCanLoseFocus(false);
         this.textInput.setFocus(false);
         this.textInput.setVisible(true);

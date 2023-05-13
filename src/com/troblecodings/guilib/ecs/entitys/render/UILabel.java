@@ -6,7 +6,7 @@ import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Font;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,7 +16,7 @@ public class UILabel extends UIComponent {
     public static final int DEFAULT_STRING_COLOR = 4210752;
     private String string;
     private int stringColor;
-    private final FontRenderer renderer;
+    private final Font renderer;
     private int restHeight = 0;
     private int restWidth = 0;
     private boolean centerX = true;
@@ -29,7 +29,6 @@ public class UILabel extends UIComponent {
         this.renderer = mc.font;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
@@ -38,7 +37,7 @@ public class UILabel extends UIComponent {
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
                     GlStateManager.DestFactor.ZERO);
             renderer.draw(info.stack, string, restWidth, restHeight, stringColor);
-            RenderSystem.color4f(1, 1, 1, 1);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 

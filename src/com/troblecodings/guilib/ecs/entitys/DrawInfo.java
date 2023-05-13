@@ -17,10 +17,10 @@ import net.minecraft.util.math.vector.Quaternion;
 public class DrawInfo {
     public final int mouseX;
     public final int mouseY;
-    public final MatrixStack stack;
+    public final PoseStack stack;
     public final float tick;
 
-    public DrawInfo(final int mouseX, final int mouseY, final MatrixStack stack, final float tick) {
+    public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
         super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
@@ -29,6 +29,7 @@ public class DrawInfo {
     }
 
     public void applyColor() {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         color();
     }
 
@@ -71,9 +72,8 @@ public class DrawInfo {
                 UIColor.alpha(color) / 255);
     }
 
-    @SuppressWarnings("deprecation")
     public void color(final double r, final double g, final double b, final double a) {
-        RenderSystem.color4f((float) r, (float) g, (float) b, (float) a);
+        RenderSystem.setShaderColor((float) r, (float) g, (float) b, (float) a);
     }
 
     public void blendOn() {
@@ -135,13 +135,13 @@ public class DrawInfo {
         this.color();
     }
 
-    public BufferWrapper builder(final int mode, final VertexFormat format) {
-        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
+    public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
+        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
         builder.begin(mode, format);
         return new BufferWrapper(builder, this.stack.last().pose());
     }
 
     public void end() {
-        Tessellator.getInstance().end();
+        Tesselator.getInstance().end();
     }
 }

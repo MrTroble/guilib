@@ -1,8 +1,8 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public interface ISyncable {
 
-    boolean isValid(PlayerEntity player);
+    boolean isValid(Player player);
 }
