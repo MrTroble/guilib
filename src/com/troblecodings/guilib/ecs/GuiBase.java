@@ -98,7 +98,7 @@ public abstract class GuiBase extends ContainerScreen<ContainerBase> {
 
     @Override
     public void render(final int mx, final int my, final float tick) {
-        this.renderBackground(stack);
+        this.renderBackground();
         final DrawInfo info = new DrawInfo(mx, my, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> entity.draw(info));
@@ -188,7 +188,7 @@ public abstract class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(final float deltaTime, final int mouseX, final int mouseY) {s
+    protected void renderBg(final float deltaTime, final int mouseX, final int mouseY) {
     }
 
     @Override

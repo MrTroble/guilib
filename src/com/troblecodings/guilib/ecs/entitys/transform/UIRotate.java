@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys.transform;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
@@ -26,7 +27,9 @@ public class UIRotate extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        info.stack.mulPose(fromXYZ(rotateX, rotateY, rotateZ));
+        GlStateManager.rotatef(this.rotateX, 1, 0, 0);
+        GlStateManager.rotatef(this.rotateY, 0, 1, 0);
+        GlStateManager.rotatef(this.rotateZ, 0, 0, 1);
     }
 
     @Override

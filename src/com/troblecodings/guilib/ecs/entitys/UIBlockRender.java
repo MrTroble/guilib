@@ -55,7 +55,7 @@ public class UIBlockRender extends UIComponent {
         final BufferBuilder builder = model.get();
         builder.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         DrawUtil.addToBuffer(builder, shapes, state);
-        builder.building();
+        builder.end();
     }
 
 }

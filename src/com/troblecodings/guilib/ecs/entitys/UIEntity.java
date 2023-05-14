@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.GuiBase;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -108,14 +109,14 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
                 this.hovered = info.mouseX >= wX && info.mouseY >= wY
                         && info.mouseX < wX + worldWidth && info.mouseY < wY + worldHeight;
             }
-            info.stack.pushPose();
+            GlStateManager.pushMatrix();
             info.translate(this.x, this.y, 0);
             info.scale(scaleX, scaleY, 1);
             components.forEach(c -> c.draw(info));
             children.forEach(c -> c.draw(info));
             children.forEach(c -> c.exitDraw(info));
             components.forEach(c -> c.exitDraw(info));
-            info.stack.popPose();
+            GlStateManager.popMatrix();
         }
     }
 

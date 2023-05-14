@@ -68,7 +68,6 @@ public class DrawInfo {
                 UIColor.alpha(color) / 255);
     }
 
-    @SuppressWarnings("deprecation")
     public void color(final double r, final double g, final double b, final double a) {
         GlStateManager.color4f((float) r, (float) g, (float) b, (float) a);
     }
@@ -90,11 +89,12 @@ public class DrawInfo {
     }
 
     public void scissorOn(final int x, final int y, final int width, final int height) {
-        GlStateManager.enableScissor(x, y, width, height);
+        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+        GL11.glScissor(x, y, width, height);
     }
 
     public void scissorOff() {
-        GlStateManager.disableScissor();
+        GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
     public void alphaOn() {
