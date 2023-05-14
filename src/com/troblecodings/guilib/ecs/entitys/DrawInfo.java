@@ -135,7 +135,7 @@ public class DrawInfo {
     public BufferWrapper builder(final int mode, final VertexFormat format) {
         final BufferBuilder builder = Tessellator.getInstance().getBuilder();
         builder.begin(mode, format);
-        return new BufferWrapper(builder, this.stack.last().pose());
+        return new BufferWrapper(builder);
     }
 
     public void end() {

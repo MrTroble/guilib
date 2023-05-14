@@ -3,17 +3,14 @@ package com.troblecodings.guilib.ecs.entitys;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Matrix4f;
 
 public class BufferWrapper {
 
     private final BufferBuilder builder;
-    private final Matrix4f matrix;
 
-    public BufferWrapper(final BufferBuilder builder, final Matrix4f matrix) {
+    public BufferWrapper(final BufferBuilder builder) {
         super();
         this.builder = builder;
-        this.matrix = matrix;
     }
 
     public BufferWrapper pos(final double x, final double y, final double z) {
@@ -27,8 +24,8 @@ public class BufferWrapper {
     }
 
     public BufferWrapper color(final int color) {
-        return this.color(UIColor.red(color), UIColor.green(color),
-                UIColor.blue(color), UIColor.alpha(color));
+        return this.color(UIColor.red(color), UIColor.green(color), UIColor.blue(color),
+                UIColor.alpha(color));
     }
 
     public BufferWrapper color(final float r, final float g, final float b, final float a) {
@@ -47,10 +44,14 @@ public class BufferWrapper {
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final int color) {
-        builder.vertex(xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color), UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color),
+                UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color),
+                UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
+                UIColor.blue(color), UIColor.alpha(color)).endVertex();
+        builder.vertex(xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
+                UIColor.blue(color), UIColor.alpha(color)).endVertex();
         return this;
     }
 
