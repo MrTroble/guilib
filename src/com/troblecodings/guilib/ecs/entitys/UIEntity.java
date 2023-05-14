@@ -109,8 +109,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
                         && info.mouseX < wX + worldWidth && info.mouseY < wY + worldHeight;
             }
             info.stack.pushPose();
-            info.stack.translate(this.x, this.y, 0);
-            info.stack.scale(scaleX, scaleY, 1);
+            info.translate(this.x, this.y, 0);
+            info.scale(scaleX, scaleY, 1);
             components.forEach(c -> c.draw(info));
             children.forEach(c -> c.draw(info));
             children.forEach(c -> c.exitDraw(info));

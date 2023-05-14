@@ -41,9 +41,9 @@ public class UIButton extends UIComponent {
             info.color();
             info.depthOff();
             final int offsetV = enabled ? (parent.isHovered() ? 2 : 1) : 0;
-            GuiUtils.drawTexturedModalRect(info.stack, 0, 0, 0, 46 + offsetV * 20,
-                    (int) parent.getWidth() / 2, (int) parent.getHeight(), 0);
-            GuiUtils.drawTexturedModalRect(info.stack, (int) parent.getWidth() / 2, 0,
+            GuiUtils.drawTexturedModalRect(0, 0, 0, 46 + offsetV * 20, (int) parent.getWidth() / 2,
+                    (int) parent.getHeight(), 0);
+            GuiUtils.drawTexturedModalRect((int) parent.getWidth() / 2, 0,
                     200 - (int) parent.getWidth() / 2, 46 + offsetV * 20,
                     (int) parent.getWidth() / 2, (int) parent.getHeight(), 0);
             final int colorUsed = enabled

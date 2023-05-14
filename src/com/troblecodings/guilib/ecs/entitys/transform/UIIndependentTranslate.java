@@ -46,7 +46,7 @@ public class UIIndependentTranslate extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        info.stack.translate(x, y, z);
+        info.translate(x, y, z);
     }
 
     @Override

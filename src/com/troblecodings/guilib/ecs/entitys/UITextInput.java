@@ -33,7 +33,7 @@ public class UITextInput extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        textInput.render(info.stack, info.mouseX, info.mouseY, info.tick);
+        textInput.render(info.mouseX, info.mouseY, info.tick);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
@@ -29,16 +28,15 @@ public class UILabel extends UIComponent {
         this.renderer = mc.font;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+            info.blendOn();
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
                     GlStateManager.DestFactor.ZERO);
-            renderer.draw(info.stack, string, restWidth, restHeight, stringColor);
-            RenderSystem.color4f(1, 1, 1, 1);
+            renderer.draw(string, restWidth, restHeight, stringColor);
+            info.color(1, 1, 1, 1);
         }
     }
 

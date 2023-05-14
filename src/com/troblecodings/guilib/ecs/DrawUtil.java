@@ -235,6 +235,6 @@ public final class DrawUtil {
 
     public static void drawCenteredString(final DrawInfo info, final FontRenderer fontRendererIn,
             final String text, final int x, final int y, final int color) {
-        fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
+        fontRendererIn.drawShadow(text, x - fontRendererIn.width(text) / 2, y, color);
     }
 }

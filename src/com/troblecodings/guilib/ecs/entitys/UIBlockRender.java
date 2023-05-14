@@ -36,7 +36,7 @@ public class UIBlockRender extends UIComponent {
         if (this.texture == null)
             return;
         this.texture.bind();
-        info.stack.translate(-0.5f + vector.x(), -0.5f + vector.y(), -0.5f + vector.z());
+        info.translate(-0.5f + vector.x(), -0.5f + vector.y(), -0.5f + vector.z());
         DrawUtil.draw(model.get());
     }
 

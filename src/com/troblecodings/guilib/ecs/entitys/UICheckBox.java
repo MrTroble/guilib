@@ -35,12 +35,12 @@ public class UICheckBox extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         final Minecraft mc = Minecraft.getInstance();
-        GuiUtils.drawContinuousTexturedBox(info.stack, UIButton.BUTTON_TEXTURES, 0, 0, 0, 46,
-                BOX_WIDTH, BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
+        GuiUtils.drawContinuousTexturedBox(UIButton.BUTTON_TEXTURES, 0, 0, 0, 46, BOX_WIDTH,
+                BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
         final int color = this.enabled ? UIButton.DEFAULT_COLOR : UIButton.DEFAULT_DISABLED_COLOR;
         if (this.isChecked())
             DrawUtil.drawCenteredString(info, mc.font, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
-        mc.font.drawShadow(info.stack, text, BOX_WIDTH + 2.0f, 2.0f, color);
+        mc.font.drawShadow(text, BOX_WIDTH + 2.0f, 2.0f, color);
     }
 
     public IntConsumer getOnChange() {

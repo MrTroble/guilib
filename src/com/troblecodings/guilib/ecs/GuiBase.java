@@ -4,7 +4,6 @@ import java.util.Stack;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -98,9 +97,9 @@ public abstract class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    public void render(final MatrixStack stack, final int mx, final int my, final float tick) {
+    public void render(final int mx, final int my, final float tick) {
         this.renderBackground(stack);
-        final DrawInfo info = new DrawInfo(mx, my, stack, tick);
+        final DrawInfo info = new DrawInfo(mx, my, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> entity.draw(info));
         this.entityStack.lastElement().postDraw(info);
@@ -189,8 +188,7 @@ public abstract class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    protected void renderBg(final MatrixStack stack, final float deltaTime, final int mouseX,
-            final int mouseY) {
+    protected void renderBg(final float deltaTime, final int mouseX, final int mouseY) {s
     }
 
     @Override

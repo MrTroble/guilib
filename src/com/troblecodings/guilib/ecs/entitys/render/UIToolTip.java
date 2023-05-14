@@ -36,8 +36,7 @@ public class UIToolTip extends UIComponent {
                     : I18n.get("gui.keyprompt");
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
-                base.base.renderTooltip(info.stack, new StringTextComponent(desc), info.mouseX,
-                        info.mouseY);
+                base.base.renderTooltip(new StringTextComponent(desc), info.mouseX, info.mouseY);
             }
         }
     }

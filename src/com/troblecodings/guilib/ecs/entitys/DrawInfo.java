@@ -2,8 +2,7 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -17,14 +16,12 @@ import net.minecraft.util.ResourceLocation;
 public class DrawInfo {
     public final int mouseX;
     public final int mouseY;
-    public final MatrixStack stack;
     public final float tick;
 
-    public DrawInfo(final int mouseX, final int mouseY, final MatrixStack stack, final float tick) {
+    public DrawInfo(final int mouseX, final int mouseY, final float tick) {
         super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
-        this.stack = stack;
         this.tick = tick;
     }
 
@@ -33,33 +30,33 @@ public class DrawInfo {
     }
 
     public void push() {
-        this.stack.pushPose();
+        GlStateManager.pushMatrix();
     }
 
     public void pop() {
-        this.stack.popPose();
+        GlStateManager.popMatrix();
     }
 
     public void translate(final double x, final double y, final double z) {
-        this.stack.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
     }
 
     public void scale(final double x, final double y, final double z) {
-        this.stack.scale((float) x, (float) y, (float) z);
+        GlStateManager.scaled(x, y, z);
     }
 
     public void rotate(final Quaternion quaternion) {
-        this.stack.mulPose(quaternion);
+        GlStateManager.rotated(quaternion.i(), quaternion.j(), quaternion.k(), quaternion.r());
     }
 
     public void applyTexture(final ResourceLocation location) {
-        RenderSystem.enableTexture();
+        GlStateManager.enableTexture();
         Minecraft.getInstance().getTextureManager().bind(location);
-        
+
     }
-    
+
     public void disableTexture() {
-        RenderSystem.disableTexture();
+        GlStateManager.disableTexture();
     }
 
     public void color() {
@@ -73,40 +70,39 @@ public class DrawInfo {
 
     @SuppressWarnings("deprecation")
     public void color(final double r, final double g, final double b, final double a) {
-        RenderSystem.color4f((float) r, (float) g, (float) b, (float) a);
+        GlStateManager.color4f((float) r, (float) g, (float) b, (float) a);
     }
 
     public void blendOn() {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        GlStateManager.enableBlend();
     }
 
     public void blendOff() {
-        RenderSystem.disableBlend();
+        GlStateManager.disableBlend();
     }
 
     public void depthOn() {
-        RenderSystem.enableDepthTest();
+        GlStateManager.enableDepthTest();
     }
 
     public void depthOff() {
-        RenderSystem.disableDepthTest();
+        GlStateManager.disableDepthTest();
     }
 
     public void scissorOn(final int x, final int y, final int width, final int height) {
-        RenderSystem.enableScissor(x, y, width, height);
+        GlStateManager.enableScissor(x, y, width, height);
     }
 
     public void scissorOff() {
-        RenderSystem.disableScissor();
+        GlStateManager.disableScissor();
     }
-    
+
     public void alphaOn() {
-        RenderSystem.enableAlphaTest();
+        GlStateManager.enableAlphaTest();
     }
-    
+
     public void alphaOff() {
-        RenderSystem.disableAlphaTest();
+        GlStateManager.disableAlphaTest();
     }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
@@ -126,7 +122,8 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
+                DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
