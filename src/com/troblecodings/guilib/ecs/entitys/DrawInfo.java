@@ -55,9 +55,9 @@ public class DrawInfo {
     public void applyTexture(final ResourceLocation location) {
         RenderSystem.enableTexture();
         Minecraft.getInstance().getTextureManager().bind(location);
-        
+
     }
-    
+
     public void disableTexture() {
         RenderSystem.disableTexture();
     }
@@ -100,11 +100,13 @@ public class DrawInfo {
     public void scissorOff() {
         RenderSystem.disableScissor();
     }
-    
+
+    @SuppressWarnings("deprecation")
     public void alphaOn() {
         RenderSystem.enableAlphaTest();
     }
-    
+
+    @SuppressWarnings("deprecation")
     public void alphaOff() {
         RenderSystem.disableAlphaTest();
     }
@@ -126,7 +128,8 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
+                DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
