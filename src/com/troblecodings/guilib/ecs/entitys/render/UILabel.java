@@ -1,6 +1,5 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
@@ -32,11 +31,10 @@ public class UILabel extends UIComponent {
     public void draw(final DrawInfo info) {
         if (this.visible) {
             info.blendOn();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                    GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-                    GlStateManager.DestFactor.ZERO);
+            info.applyTexture(UIButton.BUTTON_TEXTURES);
             renderer.draw(string, restWidth, restHeight, stringColor);
             info.color(1, 1, 1, 1);
+            info.blendOff();
         }
     }
 

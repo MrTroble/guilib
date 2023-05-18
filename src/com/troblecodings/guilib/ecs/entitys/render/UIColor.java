@@ -28,6 +28,7 @@ public class UIColor extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
+            info.disableTexture();
             info.applyColor();
             info.depthOff();
             info.blendOn();
