@@ -5,21 +5,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 
 public class NBTWrapper {
-    public CompoundNBT tag;
+    public NBTTagCompound tag;
 
-    public NBTWrapper(final CompoundNBT tag) {
+    public NBTWrapper(final NBTTagCompound tag) {
         super();
         this.tag = tag;
     }
 
     public NBTWrapper() {
-        this(new CompoundNBT());
+        this(new NBTTagCompound());
     }
 
     public boolean contains(final String key) {
@@ -27,23 +27,23 @@ public class NBTWrapper {
     }
 
     public void putBoolean(final String key, final boolean value) {
-        tag.putBoolean(key, value);
+        tag.setBoolean(key, value);
     }
 
     public void putInteger(final String key, final int value) {
-        tag.putInt(key, value);
+        tag.setInteger(key, value);
     }
 
     public void putString(final String key, final String value) {
-        tag.putString(key, value);
+        tag.setString(key, value);
     }
 
     public void putFloat(final String key, final float value) {
-        tag.putFloat(key, value);
+        tag.setFloat(key, value);
     }
 
     public void putList(final String key, final Iterable<NBTWrapper> value) {
-        final ListNBT list = new ListNBT();
+        final NBTTagList list = new NBTTagList();
         value.forEach(tagWrapper -> list.add(tagWrapper.tag));
         tag.put(key, list);
     }
@@ -61,7 +61,7 @@ public class NBTWrapper {
     }
 
     public int getInteger(final String key) {
-        return tag.getInt(key);
+        return tag.getInteger(key);
     }
 
     public String getString(final String key) {
@@ -77,17 +77,17 @@ public class NBTWrapper {
     }
 
     public List<NBTWrapper> getList(final String key) {
-        final ListNBT list = (ListNBT) tag.get(key);
-        return list.stream().map(tag -> new NBTWrapper((CompoundNBT) tag))
+        final NBTTagList list = (NBTTagList) tag.getTag(key);
+        return list.stream().map(tag -> new NBTWrapper((NBTTagCompound) tag))
                 .collect(Collectors.toList());
     }
 
     public NBTWrapper getWrapper(final String key) {
-        return new NBTWrapper((CompoundNBT) tag.get(key));
+        return new NBTWrapper((NBTTagCompound) tag.getTag(key));
     }
 
     public BlockPos getAsPos() {
-        return NBTUtil.readBlockPos(tag);
+        return NBTUtil.getPosFromTag(tag);
     }
 
     public NBTWrapper copy() {
@@ -99,20 +99,20 @@ public class NBTWrapper {
     }
 
     public void remove(final String key) {
-        tag.remove(key);
+        tag.removeTag(key);
     }
 
     public static NBTWrapper getBlockPosWrapper(final BlockPos pos) {
-        return new NBTWrapper(NBTUtil.writeBlockPos(pos));
+        return new NBTWrapper(NBTUtil.createPosTag(pos));
     }
 
     public static NBTWrapper getOrCreateWrapper(final ItemStack stack) {
-        return new NBTWrapper(stack.getOrCreateTag());
+        return new NBTWrapper(stack.getTagCompound());
     }
 
     public static NBTWrapper createForStack(final ItemStack stack) {
         final NBTWrapper wrapper = new NBTWrapper();
-        stack.setTag(wrapper.tag);
+        stack.setTagCompound(wrapper.tag);
         return wrapper;
     }
 
