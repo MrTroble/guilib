@@ -8,22 +8,23 @@ import com.troblecodings.core.interfaces.INetworkSync;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.NetworkEvent.ClientCustomPayloadEvent;
-import net.minecraftforge.fml.network.NetworkEvent.ServerCustomPayloadEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
 import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
 public class NetworkHandler {
 
-    private final EventNetworkChannel channel;
+    private final NetworkDispatcher channel;
     private final ResourceLocation channelName;
 
     public NetworkHandler(final String modid, final Logger logger) {
@@ -35,7 +36,7 @@ public class NetworkHandler {
     }
 
     @SubscribeEvent
-    public void clientEvent(final ClientCustomPayloadEvent event) {
+    public void clientEvent(final ClientCustomPacketEvent event) {
         final Container menu = event.getSource().get().getSender().containerMenu;
         if (menu instanceof INetworkSync) {
             ((INetworkSync) menu).deserializeServer(event.getPayload().nioBuffer());
@@ -44,23 +45,24 @@ public class NetworkHandler {
     }
 
     @SubscribeEvent
-    public void serverEvent(final ServerCustomPayloadEvent event) {
-        final Minecraft mc = Minecraft.getInstance();
-        final Container menu = mc.player.containerMenu;
+    public void serverEvent(final ServerCustomPacketEvent event) {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final Container menu = mc.player.openContainer;
         if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeClient(event.getPayload().nioBuffer());
+
+            ((INetworkSync) menu).deserializeClient(event.getPacket().payload().nioBuffer());
             event.getSource().get().setPacketHandled(true);
         }
     }
 
-    public void sendTo(final PlayerEntity player, final ByteBuffer buf) {
+    public void sendTo(final EntityPlayer player, final ByteBuffer buf) {
         final PacketBuffer buffer = new PacketBuffer(
                 Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
-        if (player instanceof ServerPlayerEntity) {
-            final ServerPlayerEntity server = (ServerPlayerEntity) player;
+        if (player instanceof EntityPlayerSP) {
+            final EntityPlayerSP server = (EntityPlayerSP) player;
             server.connection.send(new SCustomPayloadPlayPacket(channelName, buffer));
         } else {
-            final Minecraft mc = Minecraft.getInstance();
+            final Minecraft mc = Minecraft.getMinecraft();
             mc.getConnection().send(new CCustomPayloadPacket(channelName, buffer));
         }
     }

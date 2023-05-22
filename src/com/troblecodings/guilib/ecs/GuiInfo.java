@@ -2,29 +2,26 @@ package com.troblecodings.guilib.ecs;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public class GuiInfo {
 
-    public final ContainerType<?> type;
     public final int id;
     public final World world;
-    public PlayerEntity player;
-    public final PlayerInventory inventory;
+    public EntityPlayer player;
+    public final InventoryPlayer inventory;
     public ITextComponent component;
     @Nullable
     public final BlockPos pos;
     @Nullable
     public ContainerBase base = null;
 
-    public GuiInfo(final ContainerType<?> type, final int id, final World world, final BlockPos pos,
-            final PlayerEntity player, final PlayerInventory inventory) {
-        this.type = type;
+    public GuiInfo(final int id, final World world, final BlockPos pos, final EntityPlayer player,
+            final InventoryPlayer inventory) {
         this.id = id;
         this.world = world;
         this.inventory = inventory;
@@ -34,7 +31,7 @@ public class GuiInfo {
 
     @SuppressWarnings("unchecked")
     public <T> T getTile() {
-        return (T) world.getBlockEntity(pos);
+        return (T) world.getTileEntity(pos);
     }
 
     public GuiInfo with(final ITextComponent component) {

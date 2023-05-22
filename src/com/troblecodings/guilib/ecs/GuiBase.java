@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs;
 
+import java.io.IOException;
 import java.util.Stack;
 
 import org.lwjgl.opengl.GL11;
@@ -13,15 +14,15 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
-public class GuiBase extends ContainerScreen<ContainerBase> {
+@SideOnly(Side.CLIENT)
+public class GuiBase extends GuiScreen {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -41,10 +42,10 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     private int lastButton = -1;
 
     public GuiBase(final GuiInfo info) {
-        super(info.base, info.inventory, info.component);
+        super();
         this.entityStack.add(new UIEntity());
         this.entity = entityStack.lastElement();
-        this.mc = Minecraft.getInstance();
+        this.mc = Minecraft.getMinecraft();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean doesGuiPauseGame() {
         return false;
     }
 
@@ -106,7 +107,6 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     public void updateFromContainer() {
-
     }
 
     private void updateSingle(final UIEntity entity) {
@@ -141,12 +141,12 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1) {
-            this.mc.player.closeContainer();
+            this.mc.player.closeScreen();
         }
         this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, keyCode, time));
-        return super.keyPressed(typedChar, keyCode, time);
+        super.keyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -156,18 +156,18 @@ public class GuiBase extends ContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean mouseClicked(final double mouseX, final double mouseY, final int mouseButton) {
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         lastButton = mouseButton;
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean mouseReleased(final double mouseX, final double mouseY, final int mouseButton) {
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
-        return super.mouseReleased(mouseX, mouseY, mouseButton);
+        super.mouseReleased(mouseX, mouseY, state);
     }
 
     @Override

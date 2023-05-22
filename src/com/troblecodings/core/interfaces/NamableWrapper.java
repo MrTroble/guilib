@@ -2,24 +2,29 @@ package com.troblecodings.core.interfaces;
 
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IWorldNameable;
 
 public interface NamableWrapper extends IWorldNameable, IStringSerializable {
 
     default String getNameAsStringWrapper() {
-        return getName().getContents();
+        return getName();
     }
 
     String getNameWrapper();
 
     @Override
-    default ITextComponent getName() {
-        return new TranslationTextComponent(getNameWrapper());
+    default String getName() {
+        return getNameWrapper();
     }
 
     @Override
-    default String getSerializedName() {
-        return getNameWrapper();
+    default boolean hasCustomName() {
+        return getNameWrapper() != null && !getNameWrapper().isEmpty();
+    }
+
+    @Override
+    default ITextComponent getDisplayName() {
+        return new TextComponentString(getNameWrapper());
     }
 }

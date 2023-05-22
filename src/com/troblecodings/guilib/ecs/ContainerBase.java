@@ -3,36 +3,37 @@ package com.troblecodings.guilib.ecs;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerBase extends Container implements INetworkSync {
 
     private final GuiInfo info;
 
     public ContainerBase(final GuiInfo info) {
-        super(info.type, info.id);
+        super();
         info.base = this;
-        if (info.world.isClientSide) {
-            final Minecraft mc = Minecraft.getInstance();
-            mc.player.containerMenu = this;
+        if (info.world.isRemote) {
+            final Minecraft mc = Minecraft.getMinecraft();
+            mc.player.openContainer = this;
         }
         this.info = info;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("resource")
-    @OnlyIn(Dist.CLIENT)
+    @SideOnly(Side.CLIENT)
     public void update() {
-        ((GuiBase) Minecraft.getInstance().screen).updateFromContainer();
+        ((GuiBase) Minecraft.getMinecraft().currentScreen).updateFromContainer();
     }
 
     @Override
-    public boolean stillValid(final PlayerEntity player) {
+    public boolean canInteractWith(EntityPlayer playerIn) {
         return true;
     }
 
@@ -40,7 +41,7 @@ public class ContainerBase extends Container implements INetworkSync {
         return info;
     }
 
-    public PlayerEntity getPlayer() {
+    public EntityPlayer getPlayer() {
         return info.player;
     }
 
@@ -52,5 +53,4 @@ public class ContainerBase extends Container implements INetworkSync {
 
     public void sendAllDataToRemote() {
     }
-
 }
