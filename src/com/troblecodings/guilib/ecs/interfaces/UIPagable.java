@@ -2,10 +2,10 @@ package com.troblecodings.guilib.ecs.interfaces;
 
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public interface UIPagable {
 
     public int getPage();

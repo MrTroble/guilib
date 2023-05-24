@@ -1,8 +1,8 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface UIClientSync {
 
-    PlayerEntity getPlayer();
+    EntityPlayer getPlayer();
 }
