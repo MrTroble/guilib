@@ -8,11 +8,11 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIButton extends UIComponent {
 
     public static final int DEFAULT_COLOR = 14737632;
@@ -27,11 +27,11 @@ public class UIButton extends UIComponent {
     private final FontRenderer fontrenderer;
 
     public UIButton(final String text) {
-        final Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getMinecraft();
         this.setVisible(true);
         this.setEnabled(true);
         this.text = text;
-        this.fontrenderer = mc.font;
+        this.fontrenderer = mc.fontRenderer;
     }
 
     @Override

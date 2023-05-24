@@ -1,13 +1,13 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Quaternion;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -38,25 +38,23 @@ public class DrawInfo {
     }
 
     public void translate(final double x, final double y, final double z) {
-        GlStateManager.translated(x, y, z);
+        GlStateManager.translate(x, y, z);
     }
 
     public void scale(final double x, final double y, final double z) {
-        GlStateManager.scaled(x, y, z);
+        GlStateManager.scale(x, y, z);
     }
 
     public void rotate(final Quaternion quaternion) {
-        GlStateManager.rotated(quaternion.i(), quaternion.j(), quaternion.k(), quaternion.r());
+        GlStateManager.rotate(quaternion.w, quaternion.x, quaternion.y, quaternion.z);
     }
 
     public void applyTexture(final ResourceLocation location) {
-        GlStateManager.enableTexture();
-        Minecraft.getInstance().getTextureManager().bind(location);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 
     }
 
     public void disableTexture() {
-        GlStateManager.disableTexture();
     }
 
     public void color() {
@@ -69,12 +67,12 @@ public class DrawInfo {
     }
 
     public void color(final double r, final double g, final double b, final double a) {
-        GlStateManager.color4f((float) r, (float) g, (float) b, (float) a);
+        GlStateManager.color((float) r, (float) g, (float) b, (float) a);
     }
 
     public void blendOn() {
         GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                 GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
                 GlStateManager.DestFactor.ZERO);
     }
@@ -84,11 +82,11 @@ public class DrawInfo {
     }
 
     public void depthOn() {
-        GlStateManager.enableDepthTest();
+        GlStateManager.enableDepth();
     }
 
     public void depthOff() {
-        GlStateManager.disableDepthTest();
+        GlStateManager.disableDepth();
     }
 
     public void scissorOn(final int x, final int y, final int width, final int height) {
@@ -101,11 +99,11 @@ public class DrawInfo {
     }
 
     public void alphaOn() {
-        GlStateManager.enableAlphaTest();
+        GlStateManager.enableAlpha();
     }
 
     public void alphaOff() {
-        GlStateManager.disableAlphaTest();
+        GlStateManager.disableAlpha();
     }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
@@ -136,12 +134,12 @@ public class DrawInfo {
     }
 
     public BufferWrapper builder(final int mode, final VertexFormat format) {
-        final BufferBuilder builder = Tessellator.getInstance().getBuilder();
+        final BufferBuilder builder = Tessellator.getInstance().getBuffer();
         builder.begin(mode, format);
         return new BufferWrapper(builder);
     }
 
     public void end() {
-        Tessellator.getInstance().end();
+        Tessellator.getInstance().draw();
     }
 }

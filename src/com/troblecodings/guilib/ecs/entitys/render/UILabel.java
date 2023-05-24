@@ -5,10 +5,10 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UILabel extends UIComponent {
 
     public static final int DEFAULT_STRING_COLOR = 4210752;
@@ -23,8 +23,8 @@ public class UILabel extends UIComponent {
     public UILabel(final String text) {
         this.string = text;
         this.stringColor = DEFAULT_STRING_COLOR;
-        final Minecraft mc = Minecraft.getInstance();
-        this.renderer = mc.font;
+        final Minecraft mc = Minecraft.getMinecraft();
+        this.renderer = mc.fontRenderer;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class UILabel extends UIComponent {
         if (this.visible) {
             info.blendOn();
             info.applyTexture(UIButton.BUTTON_TEXTURES);
-            renderer.draw(string, restWidth, restHeight, stringColor);
+            renderer.drawString(string, restWidth, restHeight, stringColor);
             info.color(1, 1, 1, 1);
             info.blendOff();
         }
@@ -73,11 +73,11 @@ public class UILabel extends UIComponent {
     }
 
     public int getTextWidth() {
-        return renderer.width(string);
+        return renderer.getStringWidth(string);
     }
 
     public int getTextHeight() {
-        return renderer.lineHeight;
+        return renderer.FONT_HEIGHT;
     }
 
     public boolean isCenterX() {

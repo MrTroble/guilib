@@ -7,10 +7,10 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIScroll extends UIComponent {
 
     protected DoubleConsumer consumer;

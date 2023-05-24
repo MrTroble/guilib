@@ -2,10 +2,10 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIEnumerable extends UIComponent {
 
     private IntConsumer onChange;

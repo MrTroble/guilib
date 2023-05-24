@@ -6,10 +6,10 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.interfaces.BiDoubleConsumer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIDrag extends UIComponent {
 
     private final int button;

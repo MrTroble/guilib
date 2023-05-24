@@ -4,10 +4,10 @@ import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIScissor extends UIComponent {
 
     private int x;

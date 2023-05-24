@@ -7,10 +7,10 @@ import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIColor extends UIComponent {
 
     private int color;
@@ -33,7 +33,8 @@ public class UIColor extends UIComponent {
             info.depthOff();
             info.blendOn();
             info.alphaOn();
-            final BufferWrapper wrapper = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+            final BufferWrapper wrapper = info.builder(GL11.GL_QUADS,
+                    DefaultVertexFormats.POSITION_COLOR);
             wrapper.quad(-insets, (int) parent.getWidth() + insets, -insets,
                     (int) parent.getHeight() + insets, this.color);
             info.end();
@@ -54,19 +55,19 @@ public class UIColor extends UIComponent {
     public void setColor(final int color) {
         this.color = color;
     }
-    
+
     public static int alpha(final int color) {
         return color >>> 24;
     }
-    
+
     public static int red(final int color) {
         return color >> 16 & 255;
     }
-    
+
     public static int green(final int color) {
         return color >> 8 & 255;
     }
-    
+
     public static int blue(final int color) {
         return color & 255;
     }

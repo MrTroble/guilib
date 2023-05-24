@@ -4,10 +4,10 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public abstract class UIComponent {
 
     protected UIEntity parent = null;

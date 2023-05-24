@@ -32,7 +32,7 @@ public interface IIntegerable<T> {
     default public int getMaxWidth(final FontRenderer render) {
         int ret = 0;
         for (int i = 0; i < this.count(); i++) {
-            final int newVal = render.width(getNamedObj(i));
+            final int newVal = render.getStringWidth(getNamedObj(i));
             if (ret < newVal)
                 ret = newVal;
         }

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIBox extends UIComponent implements UIPagable {
 
     private int page = 0;

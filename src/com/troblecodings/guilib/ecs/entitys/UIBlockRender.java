@@ -6,37 +6,22 @@ import org.lwjgl.opengl.GL11;
 
 import com.troblecodings.guilib.ecs.DrawUtil;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.Vec3d;
 
 public class UIBlockRender extends UIComponent {
 
     private final AtomicReference<BufferBuilder> model = new AtomicReference<>(
             new BufferBuilder(500));
 
-    private final TextureManager manager;
-    private final BlockModelShapes shapes;
-    private ITextureObject texture;
-    private Vec3d vector;
-
-    public UIBlockRender() {
-        final Minecraft mc = Minecraft.getInstance();
-        manager = mc.getTextureManager();
-        shapes = mc.getBlockRenderer().getBlockModelShaper();
-    }
-
     @Override
     public void draw(final DrawInfo info) {
-        if (this.texture == null)
-            return;
-        this.texture.bind();
-        info.translate(-0.5f + vector.x(), -0.5f + vector.y(), -0.5f + vector.z());
+        info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        info.translate(-0.5f, -0.5f, -0.5f);
         DrawUtil.draw(model.get());
     }
 
@@ -44,18 +29,18 @@ public class UIBlockRender extends UIComponent {
     public void update() {
     }
 
-    public void setBlockState(final BlockState state) {
+    public void setBlockState(final IBlockState state) {
         this.setBlockState(state, 0, 0, 0);
     }
 
-    public void setBlockState(final BlockState state, final double x, final double y,
+    public void setBlockState(final IBlockState state, final double x, final double y,
             final double z) {
-        this.vector = new Vec3d(x, y, z);
-        this.texture = manager.getTexture(state.getBlock().getRegistryName());
         final BufferBuilder builder = model.get();
+        final BlockModelShapes shapes = Minecraft.getMinecraft().getBlockRendererDispatcher()
+                .getBlockModelShapes();
         builder.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         DrawUtil.addToBuffer(builder, shapes, state);
-        builder.end();
+        builder.finishDrawing();
     }
 
 }

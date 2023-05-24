@@ -2,6 +2,8 @@ package com.troblecodings.guilib.ecs.entitys.render;
 
 import java.util.Arrays;
 
+import org.lwjgl.input.Keyboard;
+
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
@@ -9,13 +11,12 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIToolTip extends UIComponent {
 
     private String descripton;
@@ -35,11 +36,10 @@ public class UIToolTip extends UIComponent {
     @Override
     public void postDraw(final DrawInfo info) {
         if (this.parent.isHovered()) {
-            @SuppressWarnings("resource")
-            final FontRenderer font = Minecraft.getInstance().font;
-            final String desc = (Screen.hasShiftDown() || this.descripton.length() < 200)
-                    ? this.descripton
-                    : I18n.get("gui.keyprompt");
+            final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+            final String desc = (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
+                    || this.descripton.length() < 200) ? this.descripton
+                            : I18n.format("gui.keyprompt");
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
                 GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())),

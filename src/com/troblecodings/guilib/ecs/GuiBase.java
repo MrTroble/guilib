@@ -3,6 +3,7 @@ package com.troblecodings.guilib.ecs;
 import java.io.IOException;
 import java.util.Stack;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
@@ -15,7 +16,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,11 +50,18 @@ public class GuiBase extends GuiScreen {
     }
 
     @Override
-    public void resize(final Minecraft mc, final int width, final int height) {
+    public void setWorldAndResolution(Minecraft mc, int width, int height) {
         this.mc = mc;
         this.width = width;
         this.height = height;
-        this.init();
+        if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS
+                .post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Pre(this,
+                        this.buttonList))) {
+            this.initGui();
+        }
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS
+                .post(new net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent.Post(this,
+                        this.buttonList));
     }
 
     @Override
@@ -98,15 +106,19 @@ public class GuiBase extends GuiScreen {
     }
 
     @Override
-    public void render(final int mx, final int my, final float tick) {
-        this.renderBackground();
-        final DrawInfo info = new DrawInfo(mx, my, tick);
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawDefaultBackground();
+        final DrawInfo info = new DrawInfo(mouseX, mouseY, partialTicks);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> entity.draw(info));
         this.entityStack.lastElement().postDraw(info);
+
     }
 
     public void updateFromContainer() {
+    }
+
+    public void preClose() {
     }
 
     private void updateSingle(final UIEntity entity) {
@@ -114,8 +126,8 @@ public class GuiBase extends GuiScreen {
         entity.setHeight(this.ySize - GUI_INSET);
         entity.setX(this.guiLeft + GUI_INSET);
         entity.setY(this.guiTop + GUI_INSET);
-        entity.updateEvent(
-                new UpdateEvent(width, height, this.minecraft.window.getGuiScale(), 1, this));
+        final ScaledResolution rs = new ScaledResolution(mc);
+        entity.updateEvent(new UpdateEvent(width, height, rs.getScaleFactor(), 1, this));
     }
 
     public void push(final UIEntity entity) {
@@ -132,7 +144,7 @@ public class GuiBase extends GuiScreen {
     }
 
     @Override
-    protected void init() {
+    public void initGui() {
         this.ySize = Math.min(GUI_MAX_HEIGHT, this.height - GUI_INSET * 4);
         this.xSize = GUI_MIN_WIDTH + GUI_INSET;
         this.guiLeft = (this.width - this.xSize) / 2;
@@ -143,16 +155,11 @@ public class GuiBase extends GuiScreen {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1) {
+            preClose();
             this.mc.player.closeScreen();
         }
-        this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, keyCode, time));
+        this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, keyCode));
         super.keyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public boolean charTyped(final char character, final int typedChar) {
-        this.entityStack.lastElement().keyEvent(new KeyEvent(typedChar, 0, 0, character));
-        return super.charTyped(character, typedChar);
     }
 
     @Override
@@ -171,35 +178,12 @@ public class GuiBase extends GuiScreen {
     }
 
     @Override
-    public boolean mouseDragged(final double mouseX, final double mouseY,
-            final int clickedMouseButton, final double p_94702_, final double p_94703_) {
-        this.entityStack.lastElement().mouseEvent(
-                new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
-        return super.mouseDragged(mouseX, mouseY, clickedMouseButton, p_94702_, p_94703_);
-    }
-
-    @Override
-    public boolean mouseScrolled(final double mouseX, final double mouseY, final double scroll) {
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        final int scroll = Mouse.getDWheel();
         if (scroll != 0) {
             this.entityStack.lastElement()
                     .mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
-        return super.mouseScrolled(mouseX, mouseY, scroll);
     }
-
-    @Override
-    protected void renderBg(final float deltaTime, final int mouseX, final int mouseY) {
-    }
-
-    @Override
-    public IGuiEventListener getFocused() {
-        final IGuiEventListener eventListener = new IGuiEventListener() {
-            @Override
-            public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
-                return true;
-            }
-        };
-        return eventListener;
-    }
-
 }

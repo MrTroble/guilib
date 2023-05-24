@@ -5,13 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.troblecodings.guilib.ecs.GuiBase;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     private double x, y;
@@ -290,22 +290,12 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
         public final int typedChar;
         public final int keyCode;
-        public final int time;
-        public final char character;
 
-        public KeyEvent(final int typedChar, final int keyCode, final int time,
-                final char character) {
+        public KeyEvent(final int typedChar, final int keyCode) {
             super();
             this.typedChar = typedChar;
             this.keyCode = keyCode;
-            this.time = time;
-            this.character = character;
         }
-
-        public KeyEvent(final int typedChar, final int keyCode, final int time) {
-            this(typedChar, keyCode, time, (char) 0);
-        }
-
     }
 
     public static final class MouseEvent {

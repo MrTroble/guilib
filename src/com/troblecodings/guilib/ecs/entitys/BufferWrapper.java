@@ -14,7 +14,7 @@ public class BufferWrapper {
     }
 
     public BufferWrapper pos(final double x, final double y, final double z) {
-        builder.vertex((float) x, (float) y, (float) z);
+        builder.pos((float) x, (float) y, (float) z);
         return this;
     }
 
@@ -34,7 +34,7 @@ public class BufferWrapper {
     }
 
     public BufferWrapper tex(final double u, final double v) {
-        builder.uv((float) u, (float) v);
+        builder.tex((float) u, (float) v);
         return this;
     }
 
@@ -44,13 +44,13 @@ public class BufferWrapper {
 
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final int color) {
-        builder.vertex(xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color),
+        builder.pos(xRight, yTop, 0).color(UIColor.red(color), UIColor.green(color),
                 UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color),
+        builder.pos(xLeft, yTop, 0).color(UIColor.red(color), UIColor.green(color),
                 UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
+        builder.pos(xLeft, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
                 UIColor.blue(color), UIColor.alpha(color)).endVertex();
-        builder.vertex(xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
+        builder.pos(xRight, yBottom, 0).color(UIColor.red(color), UIColor.green(color),
                 UIColor.blue(color), UIColor.alpha(color)).endVertex();
         return this;
     }
@@ -58,10 +58,10 @@ public class BufferWrapper {
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final float uStart, final float uEnd, final float vStart,
             final float vEnd) {
-        builder.vertex(xRight, yTop, 0).uv((uEnd), (vStart)).endVertex();
-        builder.vertex(xLeft, yTop, 0).uv((uStart), (vStart)).endVertex();
-        builder.vertex(xLeft, yBottom, 0).uv((uStart), (vEnd)).endVertex();
-        builder.vertex(xRight, yBottom, 0).uv((uEnd), (vEnd)).endVertex();
+        builder.pos(xRight, yTop, 0).tex((uEnd), (vStart)).endVertex();
+        builder.pos(xLeft, yTop, 0).tex((uStart), (vStart)).endVertex();
+        builder.pos(xLeft, yBottom, 0).tex((uStart), (vEnd)).endVertex();
+        builder.pos(xRight, yBottom, 0).tex((uEnd), (vEnd)).endVertex();
         return this;
     }
 

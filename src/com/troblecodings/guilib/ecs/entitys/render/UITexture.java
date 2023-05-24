@@ -6,22 +6,16 @@ import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UITexture extends UIComponent {
 
     private final double u, v, mu, mv;
     private final ResourceLocation texture;
-
-    public UITexture(final TextureAtlasSprite sprite) {
-        this(sprite.getName(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
-                sprite.getV1());
-    }
 
     public UITexture(final ResourceLocation texture) {
         this(texture, 0, 0, 1, 1);
@@ -44,7 +38,8 @@ public class UITexture extends UIComponent {
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
 
-        final BufferWrapper bufferbuilder = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper bufferbuilder = info.builder(GL11.GL_QUADS,
+                DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();

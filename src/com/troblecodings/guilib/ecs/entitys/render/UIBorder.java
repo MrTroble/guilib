@@ -1,9 +1,9 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UIBorder extends UILines {
 
     private static final float[] BORDER_COORDINATES = new float[] {

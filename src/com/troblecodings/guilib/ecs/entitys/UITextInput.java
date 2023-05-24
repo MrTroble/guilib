@@ -8,65 +8,61 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UITextInput extends UIComponent {
 
-    private final TextFieldWidget textInput;
+    private final GuiTextField textInput;
     private Consumer<String> onTextUpdate;
     private Predicate<String> validator = string -> true;
 
     public UITextInput(final String id) {
-        final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new TextFieldWidget(mc.font, 0, 0, 0, 0, id);
+        final Minecraft mc = Minecraft.getMinecraft();
+        this.textInput = new GuiTextField(0, mc.fontRenderer, 0, 0, 0, 0);
         this.textInput.setCanLoseFocus(false);
-        this.textInput.setFocus(false);
-        this.textInput.setVisible(true);
-        this.textInput.setEditable(true);
-        this.textInput.setMaxLength(60);
-        this.textInput.setValue(id);
-        this.textInput.moveCursorTo(0);
+        this.textInput.setFocused(false);
+        this.textInput.setEnabled(true);
+        this.textInput.setMaxStringLength(60);
+        this.textInput.setText(id);
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        textInput.render(info.mouseX, info.mouseY, info.tick);
+        textInput.drawTextBox();
     }
 
     @Override
     public void update() {
-        textInput.setWidth((int) this.parent.getWidth());
-        textInput.setHeight((int) this.parent.getHeight());
-        textInput.setMessage(textInput.getMessage());
+        textInput.width = (int) this.parent.getWidth();
+        textInput.height = (int) this.parent.getHeight();
+        textInput.setText(textInput.getText());
     }
 
     @Override
     public void setVisible(final boolean visible) {
         super.setVisible(visible);
         this.textInput.setVisible(visible);
-        this.textInput.setFocus(visible);
-        this.textInput.setEditable(visible);
+        this.textInput.setFocused(visible);
+        this.textInput.setEnabled(visible);
     }
 
     @Override
     public void keyEvent(final KeyEvent event) {
-        if (event.character == 0)
-            this.textInput.keyPressed(event.typedChar, event.keyCode, event.time);
-        if (event.character != 0)
-            this.textInput.charTyped(event.character, event.typedChar);
+        this.textInput.textboxKeyTyped((char) event.typedChar, event.keyCode);
+        this.onTextUpdate.accept(getText());
     }
 
     @Override
     public void mouseEvent(final MouseEvent event) {
         if (event.state.equals(EnumMouseState.CLICKED)) {
             if (this.parent.isHovered()) {
-                this.textInput.setFocus(true);
-                this.textInput.mouseClicked(event.x, event.y, event.key);
+                this.textInput.setFocused(true);
+                this.textInput.mouseClicked((int) event.x, (int) event.y, event.key);
             } else {
-                this.textInput.setFocus(false);
+                this.textInput.setFocused(false);
             }
         }
     }
@@ -77,7 +73,6 @@ public class UITextInput extends UIComponent {
 
     public void setOnTextUpdate(final Consumer<String> onTextUpdate) {
         this.onTextUpdate = onTextUpdate;
-        textInput.setResponder(onTextUpdate);
     }
 
     public Predicate<String> getValidator() {
@@ -86,15 +81,14 @@ public class UITextInput extends UIComponent {
 
     public void setValidator(final Predicate<String> validator) {
         this.validator = validator;
-        this.textInput.setFilter(validator);
+        this.textInput.setValidator(validator::test);
     }
 
     public String getText() {
-        return this.textInput.getValue();
+        return this.textInput.getText();
     }
 
     public void setText(final String text) {
-        this.textInput.setValue(text);
-
+        this.textInput.setText(text);
     }
 }

@@ -1,23 +1,25 @@
 package com.troblecodings.guilib.ecs;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.Direction;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
@@ -63,7 +65,7 @@ public final class DrawUtil {
         public String getNamedObj(final int obj) {
             final T current = getObjFromID(obj);
             if (current == null)
-                return getLocalizedName() + ": " + I18n.get("property.disabled.name");
+                return getLocalizedName() + ": " + I18n.format("property.disabled.name");
             return integerable.getNamedObj(obj);
         }
 
@@ -200,33 +202,49 @@ public final class DrawUtil {
     }
 
     public static void draw(final BufferBuilder bufferBuilderIn) {
-        final WorldVertexBufferUploader worldVertexBufferUploader = new WorldVertexBufferUploader();
-        worldVertexBufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
+        if (bufferBuilderIn.getVertexCount() > 0) {
+            final VertexFormat vertexformat = bufferBuilderIn.getVertexFormat();
+            final int i = vertexformat.getNextOffset();
+            final ByteBuffer bytebuffer = bufferBuilderIn.getByteBuffer();
+            final List<VertexFormatElement> list = vertexformat.getElements();
+
+            for (int j = 0; j < list.size(); ++j) {
+                final VertexFormatElement vertexformatelement = list.get(j);
+                bytebuffer.position(vertexformat.getOffset(j));
+                vertexformatelement.getUsage().preDraw(vertexformat, j, i, bytebuffer);
+            }
+            GlStateManager.glDrawArrays(bufferBuilderIn.getDrawMode(), 0,
+                    bufferBuilderIn.getVertexCount());
+            int i1 = 0;
+
+            for (final int j1 = list.size(); i1 < j1; ++i1) {
+                final VertexFormatElement vertexformatelement1 = list.get(i1);
+                vertexformatelement1.getUsage().postDraw(vertexformat, i1, i, bytebuffer);
+            }
+        }
     }
 
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final BlockState ebs) {
+            final IBlockState ebs) {
         addToBuffer(builder, manager, ebs, 0);
     }
 
-    private static final Random random = new Random();
-
-    @SuppressWarnings("deprecation")
     public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final BlockState ebs, final int color) {
+            final IBlockState ebs, final int color) {
         assert ebs != null;
-        final IBakedModel mdl = manager.getBlockModel(ebs);
+        final IBakedModel mdl = manager.getModelForState(ebs);
         final List<BakedQuad> lst = new ArrayList<>();
-        lst.addAll(mdl.getQuads(ebs, null, random));
-        for (final Direction face : Direction.values())
-            lst.addAll(mdl.getQuads(ebs, face, random));
+        lst.addAll(mdl.getQuads(ebs, null, 0));
+        for (final EnumFacing face : EnumFacing.values())
+            lst.addAll(mdl.getQuads(ebs, face, 0));
 
-        final BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+        final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
         final IVertexConsumer consumer = new VertexBufferConsumer(builder);
         for (final BakedQuad quad : lst) {
             @SuppressWarnings("unused")
-            final int k = quad.isTinted()
-                    ? (blockColors.getColor(ebs, null, null, quad.getTintIndex()) + 0xFF000000)
+            final int k = quad.hasTintIndex()
+                    ? (blockColors.colorMultiplier(ebs, null, null, quad.getTintIndex())
+                            + 0xFF000000)
                     : 0xFFFFFFFF;
             // TODO color
             LightUtil.putBakedQuad(consumer, quad);
@@ -235,6 +253,7 @@ public final class DrawUtil {
 
     public static void drawCenteredString(final DrawInfo info, final FontRenderer fontRendererIn,
             final String text, final int x, final int y, final int color) {
-        fontRendererIn.drawShadow(text, x - fontRendererIn.width(text) / 2, y, color);
+        fontRendererIn.drawStringWithShadow(text, x - fontRendererIn.getStringWidth(text) / 2, y,
+                color);
     }
 }

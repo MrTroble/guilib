@@ -6,11 +6,11 @@ import com.troblecodings.guilib.ecs.DrawUtil;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@OnlyIn(Dist.CLIENT)
+@SideOnly(Side.CLIENT)
 public class UICheckBox extends UIComponent {
 
     public static final int BOX_WIDTH = 11;
@@ -27,20 +27,20 @@ public class UICheckBox extends UIComponent {
 
     @Override
     public void update() {
-        final Minecraft mc = Minecraft.getInstance();
-        this.parent.setWidth(BOX_WIDTH + 4 + mc.font.width(text));
-        this.parent.setHeight(Math.max(BOX_WIDTH, mc.font.lineHeight) + 2);
+        final Minecraft mc = Minecraft.getMinecraft();
+        this.parent.setWidth(BOX_WIDTH + 4 + mc.fontRenderer.getStringWidth(text));
+        this.parent.setHeight(Math.max(BOX_WIDTH, mc.fontRenderer.FONT_HEIGHT) + 2);
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        final Minecraft mc = Minecraft.getInstance();
+        final Minecraft mc = Minecraft.getMinecraft();
         GuiUtils.drawContinuousTexturedBox(UIButton.BUTTON_TEXTURES, 0, 0, 0, 46, BOX_WIDTH,
                 BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
         final int color = this.enabled ? UIButton.DEFAULT_COLOR : UIButton.DEFAULT_DISABLED_COLOR;
         if (this.isChecked())
-            DrawUtil.drawCenteredString(info, mc.font, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
-        mc.font.drawShadow(text, BOX_WIDTH + 2.0f, 2.0f, color);
+            DrawUtil.drawCenteredString(info, mc.fontRenderer, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
+        mc.fontRenderer.drawStringWithShadow(text, BOX_WIDTH + 2.0f, 2.0f, color);
     }
 
     public IntConsumer getOnChange() {
