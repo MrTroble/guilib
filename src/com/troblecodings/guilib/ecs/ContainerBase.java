@@ -26,7 +26,6 @@ public class ContainerBase extends Container implements INetworkSync {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SuppressWarnings("resource")
     @SideOnly(Side.CLIENT)
     public void update() {
         ((GuiBase) Minecraft.getMinecraft().currentScreen).updateFromContainer();
