@@ -52,7 +52,8 @@ public class UITextInput extends UIComponent {
     @Override
     public void keyEvent(final KeyEvent event) {
         this.textInput.textboxKeyTyped((char) event.typedChar, event.keyCode);
-        this.onTextUpdate.accept(getText());
+        if (onTextUpdate != null)
+            this.onTextUpdate.accept(getText());
     }
 
     @Override
