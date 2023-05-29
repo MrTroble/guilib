@@ -36,19 +36,19 @@ public class NetworkHandler {
 
     @SubscribeEvent
     public void clientEvent(final ClientCustomPacketEvent event) {
-        final NetHandlerPlayServer handler = (NetHandlerPlayServer) event.getHandler();
-        final Container menu = handler.player.openContainer;
+        final Minecraft mc = Minecraft.getMinecraft();
+        final Container menu = mc.player.openContainer;
         if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeServer(event.getPacket().payload().nioBuffer());
+            ((INetworkSync) menu).deserializeClient(event.getPacket().payload().nioBuffer());
         }
     }
 
     @SubscribeEvent
     public void serverEvent(final ServerCustomPacketEvent event) {
-        final Minecraft mc = Minecraft.getMinecraft();
-        final Container menu = mc.player.openContainer;
+        final NetHandlerPlayServer handler = (NetHandlerPlayServer) event.getHandler();
+        final Container menu = handler.player.openContainer;
         if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeClient(event.getPacket().payload().nioBuffer());
+            ((INetworkSync) menu).deserializeServer(event.getPacket().payload().nioBuffer());
         }
     }
 

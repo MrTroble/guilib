@@ -8,6 +8,8 @@ import com.google.common.collect.Maps;
 import com.troblecodings.core.net.NetworkHandler;
 import com.troblecodings.guilib.ecs.GuiHandler;
 
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+
 public final class UIInit {
 
     private UIInit() {
@@ -38,8 +40,9 @@ public final class UIInit {
     public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
             final Logger logger, final boolean debug) {
         UIInit.debug = debug;
-        return Maps.immutableEntry(new GuiHandler(modid, logger),
-                new NetworkHandler(modid, logger));
+        final GuiHandler handler = new GuiHandler(modid, logger);
+        NetworkRegistry.INSTANCE.registerGuiHandler(modid, handler);
+        return Maps.immutableEntry(handler, new NetworkHandler(modid, logger));
     }
 
     /**

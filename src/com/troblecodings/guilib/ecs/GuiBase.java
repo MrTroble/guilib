@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiBase extends GuiScreen {
+public abstract class GuiBase extends GuiScreen {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -38,16 +38,17 @@ public class GuiBase extends GuiScreen {
     protected int ySize = 230;
     protected Stack<UIEntity> entityStack = new Stack<>();
     protected UIEntity entity;
-    protected Minecraft mc;
 
     private int lastButton = -1;
 
     public GuiBase(final GuiInfo info) {
-        super();
+        info.base = getNewGuiContainer(info);
         this.entityStack.add(new UIEntity());
         this.entity = entityStack.lastElement();
         this.mc = Minecraft.getMinecraft();
     }
+
+    public abstract ContainerBase getNewGuiContainer(final GuiInfo info);
 
     @Override
     public void setWorldAndResolution(Minecraft mc, int width, int height) {

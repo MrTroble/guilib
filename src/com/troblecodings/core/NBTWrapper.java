@@ -108,7 +108,8 @@ public class NBTWrapper {
     }
 
     public static NBTWrapper getOrCreateWrapper(final ItemStack stack) {
-        return new NBTWrapper(stack.getTagCompound());
+        final NBTTagCompound tag = stack.getTagCompound();
+        return tag == null ? new NBTWrapper() : new NBTWrapper(tag);
     }
 
     public static NBTWrapper createForStack(final ItemStack stack) {
