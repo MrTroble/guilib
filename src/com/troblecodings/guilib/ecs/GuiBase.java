@@ -179,6 +179,14 @@ public abstract class GuiBase extends GuiScreen {
                 .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
         super.mouseReleased(mouseX, mouseY, state);
     }
+    
+    @Override
+    protected void mouseClickMove(final int mouseX, final int mouseY, final int clickedMouseButton,
+            final long timeSinceLastClick) {
+        this.entityStack.lastElement().mouseEvent(
+                new MouseEvent(mouseX, mouseY, clickedMouseButton, EnumMouseState.CLICKED));
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+    }
 
     @Override
     public void handleMouseInput() throws IOException {
