@@ -30,7 +30,7 @@ public class NetworkHandler {
     public NetworkHandler(final String modid, final Logger logger) {
         super();
         this.channelName = new ResourceLocation(modid, "guilib").toString();
-        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName);
+        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(this.channelName);
         this.channel.register(this);
     }
 

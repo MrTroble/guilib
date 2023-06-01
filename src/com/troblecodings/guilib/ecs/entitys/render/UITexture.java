@@ -6,6 +6,8 @@ import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,6 +19,14 @@ public class UITexture extends UIComponent {
     private final double u, v, mu, mv;
     private final ResourceLocation texture;
 
+    public UITexture(final TextureAtlasSprite sprite) {
+        this.texture = TextureMap.LOCATION_BLOCKS_TEXTURE;
+        this.u = sprite.getMinU();
+        this.v = sprite.getMinV();
+        this.mu = sprite.getMaxU();
+        this.mv = sprite.getMaxV();
+    }
+    
     public UITexture(final ResourceLocation texture) {
         this(texture, 0, 0, 1, 1);
     }
@@ -34,6 +44,7 @@ public class UITexture extends UIComponent {
     public void draw(final DrawInfo info) {
         info.depthOn();
         info.blendOn();
+        info.alphaOn();
         info.applyTexture(texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
@@ -45,6 +56,7 @@ public class UITexture extends UIComponent {
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
         bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
         info.end();
+        info.alphaOff();
         info.blendOff();
         info.depthOff();
         info.disableTexture();

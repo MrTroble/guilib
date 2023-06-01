@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiBase extends GuiScreen {
+public class GuiBase extends GuiScreen {
 
     private static final int GUI_MIN_WIDTH = 350;
     private static final int GUI_MAX_HEIGHT = 300;
@@ -48,10 +48,12 @@ public abstract class GuiBase extends GuiScreen {
         this.mc = Minecraft.getMinecraft();
     }
 
-    public abstract ContainerBase getNewGuiContainer(final GuiInfo info);
+    public ContainerBase getNewGuiContainer(final GuiInfo info) {
+        return null;
+    }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+    public void setWorldAndResolution(final Minecraft mc, final int width, final int height) {
         this.mc = mc;
         this.width = width;
         this.height = height;
@@ -107,7 +109,7 @@ public abstract class GuiBase extends GuiScreen {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
         drawDefaultBackground();
         final DrawInfo info = new DrawInfo(mouseX, mouseY, partialTicks);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
@@ -154,7 +156,7 @@ public abstract class GuiBase extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+    protected void keyTyped(final char typedChar, final int keyCode) throws IOException {
         if (keyCode == 1) {
             preClose();
             this.mc.player.closeScreen();
@@ -164,7 +166,7 @@ public abstract class GuiBase extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+    protected void mouseClicked(final int mouseX, final int mouseY, final int mouseButton) throws IOException {
         lastButton = mouseButton;
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, mouseButton, EnumMouseState.CLICKED));
@@ -172,7 +174,7 @@ public abstract class GuiBase extends GuiScreen {
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
+    protected void mouseReleased(final int mouseX, final int mouseY, final int state) {
         this.entityStack.lastElement()
                 .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
         super.mouseReleased(mouseX, mouseY, state);

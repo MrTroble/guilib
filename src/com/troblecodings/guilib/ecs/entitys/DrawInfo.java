@@ -50,11 +50,13 @@ public class DrawInfo {
     }
 
     public void applyTexture(final ResourceLocation location) {
+        GlStateManager.enableTexture2D();
         Minecraft.getMinecraft().getTextureManager().bindTexture(location);
 
     }
 
     public void disableTexture() {
+        GlStateManager.disableTexture2D();
     }
 
     public void color() {
