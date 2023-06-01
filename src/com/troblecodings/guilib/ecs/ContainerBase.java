@@ -5,9 +5,6 @@ import com.troblecodings.core.interfaces.INetworkSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,7 +20,6 @@ public class ContainerBase extends Container implements INetworkSync {
             mc.player.openContainer = this;
         }
         this.info = info;
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SideOnly(Side.CLIENT)
@@ -44,10 +40,14 @@ public class ContainerBase extends Container implements INetworkSync {
         return info.player;
     }
 
-    @SubscribeEvent
-    public void onContainerOpen(final PlayerContainerEvent.Open event) {
-        if (event.getContainer() == this)
+    private boolean dataSend = false;
+
+    @Override
+    public void detectAndSendChanges() {
+        if (!dataSend) {
             sendAllDataToRemote();
+            dataSend = true;
+        }
     }
 
     public void sendAllDataToRemote() {

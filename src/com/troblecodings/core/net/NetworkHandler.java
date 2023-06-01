@@ -37,19 +37,23 @@ public class NetworkHandler {
     @SubscribeEvent
     public void clientEvent(final ClientCustomPacketEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
-        final Container menu = mc.player.openContainer;
-        if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeClient(event.getPacket().payload().nioBuffer());
-        }
+        mc.addScheduledTask(() -> {
+            final Container menu = mc.player.openContainer;
+            if (menu instanceof INetworkSync) {
+                ((INetworkSync) menu).deserializeClient(event.getPacket().payload().nioBuffer());
+            }
+        });
     }
 
     @SubscribeEvent
     public void serverEvent(final ServerCustomPacketEvent event) {
         final NetHandlerPlayServer handler = (NetHandlerPlayServer) event.getHandler();
-        final Container menu = handler.player.openContainer;
-        if (menu instanceof INetworkSync) {
-            ((INetworkSync) menu).deserializeServer(event.getPacket().payload().nioBuffer());
-        }
+        handler.player.mcServer.addScheduledTask(() -> {
+            final Container menu = handler.player.openContainer;
+            if (menu instanceof INetworkSync) {
+                ((INetworkSync) menu).deserializeServer(event.getPacket().payload().nioBuffer());
+            }
+        });
     }
 
     public void sendTo(final EntityPlayer player, final ByteBuffer buf) {
