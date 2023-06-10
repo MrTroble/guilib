@@ -29,7 +29,7 @@ public class UIScrollBar extends UIComponent {
     }
 
     private void onScroll(final double in) {
-        internalValue = clamp(internalValue - (in * 0.05));
+        internalValue = clamp(internalValue - (in * 0.001));
         consumer.accept(internalValue);
     }
 
