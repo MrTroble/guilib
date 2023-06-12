@@ -2,7 +2,7 @@ package com.troblecodings.core.interfaces;
 
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IWorldNameable;
 
 public interface NamableWrapper extends IWorldNameable, IStringSerializable {
@@ -25,6 +25,6 @@ public interface NamableWrapper extends IWorldNameable, IStringSerializable {
 
     @Override
     default ITextComponent getDisplayName() {
-        return new TextComponentString(getNameWrapper());
+        return new TextComponentTranslation(getNameWrapper());
     }
 }
