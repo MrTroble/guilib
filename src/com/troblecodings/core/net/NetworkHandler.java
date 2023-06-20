@@ -21,6 +21,8 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketE
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class NetworkHandler {
 
@@ -34,6 +36,7 @@ public class NetworkHandler {
         this.channel.register(this);
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void clientEvent(final ClientCustomPacketEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
