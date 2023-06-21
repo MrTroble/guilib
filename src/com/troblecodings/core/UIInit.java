@@ -17,8 +17,6 @@ public final class UIInit {
 
     private static boolean debug;
 
-    public static final String CHANNELNAME = "guisyncnet";
-
     /**
      * Initializes the GUI system must be called by the mod in it's according
      * initialization

@@ -14,7 +14,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
@@ -27,12 +26,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class NetworkHandler {
 
     private final FMLEventChannel channel;
-    private final String channelName;
+    private static final String CHANNELNAME = "guisyncnet";
 
     public NetworkHandler(final String modid, final Logger logger) {
-        super();
-        this.channelName = new ResourceLocation(modid, "guilib").toString();
-        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(this.channelName);
+        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(CHANNELNAME);
         this.channel.register(this);
     }
 
@@ -64,9 +61,9 @@ public class NetworkHandler {
                 Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
         if (player instanceof EntityPlayerMP) {
             final EntityPlayerMP server = (EntityPlayerMP) player;
-            channel.sendTo(new FMLProxyPacket(buffer, channelName), server);
+            channel.sendTo(new FMLProxyPacket(buffer, CHANNELNAME), server);
         } else {
-            channel.sendToServer(new FMLProxyPacket(new CPacketCustomPayload(channelName, buffer)));
+            channel.sendToServer(new FMLProxyPacket(new CPacketCustomPayload(CHANNELNAME, buffer)));
         }
     }
 }
