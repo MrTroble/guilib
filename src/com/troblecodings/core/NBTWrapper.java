@@ -79,6 +79,8 @@ public class NBTWrapper {
     public List<NBTWrapper> getList(final String key) {
         final NBTTagList list = (NBTTagList) tag.getTag(key);
         final List<NBTWrapper> returnList = new ArrayList<>();
+        if (list == null)
+            return returnList;
         list.forEach(tag -> returnList.add(new NBTWrapper((NBTTagCompound) tag)));
         return returnList;
     }
