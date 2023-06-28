@@ -124,4 +124,9 @@ public class NBTWrapper {
         return wrapper;
     }
 
+    @Override
+    public String toString() {
+        return tag.toString();
+    }
+
 }
