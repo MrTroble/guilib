@@ -77,7 +77,11 @@ public class NBTWrapper {
 
     public List<NBTWrapper> getList(final String key) {
         final ListTag list = (ListTag) tag.get(key);
-        return list.stream().map(tag -> new NBTWrapper((CompoundTag) tag)).toList();
+        final List<NBTWrapper> returnList = new ArrayList<>();
+        if (list == null)
+            return returnList;
+            list.forEach(tag -> returnList.add(new NBTWrapper((CompoundTag) tag)));
+        return returnList;
     }
 
     public NBTWrapper getWrapper(final String key) {
@@ -114,4 +118,8 @@ public class NBTWrapper {
         return wrapper;
     }
 
+    @Override
+    public String toString() {
+        return tag.toString();
+    }
 }
