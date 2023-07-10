@@ -1,8 +1,8 @@
 package com.troblecodings.core;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,8 +78,11 @@ public class NBTWrapper {
 
     public List<NBTWrapper> getList(final String key) {
         final ListNBT list = (ListNBT) tag.get(key);
-        return list.stream().map(tag -> new NBTWrapper((CompoundNBT) tag))
-                .collect(Collectors.toList());
+        final List<NBTWrapper> returnList = new ArrayList<>();
+        if (list == null)
+            return returnList;
+            list.forEach(tag -> returnList.add(new NBTWrapper((CompoundNBT) tag)));
+        return returnList;
     }
 
     public NBTWrapper getWrapper(final String key) {
@@ -114,6 +117,11 @@ public class NBTWrapper {
         final NBTWrapper wrapper = new NBTWrapper();
         stack.setTag(wrapper.tag);
         return wrapper;
+    }
+    
+    @Override
+    public String toString() {
+        return tag.toString();
     }
 
 }
