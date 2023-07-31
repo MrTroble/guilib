@@ -3,6 +3,7 @@ package com.troblecodings.guilib.ecs;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import com.troblecodings.guilib.ecs.DrawUtil.DisableIntegerable;
 import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -174,6 +175,12 @@ public final class GuiElements {
 
             final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
             list.add(scrollbox);
+            if (property instanceof DisableIntegerable<?>) {
+                list.add(createButton(property.getNamedObj(-1), e -> {
+                    enumerable.setIndex(-1);
+                    e.getLastUpdateEvent().base.pop();
+                }));
+            }
             for (int i = 0; i < property.count(); i++) {
                 final int index = i;
                 list.add(createButton(property.getNamedObj(i), e -> {
@@ -225,6 +232,8 @@ public final class GuiElements {
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
             final int value) {
+        if (property instanceof DisableIntegerable<?>)
+            enumerable.setMin(-1);
         enumerable.setIndex(value);
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
@@ -243,7 +252,7 @@ public final class GuiElements {
         middle.add(enumerable);
         middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base
                 .push(createSelectionScreen(enumerable, property))));
-
+ 
         acceptOr.accept(value);
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
