@@ -81,7 +81,7 @@ public class NBTWrapper {
         final List<NBTWrapper> returnList = new ArrayList<>();
         if (list == null)
             return returnList;
-            list.forEach(tag -> returnList.add(new NBTWrapper((CompoundTag) tag)));
+        list.forEach(tag -> returnList.add(new NBTWrapper((CompoundTag) tag)));
         return returnList;
     }
 
