@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
@@ -157,7 +159,8 @@ public final class GuiElements {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
             searchBar.setHeight(20);
-            searchBar.add(new UITextInput(""));
+            final UITextInput input = new UITextInput("");
+            searchBar.add(input);
             searchPanel.add(searchBar);
 
             final UIEntity listWithScroll = new UIEntity();
@@ -175,6 +178,7 @@ public final class GuiElements {
 
             final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
             list.add(scrollbox);
+            final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
             if (property instanceof DisableIntegerable<?>) {
                 list.add(createButton(property.getNamedObj(-1), e -> {
                     enumerable.setIndex(-1);
@@ -183,10 +187,13 @@ public final class GuiElements {
             }
             for (int i = 0; i < property.count(); i++) {
                 final int index = i;
-                list.add(createButton(property.getNamedObj(i), e -> {
+                final String name = property.getNamedObj(i);
+                final UIEntity button = createButton(name, e -> {
                     enumerable.setIndex(index);
                     e.getLastUpdateEvent().base.pop();
-                }));
+                });
+                nameToUIEntity.put(name, button);
+                list.add(button);
             }
             final UIScroll scroll = new UIScroll();
             final UIEntity scrollBar = createScrollBar(scrollbox, 10, scroll);
@@ -198,6 +205,15 @@ public final class GuiElements {
                     listWithScroll.remove(scrollBar);
                     listWithScroll.remove(scroll);
                 }
+            });
+            input.setOnTextUpdate(string -> {
+                nameToUIEntity.forEach((name, entity) -> {
+                    if (!name.contains(string)) {
+                        list.remove(entity);
+                    } else {
+                        list.add(entity);
+                    }
+                });
             });
         });
     }
@@ -252,7 +268,7 @@ public final class GuiElements {
         middle.add(enumerable);
         middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base
                 .push(createSelectionScreen(enumerable, property))));
- 
+
         acceptOr.accept(value);
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
