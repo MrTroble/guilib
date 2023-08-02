@@ -105,6 +105,10 @@ public class NBTWrapper {
         tag.remove(key);
     }
 
+    public boolean isTagNull() {
+        return tag == null;
+    }
+
     public static NBTWrapper getBlockPosWrapper(final BlockPos pos) {
         return new NBTWrapper(NbtUtils.writeBlockPos(pos));
     }
