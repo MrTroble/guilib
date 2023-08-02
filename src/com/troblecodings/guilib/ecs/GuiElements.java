@@ -192,7 +192,7 @@ public final class GuiElements {
                     enumerable.setIndex(index);
                     e.getLastUpdateEvent().base.pop();
                 });
-                nameToUIEntity.put(name, button);
+                nameToUIEntity.put(name.toLowerCase(), button);
                 list.add(button);
             }
             final UIScroll scroll = new UIScroll();
@@ -208,7 +208,7 @@ public final class GuiElements {
             });
             input.setOnTextUpdate(string -> {
                 nameToUIEntity.forEach((name, entity) -> {
-                    if (!name.contains(string)) {
+                    if (!name.contains(string.toLowerCase())) {
                         list.remove(entity);
                     } else {
                         list.add(entity);
