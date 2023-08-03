@@ -1,8 +1,11 @@
 package com.troblecodings.guilib.ecs;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import com.troblecodings.guilib.ecs.DrawUtil.DisableIntegerable;
 import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
@@ -156,7 +159,8 @@ public final class GuiElements {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
             searchBar.setHeight(20);
-            searchBar.add(new UITextInput(""));
+            final UITextInput input = new UITextInput("");
+            searchBar.add(input);
             searchPanel.add(searchBar);
 
             final UIEntity listWithScroll = new UIEntity();
@@ -174,12 +178,22 @@ public final class GuiElements {
 
             final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
             list.add(scrollbox);
-            for (int i = 0; i < property.count(); i++) {
-                final int index = i;
-                list.add(createButton(property.getNamedObj(i), e -> {
-                    enumerable.setIndex(index);
+            final Map<String, UIEntity> nameToUIEntityMap = new HashMap<>();
+            if (property instanceof DisableIntegerable<?>) {
+                list.add(createButton(property.getNamedObj(-1), e -> {
+                    enumerable.setIndex(-1);
                     e.getLastUpdateEvent().base.pop();
                 }));
+            }
+            for (int i = 0; i < property.count(); i++) {
+                final int index = i;
+                final String name = property.getNamedObj(i);
+                final UIEntity button = createButton(name, e -> {
+                    enumerable.setIndex(index);
+                    e.getLastUpdateEvent().base.pop();
+                });
+                nameToUIEntityMap.put(name.toLowerCase(), button);
+                list.add(button);
             }
             final UIScroll scroll = new UIScroll();
             final UIEntity scrollBar = createScrollBar(scrollbox, 10, scroll);
@@ -191,6 +205,15 @@ public final class GuiElements {
                     listWithScroll.remove(scrollBar);
                     listWithScroll.remove(scroll);
                 }
+            });
+            input.setOnTextUpdate(String -> {
+                nameToUIEntityMap.forEach((name, entity) -> {
+                    if (!name.contains(String.toLowerCase())) {
+                        list.remove(entity);
+                    } else {
+                        list.add(entity);
+                    }
+                });
             });
         });
     }
@@ -225,6 +248,8 @@ public final class GuiElements {
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
             final int value) {
+        if (property instanceof DisableIntegerable<?>)
+            enumerable.setMin(-1);
         enumerable.setIndex(value);
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();

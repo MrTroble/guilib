@@ -81,7 +81,7 @@ public class NBTWrapper {
         final List<NBTWrapper> returnList = new ArrayList<>();
         if (list == null)
             return returnList;
-            list.forEach(tag -> returnList.add(new NBTWrapper((CompoundNBT) tag)));
+        list.forEach(tag -> returnList.add(new NBTWrapper((CompoundNBT) tag)));
         return returnList;
     }
 
@@ -104,6 +104,10 @@ public class NBTWrapper {
     public void remove(final String key) {
         tag.remove(key);
     }
+    
+    public boolean isTagNull() {
+        return tag == null;
+    }
 
     public static NBTWrapper getBlockPosWrapper(final BlockPos pos) {
         return new NBTWrapper(NBTUtil.writeBlockPos(pos));
@@ -118,7 +122,7 @@ public class NBTWrapper {
         stack.setTag(wrapper.tag);
         return wrapper;
     }
-    
+
     @Override
     public String toString() {
         return tag.toString();
