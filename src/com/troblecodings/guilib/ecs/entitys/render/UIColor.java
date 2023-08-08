@@ -12,6 +12,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class UIColor extends UIComponent {
 
+    public static final int BASIC_COLOR_PRIMARY = 0;
+    public static final int INFO_COLOR_PRIMARY = 0x00CCFF;
+    public static final int ERROR_COLOR_PRIMARY = 0xFF0000FF;
+
     private int color;
     private final int insets;
 
