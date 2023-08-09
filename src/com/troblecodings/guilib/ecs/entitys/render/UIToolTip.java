@@ -37,7 +37,7 @@ public class UIToolTip extends UIComponent {
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
                 base.base.renderTooltip(info.stack, new TextComponent(desc), info.mouseX,
-                        info.mouseY);
+                        info.mouseY); //TODO Screen width and height
             }
         }
     }
