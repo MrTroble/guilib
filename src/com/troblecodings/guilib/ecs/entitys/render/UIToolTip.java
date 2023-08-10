@@ -1,5 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
@@ -7,6 +10,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,13 +35,17 @@ public class UIToolTip extends UIComponent {
     @Override
     public void postDraw(final DrawInfo info) {
         if (this.parent.isHovered()) {
-            final String desc = (Screen.hasShiftDown() || this.descripton.length() < 200)
-                    ? this.descripton
-                    : I18n.get("gui.keyprompt");
+            final String desc;
+            if (Screen.hasShiftDown()) {
+                desc = this.descripton;
+            } else {
+                desc = I18n.get("gui.keyprompt");
+            }
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
-                base.base.renderTooltip(info.stack, new TextComponent(desc), info.mouseX,
-                        info.mouseY); //TODO Screen width and height
+                final List<Component> listComp = new ArrayList<>();
+                listComp.add(new TextComponent(desc));
+                base.base.renderComponentTooltip(info.stack, listComp, info.mouseX, info.mouseY);
             }
         }
     }
