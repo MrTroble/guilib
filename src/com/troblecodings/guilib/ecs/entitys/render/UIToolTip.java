@@ -34,10 +34,12 @@ public class UIToolTip extends UIComponent {
 
     @Override
     public void postDraw(final DrawInfo info) {
-        if (this.parent.isHovered()) {
+            if (this.parent.isHovered()) {
             final String desc;
             if (Screen.hasShiftDown()) {
                 desc = this.descripton;
+            } else if (Screen.hasControlDown()) {
+                return;
             } else {
                 desc = I18n.get("gui.keyprompt");
             }
