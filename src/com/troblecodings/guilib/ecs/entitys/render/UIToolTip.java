@@ -34,12 +34,13 @@ public class UIToolTip extends UIComponent {
 
     @Override
     public void postDraw(final DrawInfo info) {
-            if (this.parent.isHovered()) {
+        if (this.parent.isHovered()) {
             final String desc;
-            if (Screen.hasShiftDown()) {
-                desc = this.descripton;
-            } else if (Screen.hasControlDown()) {
+            if (Screen.hasControlDown()) {
                 return;
+            } else if (Screen.hasShiftDown()
+                    || this.descripton.equals(I18n.get("error.nopathfound"))) {
+                desc = this.descripton;
             } else {
                 desc = I18n.get("gui.keyprompt");
             }
