@@ -18,10 +18,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class UIToolTip extends UIComponent {
 
+    private final boolean showDescDirectly;
     private String descripton;
 
     public UIToolTip(final String descripton) {
+        this(descripton, false);
+    }
+
+    public UIToolTip(final String descripton, final boolean showDescDirectly) {
         this.descripton = descripton;
+        this.showDescDirectly = showDescDirectly;
+    }
+
+    public boolean showDescDirectly() {
+        return showDescDirectly;
     }
 
     public String getDescripton() {
@@ -38,8 +48,7 @@ public class UIToolTip extends UIComponent {
             final String desc;
             if (Screen.hasControlDown()) {
                 return;
-            } else if (Screen.hasShiftDown()
-                    || this.descripton.equals(I18n.get("error.nopathfound"))) {
+            } else if (Screen.hasShiftDown() || showDescDirectly) {
                 desc = this.descripton;
             } else {
                 desc = I18n.get("gui.keyprompt");
