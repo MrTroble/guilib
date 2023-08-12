@@ -63,15 +63,17 @@ public abstract class UIComponent {
         return parent;
     }
     
+    //TODO Apply config colors
+    
     public int getBasicTextColor() {
-        return basicTextColor;
+        return 0xFF000000;
     }
     
     public int getInfoTextColor() {
-        return infoTextColor;
+        return 0xFF0000FF;
     }
     
     public int getErrorTextColor() {
-        return errorTextColor;
+        return 0xFFFF0000;
     }
 }
