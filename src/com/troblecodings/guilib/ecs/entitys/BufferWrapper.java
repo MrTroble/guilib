@@ -6,7 +6,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 public class BufferWrapper {
 
-    private final BufferBuilder builder;
+    public final BufferBuilder builder;
     private final Matrix4f matrix;
 
     public BufferWrapper(final BufferBuilder builder, final Matrix4f matrix) {

@@ -8,10 +8,18 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
+import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class DrawInfo {
     public final int mouseX;
@@ -55,6 +63,22 @@ public class DrawInfo {
     public void applyTexture(final ResourceLocation location) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, location);
+    }
+
+    public void applyState(final BakedModel model, final BlockState state,
+            final BlockModelDataWrapper wrapper) {
+        final ShaderInstance instance = RenderSystem.getShader();
+        RenderSystem.setShader(GameRenderer::getBlockShader);
+        this.depthOn();
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        final Minecraft mc = Minecraft.getInstance();
+        final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
+        final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
+        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, 0,
+                OverlayTexture.NO_OVERLAY, wrapper);
+        this.end();
+        this.depthOff();
+        RenderSystem.setShader(() -> instance);
     }
 
     public void disableTexture() {
