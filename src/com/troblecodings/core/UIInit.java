@@ -7,6 +7,10 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.Maps;
 import com.troblecodings.core.net.NetworkHandler;
 import com.troblecodings.guilib.ecs.GuiHandler;
+import com.troblecodings.guilib.ecs.UIConfigHandler;
+
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 
 public final class UIInit {
 
@@ -38,6 +42,7 @@ public final class UIInit {
     public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
             final Logger logger, final boolean debug) {
         UIInit.debug = debug;
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, UIConfigHandler.UI_CLIENT_SPEC);
         return Maps.immutableEntry(new GuiHandler(modid, logger),
                 new NetworkHandler(modid, logger));
     }

@@ -5,17 +5,12 @@ import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
-import com.troblecodings.signals.config.ConfigHandler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIColor extends UIComponent {
-
-    public static final int BASIC_COLOR_PRIMARY = ConfigHandler.CLIENT.basicTextColor.get();
-    public static final int INFO_COLOR_PRIMARY = ConfigHandler.CLIENT.infoTextColor.get();
-    public static final int ERROR_COLOR_PRIMARY = ConfigHandler.CLIENT.errorTextColor.get();
 
     private int color;
     private final int insets;
