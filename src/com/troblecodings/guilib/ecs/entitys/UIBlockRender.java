@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.mojang.math.Quaternion;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.client.Minecraft;
@@ -12,12 +13,28 @@ public class UIBlockRender extends UIComponent {
     private BakedModel model;
     private BlockState state;
     private BlockModelDataWrapper wrapper;
+    private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
+    private final float scale;
+    private final float height;
+
+    public UIBlockRender(final float scale, final float height) {
+        this.scale = scale;
+        this.height = height;
+    }
 
     @Override
     public void draw(final DrawInfo info) {
         if (model != null) {
+            info.scale(scale, -scale, scale);
+            info.translate(1.5, 0, 1.5);
+            info.rotate(this.quaternion);
+            info.translate(-0.5, this.height, -0.5);
             info.applyState(model, state, wrapper);
         }
+    }
+
+    public void updateRotation(final Quaternion quaternion) {
+        this.quaternion.mul(quaternion);
     }
 
     @Override

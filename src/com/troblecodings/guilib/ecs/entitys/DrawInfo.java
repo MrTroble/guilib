@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class DrawInfo {
@@ -70,13 +70,15 @@ public class DrawInfo {
         final ShaderInstance instance = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
-        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, 0,
+        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, OverlayTexture.NO_OVERLAY,
                 OverlayTexture.NO_OVERLAY, wrapper);
         this.end();
+        RenderSystem.disableBlend();
         this.depthOff();
         RenderSystem.setShader(() -> instance);
     }

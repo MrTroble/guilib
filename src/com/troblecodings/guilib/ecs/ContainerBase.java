@@ -3,6 +3,7 @@ package com.troblecodings.guilib.ecs;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,10 +19,13 @@ public class ContainerBase extends AbstractContainerMenu implements INetworkSync
         this.info = info;
     }
 
-    @SuppressWarnings("resource")
     @OnlyIn(Dist.CLIENT)
     public void update() {
-        ((GuiBase) Minecraft.getInstance().screen).updateFromContainer();
+        final Minecraft minecraft = Minecraft.getInstance();
+        final Screen screen = minecraft.screen;
+        if (screen != null) {
+            ((GuiBase) screen).updateFromContainer();
+        }
     }
 
     @Override
