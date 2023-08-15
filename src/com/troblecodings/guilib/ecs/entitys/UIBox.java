@@ -38,12 +38,14 @@ public class UIBox extends UIComponent implements UIPagable {
             return;
         updateBounds(parentBounds);
         updatePositions(parentBounds);
-        parent.children.forEach(e -> mode.post(e));
+        parent.children.stream().filter(UIEntity::isVisible).forEach(mode::post);
     }
 
     protected void updateBounds(final int parentValue) {
         int y = 0;
         for (final UIEntity entity : parent.children) {
+            if (!entity.isVisible())
+                continue;
             if (mode.inheritsBounds(entity)) {
                 boundsUpdate.add(entity);
             } else {
@@ -69,6 +71,8 @@ public class UIBox extends UIComponent implements UIPagable {
         int cPage = 0;
         int y = 0;
         for (final UIEntity entity : parent.children) {
+            if (!entity.isVisible())
+                continue;
             mode.setPos(entity, y);
             final int oBounds = mode.getBounds(entity);
             y += oBounds;
