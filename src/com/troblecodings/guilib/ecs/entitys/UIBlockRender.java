@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class UIBlockRender extends UIComponent {
 
+    // TODO new BlockRenderer
+
     private final AtomicReference<BufferBuilder> model = new AtomicReference<>(
             new BufferBuilder(500));
 

@@ -12,6 +12,9 @@ public abstract class UIComponent {
 
     protected UIEntity parent = null;
     protected boolean visible = true;
+    protected int basicTextColor = 0;// TODO GuiConfigHandler.basicTextColor.get();
+    protected int infoTextColor = 0;// TODO GuiConfigHandler.infoTextColor.get();
+    protected int errorTextColor = 0;// TODO GuiConfigHandler.errorTextColor.get();
 
     public abstract void draw(final DrawInfo info);
 
@@ -57,5 +60,17 @@ public abstract class UIComponent {
 
     public UIEntity getParent() {
         return parent;
+    }
+
+    public int getBasicTextColor() {
+        return basicTextColor;
+    }
+
+    public int getInfoTextColor() {
+        return infoTextColor;
+    }
+
+    public int getErrorTextColor() {
+        return errorTextColor;
     }
 }
