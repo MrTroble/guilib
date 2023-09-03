@@ -1,5 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import java.nio.ByteBuffer;
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
 
@@ -11,9 +14,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.ResourceLocation;
 
 public class DrawInfo {
+
     public final int mouseX;
     public final int mouseY;
     public final float tick;
@@ -52,7 +57,28 @@ public class DrawInfo {
     public void applyTexture(final ResourceLocation location) {
         GlStateManager.enableTexture2D();
         Minecraft.getMinecraft().getTextureManager().bindTexture(location);
+    }
 
+    public void drawBuffer(final BufferBuilder buffer) {
+        if (buffer.getVertexCount() > 0) {
+            final VertexFormat vertexformat = buffer.getVertexFormat();
+            final int i = vertexformat.getNextOffset();
+            final ByteBuffer bytebuffer = buffer.getByteBuffer();
+            final List<VertexFormatElement> list = vertexformat.getElements();
+
+            for (int j = 0; j < list.size(); ++j) {
+                final VertexFormatElement vertexformatelement = list.get(j);
+                bytebuffer.position(vertexformat.getOffset(j));
+                vertexformatelement.getUsage().preDraw(vertexformat, j, i, bytebuffer);
+            }
+            GlStateManager.glDrawArrays(buffer.getDrawMode(), 0, buffer.getVertexCount());
+            int i1 = 0;
+
+            for (final int j1 = list.size(); i1 < j1; ++i1) {
+                final VertexFormatElement vertexformatelement1 = list.get(i1);
+                vertexformatelement1.getUsage().postDraw(vertexformat, i1, i, bytebuffer);
+            }
+        }
     }
 
     public void disableTexture() {
