@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.troblecodings.guilib.ecs.GuiConfigHandler;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
@@ -12,9 +13,9 @@ public abstract class UIComponent {
 
     protected UIEntity parent = null;
     protected boolean visible = true;
-    protected int basicTextColor = 0;// TODO GuiConfigHandler.basicTextColor.get();
-    protected int infoTextColor = 0;// TODO GuiConfigHandler.infoTextColor.get();
-    protected int errorTextColor = 0;// TODO GuiConfigHandler.errorTextColor.get();
+    protected int basicTextColor = GuiConfigHandler.basicTextColor;
+    protected int infoTextColor = GuiConfigHandler.infoTextColor;
+    protected int errorTextColor = GuiConfigHandler.errorTextColor;
 
     public abstract void draw(final DrawInfo info);
 
