@@ -12,11 +12,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +25,7 @@ public class UIBlockRender extends UIComponent {
 
     private final BufferBuilder buffer = new BufferBuilder(500);
 
-    private final Quaternion quaternion = new Quaternion(0.0f, (float) Math.PI, 0.0f, 0);
+    private final Quaternion quaternion = new Quaternion(0, 90, 0, 180);
     private final float scale;
     private final float height;
 
@@ -38,13 +36,11 @@ public class UIBlockRender extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        final TextureManager manager = Minecraft.getMinecraft().getTextureManager();
-        manager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        GlStateManager.enableRescaleNormal();
+        info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         info.scale(scale, -scale, scale);
-        info.translate(1, height, 0);
+        info.translate(2, height, 0);
+        info.rotate(quaternion);
         info.drawBuffer(buffer);
-        GlStateManager.disableRescaleNormal();
     }
 
     public void updateRotation(final Quaternion quaternion) {
