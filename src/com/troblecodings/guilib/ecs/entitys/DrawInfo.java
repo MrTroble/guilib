@@ -71,6 +71,7 @@ public class DrawInfo {
                 bytebuffer.position(vertexformat.getOffset(j));
                 vertexformatelement.getUsage().preDraw(vertexformat, j, i, bytebuffer);
             }
+
             GlStateManager.glDrawArrays(buffer.getDrawMode(), 0, buffer.getVertexCount());
             int i1 = 0;
 

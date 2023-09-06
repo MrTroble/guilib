@@ -1,9 +1,9 @@
 package com.troblecodings.core.interfaces;
 
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraft.block.state.IBlockState;
 
 public interface BlockModelDataWrapper {
 
-    IExtendedBlockState getIExtendedBlockState();
+    IBlockState getBlockState();
 
 }
