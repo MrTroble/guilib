@@ -34,6 +34,10 @@ public class NBTWrapper {
         tag.setInteger(key, value);
     }
 
+    public void putByte(final String key, final byte value) {
+        tag.setByte(key, value);
+    }
+
     public void putString(final String key, final String value) {
         tag.setString(key, value);
     }
@@ -62,6 +66,10 @@ public class NBTWrapper {
 
     public int getInteger(final String key) {
         return tag.getInteger(key);
+    }
+
+    public byte getByte(final String key) {
+        return tag.getByte(key);
     }
 
     public String getString(final String key) {
