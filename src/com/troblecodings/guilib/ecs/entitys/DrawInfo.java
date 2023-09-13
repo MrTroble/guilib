@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Quaternion;
 
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
@@ -50,8 +49,10 @@ public class DrawInfo {
         GlStateManager.scale(x, y, z);
     }
 
-    public void rotate(final Quaternion quaternion) {
-        GlStateManager.rotate(quaternion.w, quaternion.x, quaternion.y, quaternion.z);
+    public void rotate(final float rotateX, final float rotateY, final float rotateZ) {
+        GlStateManager.rotate(rotateX, 1, 0, 0);
+        GlStateManager.rotate(rotateY, 0, 1, 0);
+        GlStateManager.rotate(rotateZ, 0, 0, 1);
     }
 
     public void applyTexture(final ResourceLocation location) {
