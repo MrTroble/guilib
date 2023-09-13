@@ -44,7 +44,7 @@ public class UIBlockRender extends UIComponent {
     }
 
     public void updateRotation(final Quaternion quaternion) {
-        this.quaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+        Quaternion.mul(this.quaternion, quaternion, this.quaternion);
     }
 
     @Override

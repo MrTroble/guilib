@@ -51,7 +51,7 @@ public class DrawInfo {
     }
 
     public void rotate(final Quaternion quaternion) {
-        GlStateManager.rotate(quaternion.w, quaternion.x, quaternion.y, quaternion.z);
+        GlStateManager.rotate(quaternion);
     }
 
     public void applyTexture(final ResourceLocation location) {
