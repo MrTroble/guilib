@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Quaternion;
 
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
@@ -11,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -25,9 +25,7 @@ public class UIBlockRender extends UIComponent {
 
     private final BufferBuilder buffer = new BufferBuilder(500);
 
-    private final float x = 0;
-    private final float y = 180;
-    private final float z = 0;
+    private final Quaternion quaternion = new Quaternion(0, 90, 0, 180);
     private final float scale;
     private final float height;
 
@@ -41,14 +39,12 @@ public class UIBlockRender extends UIComponent {
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         info.scale(scale, -scale, scale);
         info.translate(2, height, 0);
-        updateRotation(x, y, z);
+        info.rotate(quaternion);
         info.drawBuffer(buffer);
     }
 
-    public void updateRotation(final float rotateX, final float rotateY, final float rotateZ) {
-        GlStateManager.rotate(rotateX, 1, 0, 0);
-        GlStateManager.rotate(rotateY, 0, 1, 0);
-        GlStateManager.rotate(rotateZ, 0, 0, 1);
+    public void updateRotation(final Quaternion quaternion) {
+        this.quaternion.set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
     }
 
     @Override
