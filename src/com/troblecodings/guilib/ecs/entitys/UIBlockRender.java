@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Quaternion;
 
-import com.troblecodings.core.QuaternionWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
@@ -25,10 +24,9 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 public class UIBlockRender extends UIComponent {
 
     private final BufferBuilder buffer = new BufferBuilder(500);
-
-    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     private final float scale;
     private final float height;
+    private float x, y, z = 0;
 
     public UIBlockRender(final float scale, final float height) {
         this.scale = scale;
@@ -38,14 +36,20 @@ public class UIBlockRender extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        GlStateManager.enableRescaleNormal();
         info.scale(scale, -scale, scale);
         info.translate(2, height, 0);
-        info.rotate(this.quaternion);
+        info.rotate(this.x, 1, 0, 0);
+        info.rotate(this.y, 0, 1, 0);
+        info.rotate(this.z, 0, 0, 1);
         info.drawBuffer(buffer);
+        GlStateManager.disableRescaleNormal();
     }
 
-    public void updateRotation(final Quaternion quaternion) {
-        Quaternion.mul(this.quaternion, quaternion, this.quaternion);
+    public void updateRotation(final float x, final float y, final float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     @Override
