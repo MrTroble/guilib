@@ -40,8 +40,9 @@ public class UIBlockRender extends UIComponent {
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
         info.scale(scale, -scale, scale);
-        info.translate(2, height, 0);
+        info.translate(1.5, 0, 1.5);
         info.rotate(this.quaternion);
+        info.translate(-0.5, this.height, -0.5);
         info.drawBuffer(buffer);
         GlStateManager.disableRescaleNormal();
     }
