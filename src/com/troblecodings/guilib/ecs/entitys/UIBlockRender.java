@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Quaternion;
 
+import com.troblecodings.core.QuaternionWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.block.state.IBlockState;
@@ -26,7 +28,7 @@ public class UIBlockRender extends UIComponent {
     private final BufferBuilder buffer = new BufferBuilder(500);
     private final float scale;
     private final float height;
-    private float x, y, z = 0;
+    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
 
     public UIBlockRender(final float scale, final float height) {
         this.scale = scale;
@@ -39,17 +41,13 @@ public class UIBlockRender extends UIComponent {
         GlStateManager.enableRescaleNormal();
         info.scale(scale, -scale, scale);
         info.translate(2, height, 0);
-        info.rotate(this.x, 1, 0, 0);
-        info.rotate(this.y, 0, 1, 0);
-        info.rotate(this.z, 0, 0, 1);
+        info.rotate(this.quaternion);
         info.drawBuffer(buffer);
         GlStateManager.disableRescaleNormal();
     }
 
-    public void updateRotation(final float x, final float y, final float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public void updateRotation(final Quaternion quaternion) {
+        Quaternion.mul(this.quaternion, quaternion, this.quaternion);
     }
 
     @Override
