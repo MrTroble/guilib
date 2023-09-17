@@ -39,13 +39,13 @@ public class UIBlockRender extends UIComponent {
     public void draw(final DrawInfo info) {
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
-        GlStateManager.enableDepth();
+        info.depthOn();
         info.scale(scale, -scale, scale);
         info.translate(1.5, 0, 1.5);
         info.rotate(this.quaternion);
         info.translate(-0.5, this.height, -0.5);
         info.drawBuffer(buffer);
-        GlStateManager.disableDepth();
+        info.depthOff();
         GlStateManager.disableRescaleNormal();
     }
 
