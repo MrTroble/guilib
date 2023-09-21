@@ -398,17 +398,27 @@ public final class GuiElements {
         return entity;
     }
 
-    public static UIEntity createLabel(final String name, final int color) {
+    public static UIEntity createLabel(final String name, final int color, final float scale) {
         final UIEntity entity = new UIEntity();
         final UILabel label = new UILabel(name);
-        entity.setHeight(15);
+        entity.setHeight(15 * scale);
         entity.setInheritWidth(true);
+        entity.setScaleX(scale);
+        entity.setScaleY(scale);
         label.setTextColor(color);
         entity.add(label);
         return entity;
     }
 
+    public static UIEntity createLabel(final String name, final int color) {
+        return createLabel(name, color, 1);
+    }
+
+    public static UIEntity createLabel(final String name, final float scale) {
+        return createLabel(name, UILabel.DEFAULT_STRING_COLOR, scale);
+    }
+
     public static UIEntity createLabel(final String name) {
-        return createLabel(name, UILabel.DEFAULT_STRING_COLOR);
+        return createLabel(name, 1);
     }
 }

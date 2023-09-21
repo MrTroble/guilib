@@ -38,7 +38,7 @@ public class UIBox extends UIComponent implements UIPagable {
             return;
         updateBounds(parentBounds);
         updatePositions(parentBounds);
-        parent.children.forEach(e -> mode.post(e));
+        parent.children.forEach(mode::post);
     }
 
     protected void updateBounds(final int parentValue) {

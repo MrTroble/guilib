@@ -3,6 +3,7 @@ package com.troblecodings.guilib.ecs;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,10 +27,13 @@ public class ContainerBase extends Container implements INetworkSync {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SuppressWarnings("resource")
     @OnlyIn(Dist.CLIENT)
     public void update() {
-        ((GuiBase) Minecraft.getInstance().screen).updateFromContainer();
+        final Minecraft minecraft = Minecraft.getInstance();
+        final Screen screen = minecraft.screen;
+        if (screen != null) {
+            ((GuiBase) screen).updateFromContainer();
+        }
     }
 
     @Override

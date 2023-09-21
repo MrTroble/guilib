@@ -1,26 +1,10 @@
 package com.troblecodings.guilib.ecs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.Direction;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 
 public final class DrawUtil {
 
@@ -197,39 +181,6 @@ public final class DrawUtil {
             this.obj = obj;
         }
 
-    }
-
-    public static void draw(final BufferBuilder bufferBuilderIn) {
-        WorldVertexBufferUploader.end(bufferBuilderIn); // TODO check if requires rerecording?
-    }
-
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final BlockState ebs) {
-        addToBuffer(builder, manager, ebs, 0);
-    }
-
-    private static final Random random = new Random();
-
-    @SuppressWarnings("deprecation")
-    public static void addToBuffer(final BufferBuilder builder, final BlockModelShapes manager,
-            final BlockState ebs, final int color) {
-        assert ebs != null;
-        final IBakedModel mdl = manager.getBlockModel(ebs);
-        final List<BakedQuad> lst = new ArrayList<>();
-        lst.addAll(mdl.getQuads(ebs, null, random));
-        for (final Direction face : Direction.values())
-            lst.addAll(mdl.getQuads(ebs, face, random));
-
-        final BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-        final IVertexConsumer consumer = new VertexBufferConsumer(builder);
-        for (final BakedQuad quad : lst) {
-            @SuppressWarnings("unused")
-            final int k = quad.isTinted()
-                    ? (blockColors.getColor(ebs, null, null, quad.getTintIndex()) + 0xFF000000)
-                    : 0xFFFFFFFF;
-            // TODO color
-            LightUtil.putBakedQuad(consumer, quad);
-        }
     }
 
     public static void drawCenteredString(final DrawInfo info, final FontRenderer fontRendererIn,

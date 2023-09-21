@@ -1,61 +1,56 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.lwjgl.opengl.GL11;
-
-import com.troblecodings.guilib.ecs.DrawUtil;
+import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.math.vector.Quaternion;
 
 public class UIBlockRender extends UIComponent {
 
-    private final AtomicReference<BufferBuilder> model = new AtomicReference<>(
-            new BufferBuilder(500));
+    private IBakedModel model;
+    private BlockState state;
+    private BlockModelDataWrapper wrapper;
+    private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
+    private final float scale;
+    private final float height;
 
-    private final TextureManager manager;
-    private final BlockModelShapes shapes;
-    private Texture texture;
-    private Vector3d vector;
-
-    public UIBlockRender() {
-        final Minecraft mc = Minecraft.getInstance();
-        manager = mc.getTextureManager();
-        shapes = mc.getBlockRenderer().getBlockModelShaper();
+    public UIBlockRender(final float scale, final float height) {
+        this.scale = scale;
+        this.height = height;
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        if (this.texture == null)
-            return;
-        this.texture.bind();
-        info.stack.translate(-0.5f + vector.x(), -0.5f + vector.y(), -0.5f + vector.z());
-        DrawUtil.draw(model.get());
+        if (model != null) {
+            info.scale(scale, -scale, scale);
+            info.translate(1.5, 0, 1.5);
+            info.rotate(this.quaternion);
+            info.translate(-0.5, this.height, -0.5);
+            info.applyState(model, state, wrapper);
+        }
+    }
+
+    public void updateRotation(final Quaternion quaternion) {
+        this.quaternion.mul(quaternion);
     }
 
     @Override
     public void update() {
     }
 
-    public void setBlockState(final BlockState state) {
-        this.setBlockState(state, 0, 0, 0);
+    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper) {
+        this.setBlockState(state, wrapper, 0, 0, 0);
     }
 
-    public void setBlockState(final BlockState state, final double x, final double y,
-            final double z) {
-        this.vector = new Vector3d(x, y, z);
-        this.texture = manager.getTexture(state.getBlock().getRegistryName());
-        final BufferBuilder builder = model.get();
-        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-        DrawUtil.addToBuffer(builder, shapes, state);
-        builder.building();
+    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper,
+            final double x, final double y, final double z) {
+        final BlockModelShapes shaper = Minecraft.getInstance().getModelManager()
+                .getBlockModelShaper();
+        this.model = shaper.getBlockModel(state);
+        this.wrapper = wrapper;
+        this.state = state;
     }
-
 }

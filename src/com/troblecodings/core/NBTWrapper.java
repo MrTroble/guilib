@@ -34,6 +34,10 @@ public class NBTWrapper {
         tag.putInt(key, value);
     }
 
+    public void putByte(final String key, final byte value) {
+        tag.putByte(key, value);
+    }
+
     public void putString(final String key, final String value) {
         tag.putString(key, value);
     }
@@ -62,6 +66,10 @@ public class NBTWrapper {
 
     public int getInteger(final String key) {
         return tag.getInt(key);
+    }
+
+    public byte getByte(final String key) {
+        return tag.getByte(key);
     }
 
     public String getString(final String key) {
@@ -104,7 +112,7 @@ public class NBTWrapper {
     public void remove(final String key) {
         tag.remove(key);
     }
-    
+
     public boolean isTagNull() {
         return tag == null;
     }
