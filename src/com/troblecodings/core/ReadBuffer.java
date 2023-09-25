@@ -50,10 +50,10 @@ public class ReadBuffer {
     }
 
     public String getString() {
-        final int size = readBuffer.getInt();
+        final int size = getInt();
         final byte[] array = new byte[size];
-        for (int i = size; i < size; i++)
-            array[i] = readBuffer.get();
+        for (int i = 0; i < size; i++)
+            array[i] = getByte();
         try {
             return new String(array, "UTF-8");
         } catch (UnsupportedEncodingException e) {

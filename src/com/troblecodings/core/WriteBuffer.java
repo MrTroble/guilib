@@ -46,8 +46,7 @@ public class WriteBuffer {
 
     public void putString(final String str) {
         final byte[] array = str.getBytes();
-        final int size = array.length;
-        putInt(size);
+        putInt(array.length);
         for (final byte b : array)
             putByte(b);
     }
