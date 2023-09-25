@@ -11,11 +11,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerBase extends AbstractContainerMenu implements INetworkSync {
 
-    private final GuiInfo info;
+    protected final GuiInfo info;
 
     public ContainerBase(final GuiInfo info) {
         super(info.type, info.id);
         info.base = this;
+        info.player.containerMenu = this;
         this.info = info;
     }
 
