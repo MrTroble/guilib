@@ -3,13 +3,13 @@ package com.troblecodings.guilib.ecs.entitys.render;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.troblecodings.core.I18Wrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -51,7 +51,7 @@ public class UIToolTip extends UIComponent {
             } else if (Screen.hasShiftDown() || showDescDirectly) {
                 desc = this.descripton;
             } else {
-                desc = I18n.get("gui.keyprompt");
+                desc = I18Wrapper.format("gui.keyprompt");
             }
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
