@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.lwjgl.input.Keyboard;
 
+import com.troblecodings.core.I18Wrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
@@ -11,7 +12,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,7 +48,7 @@ public class UIToolTip extends UIComponent {
             } else if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || showDescDirectly) {
                 desc = this.descripton;
             } else {
-                desc = I18n.format("gui.keyprompt");
+                desc = I18Wrapper.format("gui.keyprompt");
             }
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {

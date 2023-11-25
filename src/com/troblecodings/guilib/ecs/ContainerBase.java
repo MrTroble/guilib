@@ -10,11 +10,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerBase extends Container implements INetworkSync {
 
-    private final GuiInfo info;
+    protected final GuiInfo info;
 
     public ContainerBase(final GuiInfo info) {
         super();
         info.base = this;
+        info.player.openContainer = this;
         if (info.world.isRemote) {
             final Minecraft mc = Minecraft.getMinecraft();
             mc.player.openContainer = this;

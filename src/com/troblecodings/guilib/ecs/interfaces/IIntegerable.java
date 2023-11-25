@@ -1,7 +1,8 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
+import com.troblecodings.core.I18Wrapper;
+
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,17 +16,17 @@ public interface IIntegerable<T> {
 
     @SideOnly(Side.CLIENT)
     default public String getLocalizedName() {
-        return I18n.format("property." + this.getName() + ".name");
+        return I18Wrapper.format("property." + this.getName() + ".name");
     }
 
     @SideOnly(Side.CLIENT)
     default public String getNamedObj(final int obj) {
-        return getLocalizedName() + ": " + I18n.format("property.value." + getObjFromID(obj));
+        return getLocalizedName() + ": " + I18Wrapper.format("property.value." + getObjFromID(obj));
     }
 
     @SideOnly(Side.CLIENT)
     default public String getDescriptionForName() {
-        return I18n.format("property." + this.getName() + ".desc");
+        return I18Wrapper.format("property." + this.getName() + ".desc");
     }
 
     @SideOnly(Side.CLIENT)

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import org.apache.logging.log4j.Logger;
 
+import com.troblecodings.core.WriteBuffer;
 import com.troblecodings.core.interfaces.INetworkSync;
 
 import io.netty.buffer.Unpooled;
@@ -54,6 +55,10 @@ public class NetworkHandler {
                 ((INetworkSync) menu).deserializeServer(event.getPacket().payload().nioBuffer());
             }
         });
+    }
+
+    public void sendTo(final EntityPlayer player, final WriteBuffer buffer) {
+        sendTo(player, buffer.build());
     }
 
     public void sendTo(final EntityPlayer player, final ByteBuffer buf) {
