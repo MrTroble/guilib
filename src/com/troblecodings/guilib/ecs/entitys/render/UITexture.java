@@ -26,7 +26,7 @@ public class UITexture extends UIComponent {
         this.mu = sprite.getMaxU();
         this.mv = sprite.getMaxV();
     }
-    
+
     public UITexture(final ResourceLocation texture) {
         this(texture, 0, 0, 1, 1);
     }
@@ -45,6 +45,7 @@ public class UITexture extends UIComponent {
         info.depthOn();
         info.blendOn();
         info.alphaOn();
+        info.applyColor();
         info.applyTexture(texture);
         final double w = this.parent.getWidth();
         final double h = this.parent.getHeight();
