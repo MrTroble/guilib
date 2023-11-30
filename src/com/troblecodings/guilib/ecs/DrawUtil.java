@@ -1,10 +1,10 @@
 package com.troblecodings.guilib.ecs;
 
+import com.troblecodings.core.I18Wrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 
 public final class DrawUtil {
 
@@ -47,7 +47,7 @@ public final class DrawUtil {
         public String getNamedObj(final int obj) {
             final T current = getObjFromID(obj);
             if (current == null)
-                return getLocalizedName() + ": " + I18n.get("property.disabled.name");
+                return getLocalizedName() + ": " +I18Wrapper.format("property.disabled.name");
             return integerable.getNamedObj(obj);
         }
 

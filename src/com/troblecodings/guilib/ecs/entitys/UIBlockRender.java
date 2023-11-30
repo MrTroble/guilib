@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.troblecodings.core.QuaternionWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.block.BlockState;
@@ -13,7 +14,7 @@ public class UIBlockRender extends UIComponent {
     private IBakedModel model;
     private BlockState state;
     private BlockModelDataWrapper wrapper;
-    private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
+    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     private final float scale;
     private final float height;
 

@@ -81,7 +81,8 @@ public class NBTWrapper {
     }
 
     public BlockPos getBlockPos(final String key) {
-        return getWrapper(key).getAsPos();
+        final NBTWrapper wrapper = getWrapper(key);
+        return wrapper.isTagNull() ? null : wrapper.getAsPos();
     }
 
     public List<NBTWrapper> getList(final String key) {

@@ -1,7 +1,8 @@
 package com.troblecodings.guilib.ecs.interfaces;
 
+import com.troblecodings.core.I18Wrapper;
+
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,17 +16,17 @@ public interface IIntegerable<T> {
 
     @OnlyIn(Dist.CLIENT)
     default public String getLocalizedName() {
-        return I18n.get("property." + this.getName() + ".name");
+        return I18Wrapper.format("property." + this.getName() + ".name");
     }
 
     @OnlyIn(Dist.CLIENT)
     default public String getNamedObj(final int obj) {
-        return getLocalizedName() + ": " + I18n.get("property.value." + getObjFromID(obj));
+        return getLocalizedName() + ": " + I18Wrapper.format("property.value." + getObjFromID(obj));
     }
 
     @OnlyIn(Dist.CLIENT)
     default public String getDescriptionForName() {
-        return I18n.get("property." + this.getName() + ".desc");
+        return I18Wrapper.format("property." + this.getName() + ".desc");
     }
 
     @OnlyIn(Dist.CLIENT)

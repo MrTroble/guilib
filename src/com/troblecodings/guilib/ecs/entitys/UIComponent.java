@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.troblecodings.guilib.ecs.GuiConfigHandler;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;

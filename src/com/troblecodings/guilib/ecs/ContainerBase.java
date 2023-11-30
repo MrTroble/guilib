@@ -14,15 +14,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ContainerBase extends Container implements INetworkSync {
 
-    private final GuiInfo info;
+    protected final GuiInfo info;
 
     public ContainerBase(final GuiInfo info) {
         super(info.type, info.id);
         info.base = this;
-        if (info.world.isClientSide) {
-            final Minecraft mc = Minecraft.getInstance();
-            mc.player.containerMenu = this;
-        }
+        info.player.containerMenu = this;
         this.info = info;
         MinecraftForge.EVENT_BUS.register(this);
     }
