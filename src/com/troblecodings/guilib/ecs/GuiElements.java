@@ -23,6 +23,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UILabel;
 import com.troblecodings.guilib.ecs.entitys.render.UIScissor;
 import com.troblecodings.guilib.ecs.entitys.render.UITexture;
 import com.troblecodings.guilib.ecs.entitys.render.UIToolTip;
+import com.troblecodings.guilib.ecs.entitys.transform.UIIndependentTranslate;
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.IIntegerable;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
@@ -242,6 +243,7 @@ public final class GuiElements {
         searchPanel.add(new UIColor(0x6F000000, 5));
 
         entityConsumer.accept(searchPanel);
+        entity.add(new UIIndependentTranslate(0, 0, 1));
         return entity;
     }
 
