@@ -33,7 +33,7 @@ public abstract class UIComponent {
     }
 
     public boolean hasParent() {
-        return this.parent == null;
+        return this.parent != null;
     }
 
     public void onClosed() {
