@@ -1,5 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import org.joml.Quaternionf;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -56,7 +58,7 @@ public class DrawInfo {
         this.stack.scale((float) x, (float) y, (float) z);
     }
 
-    public void rotate(final Quaternion quaternion) {
+    public void rotate(final Quaternionf quaternion) {
         this.stack.mulPose(quaternion);
     }
 
@@ -77,8 +79,8 @@ public class DrawInfo {
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
-        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, OverlayTexture.NO_OVERLAY,
-                OverlayTexture.NO_OVERLAY);
+        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
+                OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY);
         this.end();
         this.alphaOff();
         this.blendOff();
@@ -127,13 +129,15 @@ public class DrawInfo {
     public void scissorOff() {
         RenderSystem.disableScissor();
     }
-    
+
     public void alphaOn() {
-        GlStateManager._enableColorLogicOp();;
+        GlStateManager._enableColorLogicOp();
+        ;
     }
-    
+
     public void alphaOff() {
-        GlStateManager._disableColorLogicOp();;
+        GlStateManager._disableColorLogicOp();
+        ;
     }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
