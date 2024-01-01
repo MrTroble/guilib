@@ -68,6 +68,7 @@ public class DrawInfo {
             final BlockModelDataWrapper wrapper) {
         this.depthOn();
         this.blendOn();
+        this.alphaOn();
         this.applyTexture(AtlasTexture.LOCATION_BLOCKS);
         final Minecraft mc = Minecraft.getInstance();
         final BlockModelRenderer render = mc.getBlockRenderer().getModelRenderer();
@@ -75,6 +76,7 @@ public class DrawInfo {
         render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
                 OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, wrapper);
         this.end();
+        this.alphaOff();
         this.blendOff();
         this.depthOff();
     }
