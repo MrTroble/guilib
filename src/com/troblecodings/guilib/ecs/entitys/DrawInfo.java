@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -62,17 +63,19 @@ public class DrawInfo {
         Minecraft.getInstance().getTextureManager().bind(location);
     }
 
+    @SuppressWarnings("deprecation")
     public void applyState(final IBakedModel model, final BlockState state,
             final BlockModelDataWrapper wrapper) {
         this.depthOn();
-        RenderSystem.enableBlend();
+        this.blendOn();
+        this.applyTexture(AtlasTexture.LOCATION_BLOCKS);
         final Minecraft mc = Minecraft.getInstance();
         final BlockModelRenderer render = mc.getBlockRenderer().getModelRenderer();
         final BufferWrapper builder = this.builder(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
                 OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, wrapper);
         this.end();
-        RenderSystem.disableBlend();
+        this.blendOff();
         this.depthOff();
     }
 
