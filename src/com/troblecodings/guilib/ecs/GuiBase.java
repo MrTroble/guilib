@@ -198,6 +198,15 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
             public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
                 return true;
             }
+
+            @Override
+            public void setFocused(final boolean focused) {   
+            }
+
+            @Override
+            public boolean isFocused() {
+                return false;
+            }
         };
         return eventListener;
     }

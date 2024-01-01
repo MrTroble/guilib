@@ -24,7 +24,7 @@ public class UITextInput extends UIComponent {
         final Minecraft mc = Minecraft.getInstance();
         this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
         this.textInput.setCanLoseFocus(false);
-        this.textInput.setFocus(false);
+        this.textInput.setFocused(false);
         this.textInput.setVisible(true);
         this.textInput.setEditable(true);
         this.textInput.setMaxLength(60);
@@ -48,7 +48,7 @@ public class UITextInput extends UIComponent {
     public void setVisible(final boolean visible) {
         super.setVisible(visible);
         this.textInput.setVisible(visible);
-        this.textInput.setFocus(visible);
+        this.textInput.setFocused(visible);
         this.textInput.setEditable(visible);
     }
 
@@ -64,10 +64,10 @@ public class UITextInput extends UIComponent {
     public void mouseEvent(final MouseEvent event) {
         if (event.state.equals(EnumMouseState.CLICKED)) {
             if (this.parent.isHovered()) {
-                this.textInput.setFocus(true);
+                this.textInput.setFocused(true);
                 this.textInput.mouseClicked(event.x, event.y, event.key);
             } else {
-                this.textInput.setFocus(false);
+                this.textInput.setFocused(false);
             }
         }
     }

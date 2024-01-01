@@ -1,7 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.math.Matrix4f;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 public class BufferWrapper {

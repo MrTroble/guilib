@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Quaternion;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
@@ -66,6 +65,7 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, location);
     }
 
+    @SuppressWarnings("deprecation")
     public void applyState(final BakedModel model, final BlockState state,
             final BlockModelDataWrapper wrapper) {
         final ShaderInstance instance = RenderSystem.getShader();
@@ -78,7 +78,7 @@ public class DrawInfo {
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
         render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, OverlayTexture.NO_OVERLAY,
-                OverlayTexture.NO_OVERLAY, wrapper);
+                OverlayTexture.NO_OVERLAY);
         this.end();
         this.alphaOff();
         this.blendOff();

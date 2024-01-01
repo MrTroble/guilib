@@ -18,7 +18,7 @@ public class UITexture extends UIComponent {
     private final ResourceLocation texture;
 
     public UITexture(final TextureAtlasSprite sprite) {
-        this(sprite.atlas().location(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
+        this(sprite.atlasLocation(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
                 sprite.getV1());
     }
 
