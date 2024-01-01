@@ -1,6 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys.transform;
 
-import com.mojang.math.Quaternion;
+import com.troblecodings.core.QuaternionWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
@@ -14,7 +14,7 @@ public class UIRotate extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        info.stack.mulPose(Quaternion.fromXYZ(rotateX, rotateY, rotateZ));
+        info.stack.mulPose(QuaternionWrapper.fromXYZ(rotateX, rotateY, rotateZ));
     }
 
     @Override
