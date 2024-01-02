@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -17,7 +16,7 @@ public class GuiInfo {
     public final Level world;
     public Player player;
     public final Inventory inventory;
-    public Component component = new TextComponent("");
+    public Component component = Component.translatable("");
     @Nullable
     public final BlockPos pos;
     @Nullable

@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -54,7 +54,7 @@ public final class GuiHandler {
                 new MenuType<>((id,
                         inventory) -> gui.apply(new GuiInfo(guiIDS.get(clazz), id,
                                 inventory.player.getLevel(), null, inventory.player, inventory)))
-                                        .setRegistryName(modid, clazz.getTypeName().toLowerCase()));
+                .setRegistryName(modid, clazz.getTypeName().toLowerCase()));
     }
 
     public <T> void invokeGui(final Class<T> clazz, final Player mcPlayer, final Level world,
@@ -63,8 +63,8 @@ public final class GuiHandler {
                 new SimpleMenuProvider(
                         (id, inventory, player) -> guiContainer.get(clazz)
                                 .apply(new GuiInfo(guiIDS.get(clazz), id, world, pos, player,
-                                        inventory).with(new TextComponent(name))),
-                        new TextComponent(name)));
+                                        inventory).with(Component.translatable(name))),
+                        Component.translatable(name)));
     }
 
     private final class RegisterHolder {

@@ -88,9 +88,9 @@ public class DrawInfo {
         RenderSystem.setShader(() -> instance);
     }
 
-    public void disableTexture() {
-        RenderSystem.disableTexture();
-    }
+    /*
+     * public void disableTexture() { RenderSystem.disableTexture(); }
+     */
 
     public void color() {
         this.color(1, 1, 1, 1);

@@ -11,7 +11,6 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -56,7 +55,7 @@ public class UIToolTip extends UIComponent {
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
                 final List<Component> listComp = new ArrayList<>();
-                listComp.add(new TextComponent(desc));
+                listComp.add(Component.translatable(desc));
                 base.base.renderComponentTooltip(info.stack, listComp, info.mouseX, info.mouseY);
             }
         }

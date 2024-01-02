@@ -9,7 +9,7 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,7 +22,7 @@ public class UITextInput extends UIComponent {
 
     public UITextInput(final String id) {
         final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
+        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, Component.translatable(id));
         this.textInput.setCanLoseFocus(false);
         this.textInput.setFocused(false);
         this.textInput.setVisible(true);

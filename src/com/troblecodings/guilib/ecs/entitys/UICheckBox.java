@@ -8,7 +8,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraftforge.client.gui.ScreenUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class UICheckBox extends UIComponent {
@@ -35,7 +35,8 @@ public class UICheckBox extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         final Minecraft mc = Minecraft.getInstance();
-        GuiUtils.drawContinuousTexturedBox(info.stack, UIButton.BUTTON_TEXTURES, 0, 0, 0, 46,
+        
+        ScreenUtils.blitWithBorder(info.stack, UIButton.BUTTON_TEXTURES, 0, 0, 0, 46,
                 BOX_WIDTH, BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
         final int color = this.enabled ? UIButton.DEFAULT_COLOR : UIButton.DEFAULT_DISABLED_COLOR;
         if (this.isChecked())
