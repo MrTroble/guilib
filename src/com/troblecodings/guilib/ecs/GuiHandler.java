@@ -8,16 +8,18 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegisterEvent;
 
 public final class GuiHandler {
 
@@ -51,10 +53,10 @@ public final class GuiHandler {
             final Function<GuiInfo, ? extends ContainerBase> gui) {
         guiContainer.put(clazz, gui);
         guiIDS.put(clazz,
-                new MenuType<>((id,
-                        inventory) -> gui.apply(new GuiInfo(guiIDS.get(clazz), id,
-                                inventory.player.getLevel(), null, inventory.player, inventory)))
-                .setRegistryName(modid, clazz.getTypeName().toLowerCase()));
+                new MenuType<>(
+                        (id, inventory) -> gui.apply(new GuiInfo(guiIDS.get(clazz), id,
+                                inventory.player.getLevel(), null, inventory.player, inventory)),
+                        FeatureFlagSet.of()));
     }
 
     public <T> void invokeGui(final Class<T> clazz, final Player mcPlayer, final Level world,
@@ -68,11 +70,13 @@ public final class GuiHandler {
     }
 
     private final class RegisterHolder {
+
         @SubscribeEvent
-        public void registerMenuType(final RegistryEvent.Register<MenuType<?>> event) {
-            final IForgeRegistry<MenuType<?>> registry = event.getRegistry();
-            guiIDS.forEach((_u, type) -> registry.register(type));
+        public void registerMenuType(final RegisterEvent event) {
+            event.register(Registries.MENU,
+                    holder -> guiIDS.forEach((clazz, menuType) -> holder.register(
+                            new ResourceLocation(modid, clazz.getTypeName().toLowerCase()),
+                            menuType)));
         }
     }
-
 }
