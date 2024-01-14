@@ -1,34 +1,45 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.math.Quaternion;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class UIBlockRender extends UIComponent {
+public class UIMultiBlockRender extends UIComponent {
 
-    private UIBlockRenderInfo renderInfo;
+    private final List<UIBlockRenderInfo> models = new ArrayList<>();
     private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     private final float scale;
     private final float height;
+    private Vec3i previous = Vec3i.ZERO;
 
-    public UIBlockRender(final float scale, final float height) {
+    public UIMultiBlockRender(final float scale, final float height) {
         this.scale = scale;
         this.height = height;
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        if (renderInfo != null) {
+        if (!models.isEmpty()) {
             info.scale(scale, -scale, scale);
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
-            info.applyState(renderInfo.model, renderInfo.state, renderInfo.wrapper,
-                    renderInfo.vector.getX(), renderInfo.vector.getY(), renderInfo.vector.getZ());
+            models.forEach(renderInfo -> {
+                final Vec3i current = renderInfo.vector.subtract(previous);
+                info.applyState(renderInfo.model, renderInfo.state, renderInfo.wrapper,
+                        current.getX(), current.getY(), current.getZ());
+                previous = renderInfo.vector;
+            });
+            previous = Vec3i.ZERO;
         }
+
     }
 
     public void updateRotation(final Quaternion quaternion) {
@@ -40,14 +51,16 @@ public class UIBlockRender extends UIComponent {
     }
 
     public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper) {
-        this.setBlockState(state, wrapper, 0, 0, 0);
+        setBlockState(state, wrapper, 0, 0, 0);
     }
 
     public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper,
             final int x, final int y, final int z) {
         final BlockModelShaper shaper = Minecraft.getInstance().getModelManager()
                 .getBlockModelShaper();
-        this.renderInfo = new UIBlockRenderInfo(shaper.getBlockModel(state), state, wrapper, x, y,
-                z);
+        final UIBlockRenderInfo info = new UIBlockRenderInfo(shaper.getBlockModel(state), state,
+                wrapper, x, y, z);
+        if (!models.contains(info))
+            models.add(info);
     }
 }

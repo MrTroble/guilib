@@ -67,7 +67,7 @@ public class DrawInfo {
     }
 
     public void applyState(final BakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper) {
+            final BlockModelDataWrapper wrapper, final int x, final int y, final int z) {
         final ShaderInstance instance = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();
@@ -76,9 +76,10 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
+        this.translate(x, y, z);
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
-        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f, OverlayTexture.NO_OVERLAY,
-                OverlayTexture.NO_OVERLAY, wrapper);
+        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
+                OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, wrapper);
         this.end();
         this.alphaOff();
         this.blendOff();
