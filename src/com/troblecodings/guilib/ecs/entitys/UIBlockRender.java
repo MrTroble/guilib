@@ -1,11 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import com.mojang.math.Quaternion;
-import com.troblecodings.core.interfaces.BlockModelDataWrapper;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class UIBlockRender extends UIComponent {
 
@@ -26,8 +21,7 @@ public class UIBlockRender extends UIComponent {
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
-            info.applyState(renderInfo.model, renderInfo.state, renderInfo.wrapper,
-                    renderInfo.vector.getX(), renderInfo.vector.getY(), renderInfo.vector.getZ());
+            info.applyState(renderInfo, renderInfo.vector);
         }
     }
 
@@ -39,15 +33,7 @@ public class UIBlockRender extends UIComponent {
     public void update() {
     }
 
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper) {
-        this.setBlockState(state, wrapper, 0, 0, 0);
-    }
-
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper,
-            final int x, final int y, final int z) {
-        final BlockModelShaper shaper = Minecraft.getInstance().getModelManager()
-                .getBlockModelShaper();
-        this.renderInfo = new UIBlockRenderInfo(shaper.getBlockModel(state), state, wrapper, x, y,
-                z);
+    public void setBlockState(final UIBlockRenderInfo info) {
+        this.renderInfo = info;
     }
 }

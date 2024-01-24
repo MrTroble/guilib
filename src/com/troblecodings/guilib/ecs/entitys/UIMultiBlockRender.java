@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.math.Quaternion;
-import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class UIMultiBlockRender extends UIComponent {
 
@@ -33,8 +29,7 @@ public class UIMultiBlockRender extends UIComponent {
             info.translate(-0.5, this.height, -0.5);
             models.forEach(renderInfo -> {
                 final Vec3i current = renderInfo.vector.subtract(previous);
-                info.applyState(renderInfo.model, renderInfo.state, renderInfo.wrapper,
-                        current.getX(), current.getY(), current.getZ());
+                info.applyState(renderInfo, current);
                 previous = renderInfo.vector;
             });
             previous = Vec3i.ZERO;
@@ -54,16 +49,7 @@ public class UIMultiBlockRender extends UIComponent {
     public void update() {
     }
 
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper) {
-        setBlockState(state, wrapper, 0, 0, 0);
-    }
-
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper,
-            final int x, final int y, final int z) {
-        final BlockModelShaper shaper = Minecraft.getInstance().getModelManager()
-                .getBlockModelShaper();
-        final UIBlockRenderInfo info = new UIBlockRenderInfo(shaper.getBlockModel(state), state,
-                wrapper, x, y, z);
+    public void setBlockState(final UIBlockRenderInfo info) {
         if (!models.contains(info))
             models.add(info);
     }

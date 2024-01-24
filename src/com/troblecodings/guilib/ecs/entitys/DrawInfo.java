@@ -9,7 +9,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
-import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -17,10 +16,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class DrawInfo {
     public final int mouseX;
@@ -66,8 +64,7 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, location);
     }
 
-    public void applyState(final BakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper, final int x, final int y, final int z) {
+    public void applyState(final UIBlockRenderInfo info, final Vec3i translation) {
         final ShaderInstance instance = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();
@@ -76,10 +73,10 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
-        this.translate(x, y, z);
+        this.translate(translation.getX(), translation.getY(), translation.getZ());
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
-        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
-                OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, wrapper);
+        render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
+                1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
         this.end();
         this.alphaOff();
         this.blendOff();
@@ -128,13 +125,15 @@ public class DrawInfo {
     public void scissorOff() {
         RenderSystem.disableScissor();
     }
-    
+
     public void alphaOn() {
-        GlStateManager._enableColorLogicOp();;
+        GlStateManager._enableColorLogicOp();
+        ;
     }
-    
+
     public void alphaOff() {
-        GlStateManager._disableColorLogicOp();;
+        GlStateManager._disableColorLogicOp();
+        ;
     }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,17 +16,33 @@ public class UIBlockRenderInfo {
     public final BlockModelDataWrapper wrapper;
     public Vec3i vector;
 
-    public UIBlockRenderInfo(final BakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper) {
-        this(model, state, wrapper, 0, 0, 0);
+    public UIBlockRenderInfo(final BlockState state, final BlockModelDataWrapper wrapper) {
+        this(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state),
+                state, wrapper);
     }
 
     public UIBlockRenderInfo(final BakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper, final int x, final int y, final int z) {
+            final BlockModelDataWrapper wrapper) {
+        this(model, state, wrapper, new Vec3i(0, 0, 0));
+    }
+
+    public UIBlockRenderInfo(final BlockState state, final BlockModelDataWrapper wrapper,
+            final Vec3i vector) {
+        this(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state),
+                state, wrapper, vector);
+    }
+
+    public UIBlockRenderInfo(final BakedModel model, final BlockState state,
+            final BlockModelDataWrapper wrapper, final Vec3i vector) {
         this.model = model;
         this.state = state;
         this.wrapper = wrapper;
-        this.vector = new Vec3i(x, y, z);
+        this.vector = vector;
+    }
+
+    public UIBlockRenderInfo with(final Vec3i vector) {
+        this.vector = vector;
+        return this;
     }
 
     @Override
@@ -45,5 +62,4 @@ public class UIBlockRenderInfo {
         return Objects.equals(model, other.model) && Objects.equals(state, other.state)
                 && Objects.equals(wrapper, other.wrapper) && vector.equals(other.vector);
     }
-
 }
