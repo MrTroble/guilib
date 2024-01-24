@@ -46,6 +46,10 @@ public class UIMultiBlockRender extends UIComponent {
         this.quaternion.mul(quaternion);
     }
 
+    public void clear() {
+        models.clear();
+    }
+
     @Override
     public void update() {
     }
