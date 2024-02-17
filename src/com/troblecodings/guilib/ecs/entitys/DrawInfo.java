@@ -4,21 +4,19 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3i;
 
 public class DrawInfo {
     public final int mouseX;
@@ -64,17 +62,17 @@ public class DrawInfo {
     }
 
     @SuppressWarnings("deprecation")
-    public void applyState(final IBakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper) {
+    public void applyState(final UIBlockRenderInfo info, final Vector3i translation) {
         this.depthOn();
         this.blendOn();
         this.alphaOn();
         this.applyTexture(AtlasTexture.LOCATION_BLOCKS);
         final Minecraft mc = Minecraft.getInstance();
         final BlockModelRenderer render = mc.getBlockRenderer().getModelRenderer();
+        this.translate(translation.getX(), translation.getY(), translation.getZ());
         final BufferWrapper builder = this.builder(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-        render.renderModel(this.stack.last(), builder.builder, state, model, 1.0f, 1.0f, 1.0f,
-                OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, wrapper);
+        render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
+                1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
         this.end();
         this.alphaOff();
         this.blendOff();

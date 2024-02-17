@@ -7,7 +7,6 @@ import net.minecraft.util.math.BlockPos;
 
 public class ReadBuffer {
 
-
     private final ByteBuffer readBuffer;
 
     public ReadBuffer(final ByteBuffer buffer) {
@@ -54,7 +53,7 @@ public class ReadBuffer {
         final int size = getInt();
         final byte[] array = new byte[size];
         for (int i = 0; i < size; i++)
-            array[i] = getByte();
+            array[i] = (byte) getByteToUnsignedInt();
         try {
             return new String(array, "UTF-8");
         } catch (final UnsupportedEncodingException e) {

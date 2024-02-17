@@ -1,19 +1,12 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import com.troblecodings.core.QuaternionWrapper;
-import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.math.vector.Quaternion;
 
 public class UIBlockRender extends UIComponent {
 
-    private IBakedModel model;
-    private BlockState state;
-    private BlockModelDataWrapper wrapper;
+    private UIBlockRenderInfo renderInfo;
     private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     private final float scale;
     private final float height;
@@ -25,12 +18,12 @@ public class UIBlockRender extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        if (model != null) {
+        if (renderInfo != null) {
             info.scale(scale, -scale, scale);
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
-            info.applyState(model, state, wrapper);
+            info.applyState(renderInfo, renderInfo.vector);
         }
     }
 
@@ -42,16 +35,7 @@ public class UIBlockRender extends UIComponent {
     public void update() {
     }
 
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper) {
-        this.setBlockState(state, wrapper, 0, 0, 0);
-    }
-
-    public void setBlockState(final BlockState state, final BlockModelDataWrapper wrapper,
-            final double x, final double y, final double z) {
-        final BlockModelShapes shaper = Minecraft.getInstance().getModelManager()
-                .getBlockModelShaper();
-        this.model = shaper.getBlockModel(state);
-        this.wrapper = wrapper;
-        this.state = state;
+    public void setBlockState(final UIBlockRenderInfo info) {
+        this.renderInfo = info;
     }
 }
