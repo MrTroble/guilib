@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
+import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 
@@ -64,7 +64,7 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, location);
     }
 
-    public void applyState(final UIBlockRenderInfo info, final Vec3i translation) {
+    public void applyState(final UIBlockRenderInfo info, final VectorWrapper translation) {
         final ShaderInstance instance = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();

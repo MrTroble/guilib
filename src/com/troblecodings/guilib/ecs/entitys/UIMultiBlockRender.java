@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.math.Quaternion;
-
-import net.minecraft.core.Vec3i;
+import com.troblecodings.core.VectorWrapper;
 
 public class UIMultiBlockRender extends UIComponent {
 
@@ -13,7 +12,7 @@ public class UIMultiBlockRender extends UIComponent {
     private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     private final float scale;
     private final float height;
-    private Vec3i previous = Vec3i.ZERO;
+    private VectorWrapper previous = VectorWrapper.ZERO;
 
     public UIMultiBlockRender(final float scale, final float height) {
         this.scale = scale;
@@ -28,11 +27,11 @@ public class UIMultiBlockRender extends UIComponent {
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
             models.forEach(renderInfo -> {
-                final Vec3i current = renderInfo.vector.subtract(previous);
+                final VectorWrapper current = renderInfo.vector.subtract(previous);
                 info.applyState(renderInfo, current);
                 previous = renderInfo.vector;
             });
-            previous = Vec3i.ZERO;
+            previous = VectorWrapper.ZERO;
         }
 
     }
