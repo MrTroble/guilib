@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 
 public class VectorWrapper {
 
@@ -115,6 +116,10 @@ public class VectorWrapper {
             default:
                 return this;
         }
+    }
+
+    public Vec3i toMC3iVector() {
+        return new Vec3i(x, y, z);
     }
 
     public void writeNetwork(final WriteBuffer buffer) {
