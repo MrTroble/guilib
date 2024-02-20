@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3i;
 
 public class DrawInfo {
     public final int mouseX;
@@ -62,7 +62,7 @@ public class DrawInfo {
     }
 
     @SuppressWarnings("deprecation")
-    public void applyState(final UIBlockRenderInfo info, final Vector3i translation) {
+    public void applyState(final UIBlockRenderInfo info, final VectorWrapper translation) {
         this.depthOn();
         this.blendOn();
         this.alphaOn();

@@ -2,19 +2,19 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.Objects;
 
+import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.math.vector.Vector3i;
 
 public class UIBlockRenderInfo {
 
     public final IBakedModel model;
     public final BlockState state;
     public final BlockModelDataWrapper wrapper;
-    public Vector3i vector;
+    public VectorWrapper vector;
 
     public UIBlockRenderInfo(final BlockState state, final BlockModelDataWrapper wrapper) {
         this(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state),
@@ -23,24 +23,24 @@ public class UIBlockRenderInfo {
 
     public UIBlockRenderInfo(final IBakedModel model, final BlockState state,
             final BlockModelDataWrapper wrapper) {
-        this(model, state, wrapper, new Vector3i(0, 0, 0));
+        this(model, state, wrapper, new VectorWrapper(0, 0, 0));
     }
 
     public UIBlockRenderInfo(final BlockState state, final BlockModelDataWrapper wrapper,
-            final Vector3i vector) {
+            final VectorWrapper vector) {
         this(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state),
                 state, wrapper, vector);
     }
 
     public UIBlockRenderInfo(final IBakedModel model, final BlockState state,
-            final BlockModelDataWrapper wrapper, final Vector3i vector) {
+            final BlockModelDataWrapper wrapper, final VectorWrapper vector) {
         this.model = model;
         this.state = state;
         this.wrapper = wrapper;
         this.vector = vector;
     }
 
-    public UIBlockRenderInfo with(final Vector3i vector) {
+    public UIBlockRenderInfo with(final VectorWrapper vector) {
         this.vector = vector;
         return this;
     }
