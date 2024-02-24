@@ -109,8 +109,9 @@ public class UIBox extends UIComponent implements UIPagable {
         return pageable;
     }
 
-    public void setPageable(final boolean pageable) {
+    public UIBox setPageable(final boolean pageable) {
         this.pageable = pageable;
+        return this;
     }
 
 }

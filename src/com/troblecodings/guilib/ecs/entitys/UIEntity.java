@@ -330,6 +330,11 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         return this.children.iterator();
     }
 
+    public void setScale(final float scale) {
+        setScaleX(scale);
+        setScaleY(scale);
+    }
+
     public float getScaleX() {
         return scaleX;
     }
