@@ -1,6 +1,5 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -69,7 +68,6 @@ public class DrawInfo {
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();
         this.blendOn();
-        this.alphaOn();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
@@ -78,7 +76,6 @@ public class DrawInfo {
         render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
                 1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
         this.end();
-        this.alphaOff();
         this.blendOff();
         this.depthOff();
         RenderSystem.setShader(() -> instance);
@@ -127,13 +124,11 @@ public class DrawInfo {
     }
 
     public void alphaOn() {
-        GlStateManager._enableColorLogicOp();
-        ;
+        // Not longer being used
     }
 
     public void alphaOff() {
-        GlStateManager._disableColorLogicOp();
-        ;
+        // Not longer being used
     }
 
     public void singleLine(final int color, final BufferWrapper wrapper, final float xLeft,
