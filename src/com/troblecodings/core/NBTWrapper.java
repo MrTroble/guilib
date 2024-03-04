@@ -86,6 +86,8 @@ public class NBTWrapper {
     }
 
     public List<NBTWrapper> getList(final String key) {
+        if (isTagNull())
+            return new ArrayList<>();
         final ListTag list = (ListTag) tag.get(key);
         final List<NBTWrapper> returnList = new ArrayList<>();
         if (list == null)
