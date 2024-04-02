@@ -27,10 +27,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class NetworkHandler {
 
     private final FMLEventChannel channel;
-    private static final String CHANNELNAME = "guisyncnet";
+    private final String channelName;
 
     public NetworkHandler(final String modid, final Logger logger) {
-        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(CHANNELNAME);
+        this.channelName = modid + "guilib";
+        this.channel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channelName);
         this.channel.register(this);
     }
 
@@ -62,13 +63,13 @@ public class NetworkHandler {
     }
 
     public void sendTo(final EntityPlayer player, final ByteBuffer buf) {
-        final PacketBuffer buffer = new PacketBuffer(
-                Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
+        final PacketBuffer buffer =
+                new PacketBuffer(Unpooled.copiedBuffer((ByteBuffer) buf.position(0)));
         if (player instanceof EntityPlayerMP) {
             final EntityPlayerMP server = (EntityPlayerMP) player;
-            channel.sendTo(new FMLProxyPacket(buffer, CHANNELNAME), server);
+            channel.sendTo(new FMLProxyPacket(buffer, channelName), server);
         } else {
-            channel.sendToServer(new FMLProxyPacket(new CPacketCustomPayload(CHANNELNAME, buffer)));
+            channel.sendToServer(new FMLProxyPacket(new CPacketCustomPayload(channelName, buffer)));
         }
     }
 }
