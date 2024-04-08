@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
 
 import com.troblecodings.core.QuaternionWrapper;
-import com.troblecodings.core.VectorWrapper;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -69,18 +68,13 @@ public class UIMultiBlockRender extends UIComponent {
         }
     }
 
-    private VectorWrapper previous;
-
     private void updateBuffer() {
         final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         for (final UIBlockRenderInfo info : renderInfos) {
             final IBlockState ebs = info.wrapper.getBlockState();
             assert ebs != null;
-            final VectorWrapper translation = previous == null ? info.vector
-                    : info.vector.subtract(previous);
-            buffer.setTranslation(translation.getX(), translation.getY(), translation.getZ());
-            previous = info.vector;
+            buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
             final List<BakedQuad> lst = new ArrayList<>();
             lst.addAll(info.model.getQuads(ebs, null, 0));
             for (final EnumFacing face : EnumFacing.VALUES)
