@@ -26,7 +26,8 @@ public class UILines extends UIComponent {
     public void draw(final DrawInfo info) {
         info.depthOn();
         info.disableTexture();
-        info.lines(this.color, this.width, this.lineCache); 
+        info.alphaOff();
+        info.lines(this.color, this.width, this.lineCache);
         info.depthOff();
     }
 
