@@ -53,7 +53,7 @@ public class ReadBuffer {
         final int size = getInt();
         final byte[] array = new byte[size];
         for (int i = 0; i < size; i++)
-            array[i] = (byte) getByteToUnsignedInt();
+            array[i] = getByte();
         try {
             return new String(array, "UTF-8");
         } catch (UnsupportedEncodingException e) {
