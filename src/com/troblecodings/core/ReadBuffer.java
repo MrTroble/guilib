@@ -1,6 +1,5 @@
 package com.troblecodings.core;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import net.minecraft.util.math.BlockPos;
@@ -53,11 +52,7 @@ public class ReadBuffer {
         final int size = getInt();
         final byte[] array = new byte[size];
         for (int i = 0; i < size; i++)
-            array[i] = (byte) getByteToUnsignedInt();
-        try {
-            return new String(array, "UTF-8");
-        } catch (final UnsupportedEncodingException e) {
-        }
-        return "";
+            array[i] = getByte();
+        return new String(array);
     }
 }
