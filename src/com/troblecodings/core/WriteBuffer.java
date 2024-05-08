@@ -1,5 +1,6 @@
 package com.troblecodings.core;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +46,13 @@ public class WriteBuffer {
     }
 
     public void putString(final String str) {
-        final byte[] array = str.getBytes();
-        putInt(array.length);
-        for (final byte b : array)
-            putByte(b);
+        try {
+            final byte[] array = str.getBytes("UTF-8");
+            putInt(array.length);
+            for (final byte b : array)
+                putByte(b);
+        } catch (final UnsupportedEncodingException e) {
+        }
     }
 
     public <T extends Enum<T>> void putEnumValue(final Enum<T> enumValue) {
