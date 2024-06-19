@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -30,8 +31,12 @@ public class GuiInfo {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getTile() {
-        return (T) world.getTileEntity(pos);
+    public <T> T getTile(final Class<T> clazz) {
+        final TileEntity tile = world.getTileEntity(pos);
+        if (clazz.isInstance(tile)) {
+            return (T) tile;
+        }
+        return null;
     }
 
     public GuiInfo with(final ITextComponent component) {
