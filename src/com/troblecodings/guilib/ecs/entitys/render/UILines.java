@@ -33,6 +33,8 @@ public class UILines extends UIComponent {
 
     @Override
     public void update() {
+        if (!hasParent())
+            return;
         if (oldWidth != parent.getWidth() || oldHeight != parent.getHeight()) {
             oldWidth = parent.getWidth();
             oldHeight = parent.getHeight();
