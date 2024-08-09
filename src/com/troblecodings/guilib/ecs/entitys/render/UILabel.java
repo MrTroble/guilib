@@ -33,6 +33,7 @@ public class UILabel extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
+            info.translate(0, 0, 2);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
