@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class DrawInfo {
 
-    
     public final int mouseX;
     public final int mouseY;
     public final float tick;
@@ -92,12 +91,12 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(UIColor.red(color) / 255, UIColor.green(color) / 255, UIColor.blue(color) / 255,
-                UIColor.alpha(color) / 255);
+        this.color((float) UIColor.red(color) / 255, (float) UIColor.green(color) / 255,
+                (float) UIColor.blue(color) / 255, (float) UIColor.alpha(color) / 255);
     }
 
-    public void color(final double r, final double g, final double b, final double a) {
-        GlStateManager.color((float) r, (float) g, (float) b, (float) a);
+    public void color(final float r, final float g, final float b, final float a) {
+        GlStateManager.color(r, g, b, a);
     }
 
     public void blendOn() {
@@ -149,12 +148,13 @@ public class DrawInfo {
         wrapper.pos(xRight - normalY, yBottom - normalX, 0).end();
         wrapper.pos(xLeft + normalY, yTop + normalX, 0).end();
         wrapper.pos(xRight + normalY, yBottom + normalX, 0).end();
+
     }
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
-                DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder =
+                this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);

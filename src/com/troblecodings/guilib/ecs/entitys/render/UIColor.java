@@ -33,8 +33,8 @@ public class UIColor extends UIComponent {
             info.depthOff();
             info.blendOn();
             info.alphaOn();
-            final BufferWrapper wrapper = info.builder(GL11.GL_QUADS,
-                    DefaultVertexFormats.POSITION_COLOR);
+            final BufferWrapper wrapper =
+                    info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
             wrapper.quad(-insets, (int) parent.getWidth() + insets, -insets,
                     (int) parent.getHeight() + insets, this.color);
             info.end();
