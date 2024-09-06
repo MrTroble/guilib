@@ -49,7 +49,8 @@ public class UILines extends UIComponent {
         return color;
     }
 
-    public void setColor(final int color) {
+    public UILines setColor(final int color) {
         this.color = color;
+        return this;
     }
 }
