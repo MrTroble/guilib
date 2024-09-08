@@ -93,8 +93,8 @@ public class DrawInfo {
     }
 
     @SuppressWarnings("deprecation")
-    public void color(final double r, final double g, final double b, final double a) {
-        RenderSystem.color4f((float) r, (float) g, (float) b, (float) a);
+    public void color(final float r, final float g, final float b, final float a) {
+        RenderSystem.color4f(r, g, b, a);
     }
 
     public void blendOn() {
