@@ -14,27 +14,27 @@ public class VectorWrapper {
     private static final String VECTOR_Y = "vectorY";
     private static final String VECTOR_Z = "vectorZ";
 
-    private final int x, y, z;
+    private final float x, y, z;
 
-    public VectorWrapper(final int x, final int y, final int z) {
+    public VectorWrapper(final float x, final float y, final float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public int getZ() {
+    public float getZ() {
         return z;
     }
 
-    public VectorWrapper offset(final int offsetX, final int offsetY, final int offsetZ) {
+    public VectorWrapper offset(final float offsetX, final float offsetY, final float offsetZ) {
         return new VectorWrapper(this.x + offsetX, this.y + offsetY, this.z + offsetZ);
     }
 
@@ -123,15 +123,15 @@ public class VectorWrapper {
     }
 
     public void writeNetwork(final WriteBuffer buffer) {
-        buffer.putInt(x);
-        buffer.putInt(y);
-        buffer.putInt(z);
+        buffer.putFloat(x);
+        buffer.putFloat(y);
+        buffer.putFloat(z);
     }
 
     public void writeNBT(final NBTWrapper tag) {
-        tag.putInteger(VECTOR_X, x);
-        tag.putInteger(VECTOR_Y, y);
-        tag.putInteger(VECTOR_Z, z);
+        tag.putFloat(VECTOR_X, x);
+        tag.putFloat(VECTOR_Y, y);
+        tag.putFloat(VECTOR_Z, z);
     }
 
     public static VectorWrapper of(final ReadBuffer buffer) {
