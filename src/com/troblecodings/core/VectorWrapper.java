@@ -134,6 +134,10 @@ public class VectorWrapper {
         tag.putFloat(VECTOR_Z, z);
     }
 
+    public VectorWrapper copy() {
+        return new VectorWrapper(x, y, z);
+    }
+
     public static VectorWrapper of(final ReadBuffer buffer) {
         return new VectorWrapper(buffer.getInt(), buffer.getInt(), buffer.getInt());
     }
