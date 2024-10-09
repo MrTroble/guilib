@@ -139,12 +139,12 @@ public class VectorWrapper {
     }
 
     public static VectorWrapper of(final ReadBuffer buffer) {
-        return new VectorWrapper(buffer.getInt(), buffer.getInt(), buffer.getInt());
+        return new VectorWrapper(buffer.getFloat(), buffer.getFloat(), buffer.getFloat());
     }
 
     public static VectorWrapper of(final NBTWrapper tag) {
-        return new VectorWrapper(tag.getInteger(VECTOR_X), tag.getInteger(VECTOR_Y),
-                tag.getInteger(VECTOR_Z));
+        return new VectorWrapper(tag.getFloat(VECTOR_X), tag.getFloat(VECTOR_Y),
+                tag.getFloat(VECTOR_Z));
     }
 
     @Override
