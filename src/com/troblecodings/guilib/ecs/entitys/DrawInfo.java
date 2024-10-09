@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
-import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -63,19 +62,22 @@ public class DrawInfo {
         RenderSystem.setShaderTexture(0, location);
     }
 
-    public void applyState(final UIBlockRenderInfo info, final VectorWrapper translation) {
+    public void applyState(final UIBlockRenderInfo info) {
         final ShaderInstance instance = RenderSystem.getShader();
         RenderSystem.setShader(GameRenderer::getBlockShader);
         this.depthOn();
         this.blendOn();
+        stack.pushPose();
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
-        this.translate(translation.getX(), translation.getY(), translation.getZ());
         final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
+        this.translate(info.vector.getX(), info.vector.getY(), info.vector.getZ());
+        info.consumer.accept(this);
         render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
                 1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
         this.end();
+        stack.popPose();
         this.blendOff();
         this.depthOff();
         RenderSystem.setShader(() -> instance);

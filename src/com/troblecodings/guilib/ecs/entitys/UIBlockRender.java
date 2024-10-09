@@ -5,9 +5,9 @@ import com.mojang.math.Quaternion;
 public class UIBlockRender extends UIComponent {
 
     private UIBlockRenderInfo renderInfo;
-    private final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
-    private final float scale;
-    private final float height;
+    protected final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
+    protected final float scale;
+    protected final float height;
 
     public UIBlockRender(final float scale, final float height) {
         this.scale = scale;
@@ -21,7 +21,7 @@ public class UIBlockRender extends UIComponent {
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
-            info.applyState(renderInfo, renderInfo.vector);
+            info.applyState(renderInfo);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
@@ -15,6 +17,9 @@ public class UIBlockRenderInfo {
     public final BlockState state;
     public final BlockModelDataWrapper wrapper;
     public VectorWrapper vector;
+    public Predicate<BlockModelDataWrapper> predicate = t -> true;
+    public Consumer<DrawInfo> consumer = t -> {
+    };
 
     public UIBlockRenderInfo(final BlockState state, final BlockModelDataWrapper wrapper) {
         this(Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(state),
@@ -40,9 +45,13 @@ public class UIBlockRenderInfo {
         this.vector = vector;
     }
 
+    public boolean test() {
+        return predicate.test(wrapper);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(model, state, wrapper, vector);
+        return Objects.hash(model, predicate, state, vector, wrapper);
     }
 
     @Override
@@ -54,7 +63,9 @@ public class UIBlockRenderInfo {
         if (getClass() != obj.getClass())
             return false;
         final UIBlockRenderInfo other = (UIBlockRenderInfo) obj;
-        return Objects.equals(model, other.model) && Objects.equals(state, other.state)
-                && Objects.equals(wrapper, other.wrapper) && vector.equals(other.vector);
+        return Objects.equals(model, other.model) && Objects.equals(predicate, other.predicate)
+                && Objects.equals(state, other.state) && Objects.equals(vector, other.vector)
+                && Objects.equals(wrapper, other.wrapper);
     }
+
 }
