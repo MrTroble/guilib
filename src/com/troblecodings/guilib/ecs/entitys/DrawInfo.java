@@ -92,12 +92,12 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(UIColor.red(color) / 255, UIColor.green(color) / 255, UIColor.blue(color) / 255,
-                UIColor.alpha(color) / 255);
+        this.color((float) UIColor.red(color) / 255, (float) UIColor.green(color) / 255,
+                (float) UIColor.blue(color) / 255, (float) UIColor.alpha(color) / 255);
     }
 
-    public void color(final double r, final double g, final double b, final double a) {
-        RenderSystem.setShaderColor((float) r, (float) g, (float) b, (float) a);
+    public void color(final float r, final float g, final float b, final float a) {
+        RenderSystem.setShaderColor(r, g, b, a);
     }
 
     public void blendOn() {
