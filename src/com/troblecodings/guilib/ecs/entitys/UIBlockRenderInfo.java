@@ -1,6 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.core.interfaces.BlockModelDataWrapper;
@@ -16,6 +18,9 @@ public class UIBlockRenderInfo {
     public final IBlockState state;
     public final BlockModelDataWrapper wrapper;
     public VectorWrapper vector;
+    public Predicate<BlockModelDataWrapper> predicate = t -> true;
+    public Consumer<DrawInfo> consumer = t -> {
+    };
 
     public UIBlockRenderInfo(final IBlockState state, final BlockModelDataWrapper wrapper) {
         this(Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes()
@@ -45,6 +50,10 @@ public class UIBlockRenderInfo {
         this.state = state;
         this.wrapper = wrapper;
         this.vector = vector;
+    }
+
+    public boolean test() {
+        return predicate.test(wrapper);
     }
 
     @Override

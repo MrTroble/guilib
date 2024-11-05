@@ -22,9 +22,9 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 public class UIBlockRender extends UIComponent {
 
     private final BufferBuilder buffer = new BufferBuilder(500);
-    private final float scale;
-    private final float height;
-    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
+    protected final float scale;
+    protected final float height;
+    protected final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
 
     public UIBlockRender(final float scale, final float height) {
         this.scale = scale;

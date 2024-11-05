@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Quaternion;
-
-import com.troblecodings.core.QuaternionWrapper;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -19,17 +16,13 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
-public class UIMultiBlockRender extends UIComponent {
+public class UIMultiBlockRender extends UIBlockRender {
 
     private final List<UIBlockRenderInfo> renderInfos = new ArrayList<>();
     private final BufferBuilder buffer = new BufferBuilder(5000);
-    private final float scale;
-    private final float height;
-    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
 
     public UIMultiBlockRender(final float scale, final float height) {
-        this.scale = scale;
-        this.height = height;
+        super(scale, height);
     }
 
     @Override
@@ -48,14 +41,6 @@ public class UIMultiBlockRender extends UIComponent {
         GlStateManager.disableRescaleNormal();
     }
 
-    public void updateRotation(final Quaternion quaternion) {
-        Quaternion.mul(this.quaternion, quaternion, this.quaternion);
-    }
-
-    @Override
-    public void update() {
-    }
-
     public void clear() {
         renderInfos.clear();
         updateBuffer();
@@ -72,6 +57,8 @@ public class UIMultiBlockRender extends UIComponent {
         final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
         for (final UIBlockRenderInfo info : renderInfos) {
+            if (!info.test())
+                continue;
             final IBlockState ebs = info.wrapper.getBlockState();
             assert ebs != null;
             buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
