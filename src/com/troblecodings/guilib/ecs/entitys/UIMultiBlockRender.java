@@ -2,8 +2,11 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -18,8 +21,7 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class UIMultiBlockRender extends UIBlockRender {
 
-    private final List<UIBlockRenderInfo> renderInfos = new ArrayList<>();
-    private final BufferBuilder buffer = new BufferBuilder(5000);
+    private final List<Entry<UIBlockRenderInfo, BufferBuilder>> renderInfos = new ArrayList<>();
 
     public UIMultiBlockRender(final float scale, final float height) {
         super(scale, height);
@@ -35,7 +37,15 @@ public class UIMultiBlockRender extends UIBlockRender {
         info.translate(1.5, 0, 1.5);
         info.rotate(this.quaternion);
         info.translate(-0.5, this.height, -0.5);
-        info.drawBuffer(buffer);
+        renderInfos.forEach(entry -> {
+            if (!entry.getKey().test())
+                return;
+            info.push();
+            entry.getKey().consumer.accept(info);
+            info.drawBuffer(entry.getValue());
+            info.pop();
+
+        });
         info.alphaOff();
         info.depthOff();
         GlStateManager.disableRescaleNormal();
@@ -47,34 +57,32 @@ public class UIMultiBlockRender extends UIBlockRender {
     }
 
     public void setBlockState(final UIBlockRenderInfo info) {
-        if (!renderInfos.contains(info)) {
-            renderInfos.add(info);
-            updateBuffer();
+        final BufferBuilder buffer = new BufferBuilder(500);
+        final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        final IBlockState ebs = info.wrapper.getBlockState();
+        assert ebs != null;
+        buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
+        final List<BakedQuad> lst = new ArrayList<>();
+        lst.addAll(info.model.getQuads(ebs, null, 0));
+        for (final EnumFacing face : EnumFacing.VALUES)
+            lst.addAll(info.model.getQuads(ebs, face, 0));
+
+        for (final BakedQuad quad : lst) {
+            final int k = quad.hasTintIndex()
+                    ? (blockColors.colorMultiplier(info.state, null, null, quad.getTintIndex())
+                            + 0xFF000000)
+                    : 0xFFFFFFFF;
+            LightUtil.renderQuadColor(buffer, quad, k);
+        }
+        buffer.finishDrawing();
+
+        final Entry<UIBlockRenderInfo, BufferBuilder> entry = Maps.immutableEntry(info, buffer);
+        if (!renderInfos.contains(entry)) {
+            renderInfos.add(entry);
         }
     }
 
     private void updateBuffer() {
-        final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-        for (final UIBlockRenderInfo info : renderInfos) {
-            if (!info.test())
-                continue;
-            final IBlockState ebs = info.wrapper.getBlockState();
-            assert ebs != null;
-            buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
-            final List<BakedQuad> lst = new ArrayList<>();
-            lst.addAll(info.model.getQuads(ebs, null, 0));
-            for (final EnumFacing face : EnumFacing.VALUES)
-                lst.addAll(info.model.getQuads(ebs, face, 0));
-
-            for (final BakedQuad quad : lst) {
-                final int k = quad.hasTintIndex()
-                        ? (blockColors.colorMultiplier(info.state, null, null, quad.getTintIndex())
-                                + 0xFF000000)
-                        : 0xFFFFFFFF;
-                LightUtil.renderQuadColor(buffer, quad, k);
-            }
-        }
-        buffer.finishDrawing();
     }
 }

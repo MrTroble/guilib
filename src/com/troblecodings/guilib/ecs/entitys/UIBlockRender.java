@@ -21,6 +21,8 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class UIBlockRender extends UIComponent {
 
+    private UIBlockRenderInfo info;
+
     private final BufferBuilder buffer = new BufferBuilder(500);
     protected final float scale;
     protected final float height;
@@ -41,6 +43,7 @@ public class UIBlockRender extends UIComponent {
         info.translate(1.5, 0, 1.5);
         info.rotate(this.quaternion);
         info.translate(-0.5, this.height, -0.5);
+        this.info.consumer.accept(info);
         info.drawBuffer(buffer);
         info.alphaOff();
         info.depthOff();
@@ -56,6 +59,7 @@ public class UIBlockRender extends UIComponent {
     }
 
     public void setBlockState(final UIBlockRenderInfo info) {
+        this.info = info;
         final IBlockState ebs = info.wrapper.getBlockState();
         assert ebs != null;
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
