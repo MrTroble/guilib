@@ -6,6 +6,8 @@ import org.lwjgl.util.vector.Quaternion;
 
 public class QuaternionWrapper {
 
+    public static final Quaternion ONE = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+
     public static Quaternion fromXYZ(final float rotateX, final float rotateY,
             final float rotateZ) {
         final Quaternion quaternion = new Quaternion();
@@ -25,14 +27,12 @@ public class QuaternionWrapper {
         float f3 = q.z * q.z;
         float f4 = f + f1 + f2 + f3;
         float f5 = 2.0F * q.w * q.y - 2.0F * q.y * q.z;
-        float f6 = (float) Math.asin((double) (f5 / f4));
+        float f6 = (float) Math.asin(f5 / f4);
         return Math.abs(f5) > 0.999F * f4
-                ? new Vector3f(f6, 2.0F * (float) Math.atan2((double) q.y, (double) q.w), 0.0F)
+                ? new Vector3f(f6, 2.0F * (float) Math.atan2(q.y, q.w), 0.0F)
                 : new Vector3f(f6,
-                        (float) Math.atan2((double) (2.0F * q.x * q.z + 2.0F * q.y * q.w),
-                                (double) (f - f1 - f2 + f3)),
-                        (float) Math.atan2((double) (2.0F * q.x * q.y + 2.0F * q.w * q.z),
-                                (double) (f - f1 + f2 - f3)));
+                        (float) Math.atan2(2.0F * q.x * q.z + 2.0F * q.y * q.w, f - f1 - f2 + f3),
+                        (float) Math.atan2(2.0F * q.x * q.y + 2.0F * q.w * q.z, f - f1 + f2 - f3));
     }
 
 }
