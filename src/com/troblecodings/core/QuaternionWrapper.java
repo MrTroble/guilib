@@ -21,18 +21,23 @@ public class QuaternionWrapper {
     }
 
     public static Vector3f toYXZ(final Quaternion q) {
-        float f = q.w * q.w;
-        float f1 = q.x * q.x;
-        float f2 = q.y * q.y;
-        float f3 = q.z * q.z;
+        float f = q.getW() * q.getW();
+        float f1 = q.getX() * q.getX();
+        float f2 = q.getY() * q.getY();
+        float f3 = q.getZ() * q.getZ();
         float f4 = f + f1 + f2 + f3;
-        float f5 = 2.0F * q.w * q.y - 2.0F * q.y * q.z;
-        float f6 = (float) Math.asin(f5 / f4);
+        float f5 = 2.0F * q.getW() * q.getX() - 2.0F * q.getY() * q.getZ();
+        float f6 = (float) Math.asin((double) (f5 / f4));
         return Math.abs(f5) > 0.999F * f4
-                ? new Vector3f(f6, 2.0F * (float) Math.atan2(q.y, q.w), 0.0F)
+                ? new Vector3f(f6, 2.0F * (float) Math.atan2((double) q.getY(), (double) q.getW()),
+                        0.0F)
                 : new Vector3f(f6,
-                        (float) Math.atan2(2.0F * q.x * q.z + 2.0F * q.y * q.w, f - f1 - f2 + f3),
-                        (float) Math.atan2(2.0F * q.x * q.y + 2.0F * q.w * q.z, f - f1 + f2 - f3));
+                        (float) Math.atan2(
+                                (double) (2.0F * q.getX() * q.getZ() + 2.0F * q.getY() * q.getW()),
+                                (double) (f - f1 - f2 + f3)),
+                        (float) Math.atan2(
+                                (double) (2.0F * q.getX() * q.getY() + 2.0F * q.getW() * q.getZ()),
+                                (double) (f - f1 + f2 - f3)));
     }
 
 }
