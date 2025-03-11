@@ -3,22 +3,14 @@ package com.troblecodings.guilib.ecs.entitys;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.troblecodings.core.QuaternionWrapper;
-import com.troblecodings.core.VectorWrapper;
-
 import net.minecraft.util.math.vector.Quaternion;
 
-public class UIMultiBlockRender extends UIComponent {
+public class UIMultiBlockRender extends UIBlockRender {
 
     private final List<UIBlockRenderInfo> models = new ArrayList<>();
-    private final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
-    private final float scale;
-    private final float height;
-    private VectorWrapper previous = VectorWrapper.ZERO;
 
     public UIMultiBlockRender(final float scale, final float height) {
-        this.scale = scale;
-        this.height = height;
+        super(scale, height);
     }
 
     @Override
@@ -29,13 +21,11 @@ public class UIMultiBlockRender extends UIComponent {
             info.rotate(this.quaternion);
             info.translate(-0.5, this.height, -0.5);
             models.forEach(renderInfo -> {
-                final VectorWrapper current = renderInfo.vector.subtract(previous);
-                info.applyState(renderInfo, current);
-                previous = renderInfo.vector;
+                if (!renderInfo.test())
+                    return;
+                info.applyState(renderInfo);
             });
-            previous = VectorWrapper.ZERO;
         }
-
     }
 
     public void updateRotation(final Quaternion quaternion) {
@@ -44,10 +34,6 @@ public class UIMultiBlockRender extends UIComponent {
 
     public void clear() {
         models.clear();
-    }
-
-    @Override
-    public void update() {
     }
 
     public void setBlockState(final UIBlockRenderInfo info) {

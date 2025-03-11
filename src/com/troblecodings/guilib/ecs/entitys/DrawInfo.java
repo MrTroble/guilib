@@ -4,7 +4,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.troblecodings.core.VectorWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -62,18 +61,21 @@ public class DrawInfo {
     }
 
     @SuppressWarnings("deprecation")
-    public void applyState(final UIBlockRenderInfo info, final VectorWrapper translation) {
+    public void applyState(final UIBlockRenderInfo info) {
         this.depthOn();
         this.blendOn();
         this.alphaOn();
+        stack.pushPose();
         this.applyTexture(AtlasTexture.LOCATION_BLOCKS);
         final Minecraft mc = Minecraft.getInstance();
         final BlockModelRenderer render = mc.getBlockRenderer().getModelRenderer();
-        this.translate(translation.getX(), translation.getY(), translation.getZ());
+        this.translate(info.vector.getX(), info.vector.getY(), info.vector.getZ());
         final BufferWrapper builder = this.builder(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+        info.consumer.accept(this);
         render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
                 1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
         this.end();
+        stack.popPose();
         this.alphaOff();
         this.blendOff();
         this.depthOff();
