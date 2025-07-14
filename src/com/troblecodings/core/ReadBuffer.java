@@ -41,6 +41,10 @@ public class ReadBuffer {
         return getByte() == 1 ? true : false;
     }
 
+    public TCBoolean getTcBoolean() {
+        return getByte() == 1 ? TCBoolean.valueOf(true) : TCBoolean.valueOf(false);
+    }
+
     public BlockPos getBlockPos() {
         return new BlockPos(readBuffer.getInt(), readBuffer.getInt(), readBuffer.getInt());
     }
@@ -52,8 +56,9 @@ public class ReadBuffer {
     public String getString() {
         final int size = getInt();
         final byte[] array = new byte[size];
-        for (int i = 0; i < size; i++)
-            array[i] = (byte) getByte();
+        for (int i = 0; i < size; i++) {
+            array[i] = getByte();
+        }
         try {
             return new String(array, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
