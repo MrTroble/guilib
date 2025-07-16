@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Quaternion;
@@ -12,11 +13,12 @@ import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 
 public class DrawInfo {
     public final int mouseX;
@@ -63,24 +65,17 @@ public class DrawInfo {
     }
 
     public void applyState(final UIBlockRenderInfo info) {
-        final ShaderInstance instance = RenderSystem.getShader();
-        RenderSystem.setShader(GameRenderer::getBlockShader);
-        this.depthOn();
-        this.blendOn();
+        Minecraft mc = Minecraft.getInstance();
+        MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.cutout());
         stack.pushPose();
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-        final Minecraft mc = Minecraft.getInstance();
         final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
-        final BufferWrapper builder = this.builder(Mode.QUADS, DefaultVertexFormat.BLOCK);
         this.translate(info.vector.getX(), info.vector.getY(), info.vector.getZ());
         info.consumer.accept(this);
-        render.renderModel(this.stack.last(), builder.builder, info.state, info.model, 1.0f, 1.0f,
-                1.0f, OverlayTexture.NO_OVERLAY, OverlayTexture.NO_OVERLAY, info.wrapper);
-        this.end();
+        render.renderModel(this.stack.last(), consumer, info.state, info.model, 1.0f, 1.0f, 1.0f,
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, info.wrapper);
         stack.popPose();
-        this.blendOff();
-        this.depthOff();
-        RenderSystem.setShader(() -> instance);
+        bufferSource.endBatch();
     }
 
     public void disableTexture() {
@@ -151,8 +146,8 @@ public class DrawInfo {
     public void lines(final int color, final float width, final float[] lines) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(Mode.TRIANGLES,
-                DefaultVertexFormat.POSITION);
+        final BufferWrapper bufferbuilder =
+                this.builder(Mode.TRIANGLES, DefaultVertexFormat.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
