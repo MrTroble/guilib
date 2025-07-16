@@ -56,7 +56,7 @@ public class UIBlockRenderInfo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(model, state, wrapper, vector);
+        return Objects.hash(model, predicate, state, wrapper, vector);
     }
 
     @Override
@@ -68,7 +68,8 @@ public class UIBlockRenderInfo {
         if (getClass() != obj.getClass())
             return false;
         final UIBlockRenderInfo other = (UIBlockRenderInfo) obj;
-        return Objects.equals(model, other.model) && Objects.equals(state, other.state)
-                && Objects.equals(wrapper, other.wrapper) && vector.equals(other.vector);
+        return Objects.equals(model, other.model) && Objects.equals(predicate, other.predicate)
+                && Objects.equals(state, other.state) && Objects.equals(wrapper, other.wrapper)
+                && Objects.equals(vector, other.vector);
     }
 }
