@@ -35,7 +35,7 @@ public class UIBlockRender extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        if (info == null)
+        if (this.info == null)
             return;
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
