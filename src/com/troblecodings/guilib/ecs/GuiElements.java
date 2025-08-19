@@ -16,7 +16,6 @@ import com.troblecodings.guilib.ecs.entitys.input.UIClickable;
 import com.troblecodings.guilib.ecs.entitys.input.UIOnUpdate;
 import com.troblecodings.guilib.ecs.entitys.input.UIScroll;
 import com.troblecodings.guilib.ecs.entitys.input.UIScrollBar;
-import com.troblecodings.guilib.ecs.entitys.render.UIBorder;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 import com.troblecodings.guilib.ecs.entitys.render.UILabel;
@@ -154,8 +153,7 @@ public final class GuiElements {
         return entity;
     }
 
-    public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
-            final IIntegerable<?> property) {
+    public static UIEntity createSelectionScreen(final Map<String, UIEntity> inputList) {
         return createScreen(searchPanel -> {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
@@ -169,7 +167,6 @@ public final class GuiElements {
             listWithScroll.setInheritWidth(true);
             listWithScroll.add(new UIBox(UIBox.HBOX, 2));
             listWithScroll.add(new UIScissor());
-            listWithScroll.add(new UIBorder(0xFF00FFFF));
             searchPanel.add(listWithScroll);
 
             final UIEntity list = new UIEntity();
@@ -179,23 +176,6 @@ public final class GuiElements {
 
             final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
             list.add(scrollbox);
-            final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
-            if (property instanceof DisableIntegerable<?>) {
-                list.add(createButton(property.getNamedObj(-1), e -> {
-                    enumerable.setIndex(-1);
-                    e.getLastUpdateEvent().base.pop();
-                }));
-            }
-            for (int i = 0; i < property.count(); i++) {
-                final int index = i;
-                final String name = property.getNamedObj(i);
-                final UIEntity button = createButton(name, e -> {
-                    enumerable.setIndex(index);
-                    e.getLastUpdateEvent().base.pop();
-                });
-                nameToUIEntity.put(name.toLowerCase(), button);
-                list.add(button);
-            }
             final UIScroll scroll = new UIScroll();
             final UIEntity scrollBar = createScrollBar(scrollbox, 10, scroll);
             scrollbox.setConsumer(size -> {
@@ -207,8 +187,11 @@ public final class GuiElements {
                     listWithScroll.remove(scroll);
                 }
             });
+            
+            inputList.forEach((_u, entity) -> list.add(entity));
+            
             input.setOnTextUpdate(string -> {
-                nameToUIEntity.forEach((name, entity) -> {
+            	inputList.forEach((name, entity) -> {
                     if (!name.contains(string.toLowerCase())) {
                         list.remove(entity);
                     } else {
@@ -217,6 +200,27 @@ public final class GuiElements {
                 });
             });
         });
+    }
+    
+    public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
+            final IIntegerable<?> property) {
+        final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
+        if (property instanceof DisableIntegerable<?>) {
+        	nameToUIEntity.put("disable", createButton(property.getNamedObj(-1), e -> {
+                enumerable.setIndex(-1);
+                e.getLastUpdateEvent().base.pop();
+            }));
+        }
+        for (int i = 0; i < property.count(); i++) {
+            final int index = i;
+            final String name = property.getNamedObj(i);
+            final UIEntity button = createButton(name, e -> {
+                enumerable.setIndex(index);
+                e.getLastUpdateEvent().base.pop();
+            });
+            nameToUIEntity.put(name.toLowerCase(), button);
+        }
+        return createSelectionScreen(nameToUIEntity);
     }
 
     public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {

@@ -1,5 +1,8 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -112,6 +115,13 @@ public class DrawInfo {
         RenderSystem.disableDepthTest();
     }
 
+    public int[] getScissorState() {
+    	if(!GL11.glIsEnabled(GL11.GL_SCISSOR_TEST)) return null;
+    	int[] values = new int[4];
+    	GL20.glGetIntegerv(GL20.GL_SCISSOR_BOX, values);
+    	return values;
+    }
+    
     public void scissorOn(final int x, final int y, final int width, final int height) {
         RenderSystem.enableScissor(x, y, width, height);
     }
