@@ -1,6 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -116,6 +117,14 @@ public class DrawInfo {
         RenderSystem.disableDepthTest();
     }
 
+    public int[] getScissorState() {
+        if (!GL11.glIsEnabled(GL11.GL_SCISSOR_TEST))
+            return null;
+        int[] values = new int[4];
+        GL20.glGetIntegerv(GL20.GL_SCISSOR_BOX, values);
+        return values;
+    }
+
     public void scissorOn(final int x, final int y, final int width, final int height) {
         RenderSystem.enableScissor(x, y, width, height);
     }
@@ -151,8 +160,8 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
-                DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder =
+                this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
