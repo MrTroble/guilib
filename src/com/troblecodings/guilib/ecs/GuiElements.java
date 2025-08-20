@@ -158,8 +158,14 @@ public final class GuiElements {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
             searchBar.setHeight(20);
+            searchBar.add(new UIBox(UIBox.HBOX, 2));
+            final UIEntity search = new UIEntity();
+            search.setInherits(true);
             final UITextInput input = new UITextInput("");
-            searchBar.add(input);
+            search.add(input);
+            searchBar.add(createButton("<", 20, e -> e.getLastUpdateEvent().base.pop()));
+            searchBar.add(search);
+
             searchPanel.add(searchBar);
 
             final UIEntity listWithScroll = new UIEntity();
@@ -187,11 +193,11 @@ public final class GuiElements {
                     listWithScroll.remove(scroll);
                 }
             });
-            
+
             inputList.forEach((_u, entity) -> list.add(entity));
-            
+
             input.setOnTextUpdate(string -> {
-            	inputList.forEach((name, entity) -> {
+                inputList.forEach((name, entity) -> {
                     if (!name.contains(string.toLowerCase())) {
                         list.remove(entity);
                     } else {
@@ -201,12 +207,12 @@ public final class GuiElements {
             });
         });
     }
-    
+
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
             final IIntegerable<?> property) {
         final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
         if (property instanceof DisableIntegerable<?>) {
-        	nameToUIEntity.put("disable", createButton(property.getNamedObj(-1), e -> {
+            nameToUIEntity.put("disable", createButton(property.getNamedObj(-1), e -> {
                 enumerable.setIndex(-1);
                 e.getLastUpdateEvent().base.pop();
             }));
@@ -234,12 +240,10 @@ public final class GuiElements {
         entity.add(createSpacerH(insets));
 
         inner.add(new UIBox(UIBox.VBOX, 0));
-        inner.setInheritHeight(true);
-        inner.setInheritWidth(true);
+        inner.setInherits(true);
         final UIEntity searchPanel = new UIEntity();
         searchPanel.add(new UIBox(UIBox.VBOX, 3));
-        searchPanel.setInheritHeight(true);
-        searchPanel.setInheritWidth(true);
+        searchPanel.setInherits(true);
 
         inner.add(createSpacerV(insets));
         inner.add(searchPanel);
@@ -251,11 +255,17 @@ public final class GuiElements {
         return entity;
     }
 
+    public static UIEntity createScreenBack(final Consumer<UIEntity> entityConsumer) {
+        return createScreen(entityConsumer.andThen(
+                e -> e.add(createButton("<", 20, u -> u.getLastUpdateEvent().base.pop()))));
+    }
+
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
             final int value) {
-        if (property instanceof DisableIntegerable<?>)
+        if (property instanceof DisableIntegerable<?>) {
             enumerable.setMin(-1);
+        }
         enumerable.setIndex(value);
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
@@ -279,8 +289,9 @@ public final class GuiElements {
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
         final String desc = property.getDescriptionForName();
-        if (desc != null)
+        if (desc != null) {
             hbox.add(new UIToolTip(desc));
+        }
         hbox.add(middle);
         hbox.setInheritWidth(true);
         hbox.setHeight(22);
@@ -307,19 +318,20 @@ public final class GuiElements {
             middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
             rightButton.setEnabled(true);
             leftButton.setEnabled(true);
-            if (in <= enumerable.getMin())
+            if (in <= enumerable.getMin()) {
                 leftButton.setEnabled(false);
-            if (in >= enumerable.getMax() - 1)
+            }
+            if (in >= enumerable.getMax() - 1) {
                 rightButton.setEnabled(false);
+            }
             vbox.setPage(in);
         };
         enumerable.setOnChange(acceptOn);
 
         vbox.getParent().add(new UIOnUpdate(() -> {
             final int max = vbox.getMaxPages();
-            if (max < 1) {
+            if (max < 1)
                 return;
-            }
             hbox.setVisible(max != 1);
             enumerable.setMax(max);
             final int current = enumerable.getIndex();
