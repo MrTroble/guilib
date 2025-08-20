@@ -56,7 +56,8 @@ public class UIToolTip extends UIComponent {
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
                 final List<ITextComponent> listComp = new ArrayList<>();
-                listComp.add(new StringTextComponent(desc));
+                for(String value : desc.split(String.format("%n")))
+                	listComp.add(new StringTextComponent(value));
                 base.base.renderComponentTooltip(info.stack, listComp, info.mouseX, info.mouseY);
             }
         }
