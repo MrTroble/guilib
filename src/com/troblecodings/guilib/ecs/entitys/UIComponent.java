@@ -13,6 +13,7 @@ public abstract class UIComponent {
 
     protected UIEntity parent = null;
     protected boolean visible = true;
+    
     protected int basicTextColor = GuiConfigHandler.basicTextColor.get();
     protected int infoTextColor = GuiConfigHandler.infoTextColor.get();
     protected int errorTextColor = GuiConfigHandler.errorTextColor.get();
