@@ -36,13 +36,11 @@ public class UITexture extends UIComponent {
         this.mv = maxV;
     }
 
-    @Override
-    public void draw(final DrawInfo info) {
+    public static void drawTexture(final DrawInfo info, final ResourceLocation location, 
+    		double w, double h, double u, double v, double mu, double mv) {
         info.depthOn();
         info.blendOn();
-        info.applyTexture(texture);
-        final double w = this.parent.getWidth();
-        final double h = this.parent.getHeight();
+        info.applyTexture(location);
 
         final BufferWrapper bufferbuilder = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
@@ -53,6 +51,12 @@ public class UITexture extends UIComponent {
         info.blendOff();
         info.depthOff();
         info.disableTexture();
+
+    }
+    
+    @Override
+    public void draw(final DrawInfo info) {
+    	drawTexture(info, texture, parent.getWidth(), parent.getHeight(), u, v, mu, mv);
     }
 
     @Override
