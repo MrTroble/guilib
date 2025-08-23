@@ -18,7 +18,7 @@ public class UIClickable extends UIComponent {
     private final int button;
 
     public UIClickable(final Consumer<UIEntity> callback) {
-        this(callback, 0);
+        this(callback, MouseEvent.LEFT_MOUSE);
     }
 
     public UIClickable(final Consumer<UIEntity> callback, final int button) {

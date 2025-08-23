@@ -309,6 +309,10 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public static final class MouseEvent {
 
+    	public static int LEFT_MOUSE = 0;
+    	public static int RIGHT_MOUSE = 1;
+    	public static int MIDDLE_MOUSE = 2;
+
         public final double x;
         public final double y;
         public final int key;
