@@ -2,10 +2,25 @@ package com.troblecodings.core;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 
 public class ReadBuffer {
+
+    public static Function<ReadBuffer, BlockPos> BLOCKPOS_FUNCTION = (buffer) -> buffer
+            .getBlockPos();
+
+    public static Function<ReadBuffer, Integer> INT_FUNCTION = (buffer) -> buffer.getInt();
+
+    public static <E extends Enum<E>> Function<ReadBuffer, E> getEnumFunction(
+            final Class<E> clazz) {
+        return (buffer) -> (E) buffer.getEnumValue(clazz);
+    }
 
     private final ByteBuffer readBuffer;
 
@@ -53,6 +68,25 @@ public class ReadBuffer {
         return enumClass.getEnumConstants()[getInt()];
     }
 
+    public <E> List<E> getList(final Function<ReadBuffer, E> function) {
+        final List<E> list = new ArrayList<>();
+        final int size = getInt();
+        for (int i = 0; i < size; i++) {
+            list.add(function.apply(this));
+        }
+        return list;
+    }
+
+    public <K, V> Map<K, V> getMap(final Function<ReadBuffer, K> keyFunction,
+            final Function<ReadBuffer, V> valueFunction) {
+        final Map<K, V> map = new HashMap<>();
+        final int size = getInt();
+        for (int i = 0; i < size; i++) {
+            map.put(keyFunction.apply(this), valueFunction.apply(this));
+        }
+        return map;
+    }
+
     public String getString() {
         final int size = getInt();
         final byte[] array = new byte[size];
@@ -65,4 +99,5 @@ public class ReadBuffer {
         }
         return "";
     }
+
 }

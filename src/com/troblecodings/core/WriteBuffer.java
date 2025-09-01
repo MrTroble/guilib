@@ -4,10 +4,22 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import net.minecraft.core.BlockPos;
 
 public class WriteBuffer {
+
+    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER = (buffer,
+            pos) -> buffer.putBlockPos(pos);
+
+    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER = (buffer, i) -> buffer
+            .putInt(i);
+
+    public static <E extends Enum<E>> BiConsumer<WriteBuffer, E> getEnumConsumer() {
+        return (buffer, e) -> buffer.putEnumValue(e);
+    }
 
     private final List<Byte> allBytes;
     private ByteBuffer buildedBuffer;
@@ -52,11 +64,26 @@ public class WriteBuffer {
             for (final byte b : array)
                 putByte(b);
         } catch (final UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
     public <T extends Enum<T>> void putEnumValue(final Enum<T> enumValue) {
         putInt(enumValue.ordinal());
+    }
+
+    public <T> void putList(final List<T> list, final BiConsumer<WriteBuffer, T> consumer) {
+        putInt(list.size());
+        list.forEach(element -> consumer.accept(this, element));
+    }
+
+    public <K, V> void putMap(final Map<K, V> map, final BiConsumer<WriteBuffer, K> keyConsumer,
+            final BiConsumer<WriteBuffer, V> valueConsumer) {
+        putInt(map.size());
+        map.forEach((key, value) -> {
+            keyConsumer.accept(this, key);
+            valueConsumer.accept(this, value);
+        });
     }
 
     public void resetBuilder() {
