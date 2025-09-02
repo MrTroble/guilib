@@ -7,15 +7,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import org.apache.logging.log4j.util.TriConsumer;
+
 import net.minecraft.util.math.BlockPos;
 
 public class WriteBuffer {
 
-    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER = (buffer,
-            pos) -> buffer.putBlockPos(pos);
+    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER =
+            (buffer, pos) -> buffer.putBlockPos(pos);
 
-    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER = (buffer, i) -> buffer
-            .putInt(i);
+    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER =
+            (buffer, i) -> buffer.putInt(i);
+
+    public static final BiConsumer<WriteBuffer, Byte> BYTE_CONSUMER =
+            (buffer, b) -> buffer.putByte(b);
+
+    public static final BiConsumer<WriteBuffer, Integer> INT_TO_BYTE_CONSUMER =
+            (buffer, i) -> buffer.putByte(i.byteValue());
+
+    public static final BiConsumer<WriteBuffer, String> STRING_CONSUMER =
+            (buffer, str) -> buffer.putString(str);
+
+    public static final BiConsumer<WriteBuffer, VectorWrapper> VEC_CONSUMER =
+            (buffer, vec) -> vec.writeNetwork(buffer);
 
     public static <E extends Enum<E>> BiConsumer<WriteBuffer, E> getEnumConsumer() {
         return (buffer, e) -> buffer.putEnumValue(e);
@@ -33,24 +47,28 @@ public class WriteBuffer {
     }
 
     public void putInt(final int i) {
-        for (final byte b : ByteBuffer.allocate(4).putInt(i).array())
+        for (final byte b : ByteBuffer.allocate(4).putInt(i).array()) {
             putByte(b);
+        }
     }
 
     public void putFloat(final float f) {
-        for (final byte b : ByteBuffer.allocate(4).putFloat(f).array())
+        for (final byte b : ByteBuffer.allocate(4).putFloat(f).array()) {
             putByte(b);
+        }
     }
 
     public void putDouble(final double d) {
-        for (final byte b : ByteBuffer.allocate(8).putDouble(d).array())
+        for (final byte b : ByteBuffer.allocate(8).putDouble(d).array()) {
             putByte(b);
+        }
     }
 
     public void putBlockPos(final BlockPos pos) {
         for (final byte b : ByteBuffer.allocate(12).putInt(pos.getX()).putInt(pos.getY())
-                .putInt(pos.getZ()).array())
+                .putInt(pos.getZ()).array()) {
             putByte(b);
+        }
     }
 
     public void putBoolean(final boolean bool) {
@@ -61,8 +79,9 @@ public class WriteBuffer {
         try {
             final byte[] array = str.getBytes("UTF-8");
             putInt(array.length);
-            for (final byte b : array)
+            for (final byte b : array) {
                 putByte(b);
+            }
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -83,6 +102,16 @@ public class WriteBuffer {
         map.forEach((key, value) -> {
             keyConsumer.accept(this, key);
             valueConsumer.accept(this, value);
+        });
+    }
+
+    public <K, V> void putMapWithCombinedValueConsumer(final Map<K, V> map,
+            final BiConsumer<WriteBuffer, K> keyConsumer,
+            final TriConsumer<WriteBuffer, K, V> valueConsumer) {
+        putInt(map.size());
+        map.forEach((key, value) -> {
+            keyConsumer.accept(this, key);
+            valueConsumer.accept(this, key, value);
         });
     }
 
