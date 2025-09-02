@@ -6,16 +6,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 
 public class ReadBuffer {
 
-    public static Function<ReadBuffer, BlockPos> BLOCKPOS_FUNCTION = (buffer) -> buffer
+    public static final Function<ReadBuffer, BlockPos> BLOCKPOS_FUNCTION = (buffer) -> buffer
             .getBlockPos();
 
-    public static Function<ReadBuffer, Integer> INT_FUNCTION = (buffer) -> buffer.getInt();
+    public static final Function<ReadBuffer, Integer> INT_FUNCTION = (buffer) -> buffer.getInt();
+
+    public static final Function<ReadBuffer, Byte> BYTE_FUNCTION = (buffer) -> buffer.getByte();
+
+    public static final Function<ReadBuffer, Integer> BYTE_TO_INT_FUNCTION = (buffer) -> buffer
+            .getByteToUnsignedInt();
+
+    public static final Function<ReadBuffer, String> STRING_FUNCTION = (buffer) -> buffer
+            .getString();
+
+    public static final Function<ReadBuffer, VectorWrapper> VEC_FUNCTION = (buffer) -> VectorWrapper
+            .of(buffer);
 
     public static <E extends Enum<E>> Function<ReadBuffer, E> getEnumFunction(
             final Class<E> clazz) {
@@ -83,6 +95,17 @@ public class ReadBuffer {
         final int size = getInt();
         for (int i = 0; i < size; i++) {
             map.put(keyFunction.apply(this), valueFunction.apply(this));
+        }
+        return map;
+    }
+
+    public <K, V> Map<K, V> getMapWithCombinedValueFunc(final Function<ReadBuffer, K> keyFunction,
+            final BiFunction<ReadBuffer, K, V> valueFunction) {
+        final Map<K, V> map = new HashMap<>();
+        final int size = getInt();
+        for (int i = 0; i < size; i++) {
+            final K key = keyFunction.apply(this);
+            map.put(key, valueFunction.apply(this, key));
         }
         return map;
     }
