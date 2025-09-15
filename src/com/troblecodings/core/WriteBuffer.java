@@ -4,10 +4,36 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.apache.logging.log4j.util.TriConsumer;
 
 import net.minecraft.core.BlockPos;
 
 public class WriteBuffer {
+
+    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER = (buffer,
+            pos) -> buffer.putBlockPos(pos);
+
+    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER = (buffer, i) -> buffer
+            .putInt(i);
+
+    public static final BiConsumer<WriteBuffer, Byte> BYTE_CONSUMER = (buffer, b) -> buffer
+            .putByte(b);
+
+    public static final BiConsumer<WriteBuffer, Integer> INT_TO_BYTE_CONSUMER = (buffer,
+            i) -> buffer.putByte(i.byteValue());
+
+    public static final BiConsumer<WriteBuffer, String> STRING_CONSUMER = (buffer, str) -> buffer
+            .putString(str);
+
+    public static final BiConsumer<WriteBuffer, VectorWrapper> VEC_CONSUMER = (buffer, vec) -> vec
+            .writeNetwork(buffer);
+
+    public static <E extends Enum<E>> BiConsumer<WriteBuffer, E> getEnumConsumer() {
+        return (buffer, e) -> buffer.putEnumValue(e);
+    }
 
     private final List<Byte> allBytes;
     private ByteBuffer buildedBuffer;
@@ -52,11 +78,36 @@ public class WriteBuffer {
             for (final byte b : array)
                 putByte(b);
         } catch (final UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
     public <T extends Enum<T>> void putEnumValue(final Enum<T> enumValue) {
         putInt(enumValue.ordinal());
+    }
+
+    public <T> void putList(final List<T> list, final BiConsumer<WriteBuffer, T> consumer) {
+        putInt(list.size());
+        list.forEach(element -> consumer.accept(this, element));
+    }
+
+    public <K, V> void putMap(final Map<K, V> map, final BiConsumer<WriteBuffer, K> keyConsumer,
+            final BiConsumer<WriteBuffer, V> valueConsumer) {
+        putInt(map.size());
+        map.forEach((key, value) -> {
+            keyConsumer.accept(this, key);
+            valueConsumer.accept(this, value);
+        });
+    }
+
+    public <K, V> void putMapWithCombinedValueConsumer(final Map<K, V> map,
+            final BiConsumer<WriteBuffer, K> keyConsumer,
+            final TriConsumer<WriteBuffer, K, V> valueConsumer) {
+        putInt(map.size());
+        map.forEach((key, value) -> {
+            keyConsumer.accept(this, key);
+            valueConsumer.accept(this, key, value);
+        });
     }
 
     public void resetBuilder() {
