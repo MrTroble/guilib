@@ -38,6 +38,24 @@ public class DrawInfo {
         this.tick = tick;
     }
 
+    public void drawTexture(final ResourceLocation location, 
+    		double w, double h, double u, double v, double mu, double mv) {
+        depthOn();
+        blendOn();
+        applyTexture(location);
+
+        final BufferWrapper bufferbuilder = builder(Mode.QUADS,
+                DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
+        bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
+        bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
+        bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
+        end();
+        blendOff();
+        depthOff();
+        disableTexture();
+    }
+    
     public void applyColor() {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         color();
