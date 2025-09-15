@@ -1,13 +1,9 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import org.lwjgl.opengl.GL11;
-
-import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,27 +32,9 @@ public class UITexture extends UIComponent {
         this.mv = maxV;
     }
 
-    public static void drawTexture(final DrawInfo info, final ResourceLocation location, 
-    		double w, double h, double u, double v, double mu, double mv) {
-        info.depthOn();
-        info.blendOn();
-        info.applyTexture(location);
-
-        final BufferWrapper bufferbuilder = info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
-        bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
-        bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
-        bufferbuilder.pos(0, 0, 0).tex((float) u, (float) v).end();
-        info.end();
-        info.blendOff();
-        info.depthOff();
-        info.disableTexture();
-
-    }
-    
     @Override
     public void draw(final DrawInfo info) {
-    	drawTexture(info, texture, parent.getWidth(), parent.getHeight(), u, v, mu, mv);
+        info.drawTexture(texture, parent.getWidth(), parent.getHeight(), u, v, mu, mv);
     }
 
     @Override
