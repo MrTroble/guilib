@@ -80,6 +80,10 @@ public class DrawInfo {
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
     }
+    
+    public void rotate(final float x, final float y, final float z) {
+    	rotate(Quaternion.fromXYZ(x, y, z));
+    }
 
     public void applyTexture(final ResourceLocation location) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);

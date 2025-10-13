@@ -23,7 +23,7 @@ public abstract class UIComponent {
     public void exitDraw(final DrawInfo info) {
     }
 
-    public abstract void update();
+    public void update() {}
 
     public void onAdd(final UIEntity entity) {
         this.parent = entity;
