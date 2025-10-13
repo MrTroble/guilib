@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.troblecodings.core.QuaternionWrapper;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
@@ -74,9 +75,9 @@ public class DrawInfo {
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
     }
-    
+
     public void rotate(final float x, final float y, final float z) {
-    	rotate(Quaternion.fromXYZ(x, y, z));
+        rotate(QuaternionWrapper.fromXYZ(x, y, z));
     }
 
     public void applyTexture(final ResourceLocation location) {

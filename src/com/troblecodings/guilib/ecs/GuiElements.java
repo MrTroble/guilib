@@ -230,8 +230,10 @@ public final class GuiElements {
     }
 
     public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {
-        final int insets = 40;
+        return createScreen(entityConsumer, 40);
+    }
 
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer, final int insets) {
         final UIEntity entity = new UIEntity();
         entity.add(new UIBox(UIBox.HBOX, 0));
         final UIEntity inner = new UIEntity();
