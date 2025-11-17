@@ -1,10 +1,12 @@
 package com.troblecodings.guilib.ecs;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import com.google.common.collect.Maps;
 import com.troblecodings.guilib.ecs.DrawUtil.DisableIntegerable;
 import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
@@ -153,7 +155,8 @@ public final class GuiElements {
         return entity;
     }
 
-    public static UIEntity createSelectionScreen(final Map<String, UIEntity> inputList) {
+    public static UIEntity createSelectionScreen(
+            final List<Map.Entry<String, UIEntity>> inputList) {
         return createScreen(searchPanel -> {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
@@ -194,14 +197,14 @@ public final class GuiElements {
                 }
             });
 
-            inputList.forEach((_u, entity) -> list.add(entity));
+            inputList.forEach(entry -> list.add(entry.getValue()));
 
             input.setOnTextUpdate(string -> {
-                inputList.forEach((name, entity) -> {
-                    if (!name.contains(string.toLowerCase())) {
-                        list.remove(entity);
+                inputList.forEach(entry -> {
+                    if (!entry.getKey().contains(string.toLowerCase())) {
+                        list.remove(entry.getValue());
                     } else {
-                        list.add(entity);
+                        list.add(entry.getValue());
                     }
                 });
             });
@@ -210,12 +213,13 @@ public final class GuiElements {
 
     public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
             final IIntegerable<?> property) {
-        final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
+        final List<Map.Entry<String, UIEntity>> nameToUIEntity = new ArrayList<>();
         if (property instanceof DisableIntegerable<?>) {
-            nameToUIEntity.put("disable", createButton(property.getNamedObj(-1), e -> {
-                enumerable.setIndex(-1);
-                e.getLastUpdateEvent().base.pop();
-            }));
+            nameToUIEntity.add(
+                    Maps.immutableEntry("disable", createButton(property.getNamedObj(-1), e -> {
+                        enumerable.setIndex(-1);
+                        e.getLastUpdateEvent().base.pop();
+                    })));
         }
         for (int i = 0; i < property.count(); i++) {
             final int index = i;
@@ -224,7 +228,7 @@ public final class GuiElements {
                 enumerable.setIndex(index);
                 e.getLastUpdateEvent().base.pop();
             });
-            nameToUIEntity.put(name.toLowerCase(), button);
+            nameToUIEntity.add(Maps.immutableEntry(name.toLowerCase(), button));
         }
         return createSelectionScreen(nameToUIEntity);
     }
