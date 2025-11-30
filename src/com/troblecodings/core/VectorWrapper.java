@@ -2,19 +2,26 @@ package com.troblecodings.core;
 
 import java.util.Objects;
 
+import com.troblecodings.core.interfaces.INetworkSaveable;
+import com.troblecodings.core.interfaces.ISaveable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 
-public class VectorWrapper {
+public class VectorWrapper implements INetworkSaveable, ISaveable {
 
     public static final VectorWrapper ZERO = new VectorWrapper(0, 0, 0);
     private static final String VECTOR_X = "vectorX";
     private static final String VECTOR_Y = "vectorY";
     private static final String VECTOR_Z = "vectorZ";
 
-    private final float x, y, z;
+    private float x, y, z;
+
+    public VectorWrapper() {
+
+    }
 
     public VectorWrapper(final float x, final float y, final float z) {
         this.x = x;
@@ -122,16 +129,32 @@ public class VectorWrapper {
         return new Vec3i(x, y, z);
     }
 
+    @Override
     public void writeNetwork(final WriteBuffer buffer) {
         buffer.putFloat(x);
         buffer.putFloat(y);
         buffer.putFloat(z);
     }
 
-    public void writeNBT(final NBTWrapper tag) {
+    @Override
+    public void readNetwork(final ReadBuffer buffer) {
+        x = buffer.getFloat();
+        y = buffer.getFloat();
+        z = buffer.getFloat();
+    }
+
+    @Override
+    public void write(final NBTWrapper tag) {
         tag.putFloat(VECTOR_X, x);
         tag.putFloat(VECTOR_Y, y);
         tag.putFloat(VECTOR_Z, z);
+    }
+
+    @Override
+    public void read(final NBTWrapper tag) {
+        x = tag.getFloat(VECTOR_X);
+        y = tag.getFloat(VECTOR_Y);
+        z = tag.getFloat(VECTOR_Z);
     }
 
     public VectorWrapper copy() {

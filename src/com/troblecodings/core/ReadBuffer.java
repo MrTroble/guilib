@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.troblecodings.core.interfaces.INetworkSaveable;
+
 import net.minecraft.core.BlockPos;
 
 public class ReadBuffer {
@@ -26,8 +28,16 @@ public class ReadBuffer {
     public static final Function<ReadBuffer, String> STRING_FUNCTION = (buffer) -> buffer
             .getString();
 
-    public static final Function<ReadBuffer, VectorWrapper> VEC_FUNCTION = (buffer) -> VectorWrapper
-            .of(buffer);
+    /*
+     * IMPORTANT NOTICE: If you want to use this Method, your Type t for your clazz
+     * needs to have a default constructor with no parameters. Otherwise it will
+     * crash! If you can#t provide a default construtor, we advice to write own
+     * Wrappers like over this comment.
+     */
+    public static <T extends INetworkSaveable> Function<ReadBuffer, T> getINetworkSaveableFunction(
+            final Class<T> clazz) {
+        return buf -> buf.getINetworkSaveable(clazz);
+    }
 
     public static <E extends Enum<E>> Function<ReadBuffer, E> getEnumFunction(
             final Class<E> clazz) {
@@ -74,6 +84,18 @@ public class ReadBuffer {
 
     public BlockPos getBlockPos() {
         return new BlockPos(readBuffer.getInt(), readBuffer.getInt(), readBuffer.getInt());
+    }
+
+    public <T extends INetworkSaveable> T getINetworkSaveable(final Class<T> clazz) {
+        try {
+            @SuppressWarnings("deprecation")
+            final T type = clazz.newInstance();
+            type.readNetwork(this);
+            return type;
+        } catch (final InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public <T extends Enum<T>> T getEnumValue(final Class<T> enumClass) {

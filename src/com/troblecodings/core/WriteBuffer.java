@@ -9,6 +9,8 @@ import java.util.function.BiConsumer;
 
 import org.apache.logging.log4j.util.TriConsumer;
 
+import com.troblecodings.core.interfaces.INetworkSaveable;
+
 import net.minecraft.core.BlockPos;
 
 public class WriteBuffer {
@@ -28,8 +30,9 @@ public class WriteBuffer {
     public static final BiConsumer<WriteBuffer, String> STRING_CONSUMER = (buffer, str) -> buffer
             .putString(str);
 
-    public static final BiConsumer<WriteBuffer, VectorWrapper> VEC_CONSUMER = (buffer, vec) -> vec
-            .writeNetwork(buffer);
+    public static <T extends INetworkSaveable> BiConsumer<WriteBuffer, T> getINetworkSaveableConsumer() {
+        return (buf, type) -> type.writeNetwork(buf);
+    }
 
     public static <E extends Enum<E>> BiConsumer<WriteBuffer, E> getEnumConsumer() {
         return (buffer, e) -> buffer.putEnumValue(e);
@@ -82,6 +85,10 @@ public class WriteBuffer {
         }
     }
 
+    public <T extends INetworkSaveable> void putINetworkSaveable(final T type) {
+        type.writeNetwork(this);
+    }
+
     public <T extends Enum<T>> void putEnumValue(final Enum<T> enumValue) {
         putInt(enumValue.ordinal());
     }
@@ -91,6 +98,10 @@ public class WriteBuffer {
         list.forEach(element -> consumer.accept(this, element));
     }
 
+    public <T extends INetworkSaveable> void putISaveableList(final List<T> list) {
+        putList(list, (buf, type) -> type.writeNetwork(buf));
+    }
+
     public <K, V> void putMap(final Map<K, V> map, final BiConsumer<WriteBuffer, K> keyConsumer,
             final BiConsumer<WriteBuffer, V> valueConsumer) {
         putInt(map.size());
@@ -98,6 +109,11 @@ public class WriteBuffer {
             keyConsumer.accept(this, key);
             valueConsumer.accept(this, value);
         });
+    }
+
+    public <K extends INetworkSaveable, V extends INetworkSaveable> void putINetworkSaveableMap(
+            final Map<K, V> map) {
+        putMap(map, (buf, key) -> key.writeNetwork(buf), (buf, value) -> value.writeNetwork(buf));
     }
 
     public <K, V> void putMapWithCombinedValueConsumer(final Map<K, V> map,
