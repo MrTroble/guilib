@@ -10,6 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class UIRotate extends UIComponent {
 
+    public static float PERPENDICULAR_ANGLE = (float) (Math.PI / 2);
+
     private float rotateX, rotateY, rotateZ;
 
     @Override

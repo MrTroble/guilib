@@ -21,8 +21,12 @@ public class UILabel extends UIComponent {
     private boolean centerY = true;
 
     public UILabel(final String text) {
+        this(text, DEFAULT_STRING_COLOR);
+    }
+
+    public UILabel(final String text, final int color) {
         this.string = text;
-        this.stringColor = DEFAULT_STRING_COLOR;
+        this.stringColor = color;
         final Minecraft mc = Minecraft.getMinecraft();
         this.renderer = mc.fontRenderer;
     }

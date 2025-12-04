@@ -1,10 +1,12 @@
 package com.troblecodings.guilib.ecs;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import com.google.common.collect.Maps;
 import com.troblecodings.guilib.ecs.DrawUtil.DisableIntegerable;
 import com.troblecodings.guilib.ecs.entitys.UIBox;
 import com.troblecodings.guilib.ecs.entitys.UICheckBox;
@@ -16,7 +18,6 @@ import com.troblecodings.guilib.ecs.entitys.input.UIClickable;
 import com.troblecodings.guilib.ecs.entitys.input.UIOnUpdate;
 import com.troblecodings.guilib.ecs.entitys.input.UIScroll;
 import com.troblecodings.guilib.ecs.entitys.input.UIScrollBar;
-import com.troblecodings.guilib.ecs.entitys.render.UIBorder;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 import com.troblecodings.guilib.ecs.entitys.render.UILabel;
@@ -155,14 +156,20 @@ public final class GuiElements {
         return entity;
     }
 
-    public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
-            final IIntegerable<?> property) {
+    public static UIEntity createSelectionScreen(
+            final List<Map.Entry<String, UIEntity>> inputList) {
         return createScreen(searchPanel -> {
             final UIEntity searchBar = new UIEntity();
             searchBar.setInheritWidth(true);
             searchBar.setHeight(20);
+            searchBar.add(new UIBox(UIBox.HBOX, 2));
+            final UIEntity search = new UIEntity();
+            search.setInherits(true);
             final UITextInput input = new UITextInput("");
-            searchBar.add(input);
+            search.add(input);
+            searchBar.add(createButton("<", 20, e -> e.getLastUpdateEvent().base.pop()));
+            searchBar.add(search);
+
             searchPanel.add(searchBar);
 
             final UIEntity listWithScroll = new UIEntity();
@@ -170,7 +177,6 @@ public final class GuiElements {
             listWithScroll.setInheritWidth(true);
             listWithScroll.add(new UIBox(UIBox.HBOX, 2));
             listWithScroll.add(new UIScissor());
-            listWithScroll.add(new UIBorder(0xFF00FFFF));
             searchPanel.add(listWithScroll);
 
             final UIEntity list = new UIEntity();
@@ -180,23 +186,6 @@ public final class GuiElements {
 
             final UIScrollBox scrollbox = new UIScrollBox(UIBox.VBOX, 2);
             list.add(scrollbox);
-            final Map<String, UIEntity> nameToUIEntity = new HashMap<>();
-            if (property instanceof DisableIntegerable<?>) {
-                list.add(createButton(property.getNamedObj(-1), e -> {
-                    enumerable.setIndex(-1);
-                    e.getLastUpdateEvent().base.pop();
-                }));
-            }
-            for (int i = 0; i < property.count(); i++) {
-                final int index = i;
-                final String name = property.getNamedObj(i);
-                final UIEntity button = createButton(name, e -> {
-                    enumerable.setIndex(index);
-                    e.getLastUpdateEvent().base.pop();
-                });
-                nameToUIEntity.put(name.toLowerCase(), button);
-                list.add(button);
-            }
             final UIScroll scroll = new UIScroll();
             final UIEntity scrollBar = createScrollBar(scrollbox, 10, scroll);
             scrollbox.setConsumer(size -> {
@@ -208,21 +197,48 @@ public final class GuiElements {
                     listWithScroll.remove(scroll);
                 }
             });
+
+            inputList.forEach(entry -> list.add(entry.getValue()));
+
             input.setOnTextUpdate(string -> {
-                nameToUIEntity.forEach((name, entity) -> {
-                    if (!name.contains(string.toLowerCase())) {
-                        list.remove(entity);
+                inputList.forEach(entry -> {
+                    if (!entry.getKey().contains(string.toLowerCase())) {
+                        list.remove(entry.getValue());
                     } else {
-                        list.add(entity);
+                        list.add(entry.getValue());
                     }
                 });
             });
         });
     }
 
-    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {
-        final int insets = 40;
+    public static UIEntity createSelectionScreen(final UIEnumerable enumerable,
+            final IIntegerable<?> property) {
+        final List<Map.Entry<String, UIEntity>> nameToUIEntity = new ArrayList<>();
+        if (property instanceof DisableIntegerable<?>) {
+            nameToUIEntity.add(
+                    Maps.immutableEntry("disable", createButton(property.getNamedObj(-1), e -> {
+                        enumerable.setIndex(-1);
+                        e.getLastUpdateEvent().base.pop();
+                    })));
+        }
+        for (int i = 0; i < property.count(); i++) {
+            final int index = i;
+            final String name = property.getNamedObj(i);
+            final UIEntity button = createButton(name, e -> {
+                enumerable.setIndex(index);
+                e.getLastUpdateEvent().base.pop();
+            });
+            nameToUIEntity.add(Maps.immutableEntry(name.toLowerCase(), button));
+        }
+        return createSelectionScreen(nameToUIEntity);
+    }
 
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {
+        return createScreen(entityConsumer, 40);
+    }
+
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer, final int insets) {
         final UIEntity entity = new UIEntity();
         entity.add(new UIBox(UIBox.HBOX, 0));
         final UIEntity inner = new UIEntity();
@@ -231,12 +247,10 @@ public final class GuiElements {
         entity.add(createSpacerH(insets));
 
         inner.add(new UIBox(UIBox.VBOX, 0));
-        inner.setInheritHeight(true);
-        inner.setInheritWidth(true);
+        inner.setInherits(true);
         final UIEntity searchPanel = new UIEntity();
         searchPanel.add(new UIBox(UIBox.VBOX, 3));
-        searchPanel.setInheritHeight(true);
-        searchPanel.setInheritWidth(true);
+        searchPanel.setInherits(true);
 
         inner.add(createSpacerV(insets));
         inner.add(searchPanel);
@@ -246,6 +260,11 @@ public final class GuiElements {
         entityConsumer.accept(searchPanel);
         entity.add(new UIIndependentTranslate(0, 0, 1));
         return entity;
+    }
+
+    public static UIEntity createScreenBack(final Consumer<UIEntity> entityConsumer) {
+        return createScreen(entityConsumer.andThen(
+                e -> e.add(createButton("<", 20, u -> u.getLastUpdateEvent().base.pop()))));
     }
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,

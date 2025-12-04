@@ -1,6 +1,7 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
@@ -53,8 +54,11 @@ public class UIToolTip extends UIComponent {
             final UpdateEvent base = parent.getLastUpdateEvent();
             if (base != null) {
                 final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-                GuiUtils.drawHoveringText(Arrays.asList(desc.split(System.lineSeparator())),
-                        info.mouseX, info.mouseY, base.width, base.height, -1, font);
+                final List<String> list = new ArrayList<>();
+                for (String value : desc.split(String.format("%n")))
+                    list.add((value));
+                GuiUtils.drawHoveringText(list, info.mouseX, info.mouseY, base.width, base.height,
+                        -1, font);
             }
         }
     }
