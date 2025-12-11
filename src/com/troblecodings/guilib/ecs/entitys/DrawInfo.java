@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Quaternion;
 
@@ -32,14 +33,14 @@ public class DrawInfo {
         this.tick = tick;
     }
 
-    public void drawTexture(final ResourceLocation location, double w, double h, double u, double v,
-            double mu, double mv) {
+    public void drawTexture(final ResourceLocation location, final double w, final double h,
+            final double u, final double v, final double mu, final double mv) {
         depthOn();
         blendOn();
         applyTexture(location);
 
-        final BufferWrapper bufferbuilder = builder(GL11.GL_QUADS,
-                DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper bufferbuilder =
+                builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
@@ -149,9 +150,11 @@ public class DrawInfo {
     public int[] getScissorState() {
         if (!isScissorEnabled())
             return null;
-        final IntBuffer buf = IntBuffer.allocate(4);
+        IntBuffer buf = BufferUtils.createIntBuffer(16);
         GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buf);
-        return buf.array();
+        return new int[] {
+                buf.get(0), buf.get(1), buf.get(2), buf.get(3)
+        };
     }
 
     public void scissorOn(final int x, final int y, final int width, final int height) {
@@ -194,8 +197,8 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
-                DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder =
+                this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
