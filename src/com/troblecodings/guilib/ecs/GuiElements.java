@@ -235,10 +235,16 @@ public final class GuiElements {
     }
 
     public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer) {
-        return createScreen(entityConsumer, 40);
+        return createScreen(entityConsumer, 40, 5);
     }
 
-    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer, final int insets) {
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer,
+            final int translateZ) {
+        return createScreen(entityConsumer, 40, translateZ);
+    }
+
+    public static UIEntity createScreen(final Consumer<UIEntity> entityConsumer, final int insets,
+            final int translateZ) {
         final UIEntity entity = new UIEntity();
         entity.add(new UIBox(UIBox.HBOX, 0));
         final UIEntity inner = new UIEntity();
@@ -258,7 +264,7 @@ public final class GuiElements {
         searchPanel.add(new UIColor(0x6F000000, 5));
 
         entityConsumer.accept(searchPanel);
-        entity.add(new UIIndependentTranslate(0, 0, 1));
+        entity.add(new UIIndependentTranslate(0, 0, translateZ));
         return entity;
     }
 
