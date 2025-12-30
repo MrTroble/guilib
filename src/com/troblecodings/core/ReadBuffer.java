@@ -28,10 +28,10 @@ public class ReadBuffer {
     public static final Function<ReadBuffer, String> STRING_FUNCTION = (buffer) -> buffer
             .getString();
 
-    /*
+    /**
      * IMPORTANT NOTICE: If you want to use this Method, your Type t for your clazz
      * needs to have a default constructor with no parameters. Otherwise it will
-     * crash! If you can#t provide a default construtor, we advice to write own
+     * crash! If you can't provide a default construtor, we advice to write own
      * Wrappers like over this comment.
      */
     public static <T extends INetworkSaveable> Function<ReadBuffer, T> getINetworkSaveableFunction(
