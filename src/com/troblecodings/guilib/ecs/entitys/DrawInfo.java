@@ -27,7 +27,6 @@ public class DrawInfo {
     public final float tick;
 
     public DrawInfo(final int mouseX, final int mouseY, final MatrixStack stack, final float tick) {
-        super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.stack = stack;
@@ -115,8 +114,8 @@ public class DrawInfo {
     }
 
     public void color(final int color) {
-        this.color(UIColor.red(color) / 255, UIColor.green(color) / 255, UIColor.blue(color) / 255,
-                UIColor.alpha(color) / 255);
+        this.color((float) UIColor.red(color) / 255, (float) UIColor.green(color) / 255,
+                (float) UIColor.blue(color) / 255, (float) UIColor.alpha(color) / 255);
     }
 
     @SuppressWarnings("deprecation")
@@ -191,6 +190,7 @@ public class DrawInfo {
     }
 
     public void lines(final int color, final float width, final float[] lines) {
+        alphaOff();
         this.color(color);
         final BufferWrapper bufferbuilder =
                 this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
