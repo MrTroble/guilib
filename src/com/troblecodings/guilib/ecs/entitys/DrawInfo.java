@@ -31,21 +31,19 @@ public class DrawInfo {
     public final float tick;
 
     public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
-        super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.stack = stack;
         this.tick = tick;
     }
 
-    public void drawTexture(final ResourceLocation location, 
-    		double w, double h, double u, double v, double mu, double mv) {
+    public void drawTexture(final ResourceLocation location, final double w, final double h, final double u, final double v,
+            final double mu, final double mv) {
         depthOn();
         blendOn();
         applyTexture(location);
 
-        final BufferWrapper bufferbuilder = builder(Mode.QUADS,
-                DefaultVertexFormat.POSITION_TEX);
+        final BufferWrapper bufferbuilder = builder(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
@@ -55,7 +53,7 @@ public class DrawInfo {
         depthOff();
         disableTexture();
     }
-    
+
     public void applyColor() {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         color();
@@ -80,9 +78,13 @@ public class DrawInfo {
     public void rotate(final Quaternion quaternion) {
         this.stack.mulPose(quaternion);
     }
-    
+
     public void rotate(final float x, final float y, final float z) {
-    	rotate(Quaternion.fromXYZ(x, y, z));
+        rotate(Quaternion.fromXYZ(x, y, z));
+    }
+
+    public void enableTexture() {
+        RenderSystem.enableTexture();
     }
 
     public void applyTexture(final ResourceLocation location) {
@@ -137,24 +139,25 @@ public class DrawInfo {
     public void depthOff() {
         RenderSystem.disableDepthTest();
     }
-    
+
     public boolean isScissorEnabled() {
-    	return GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
+        return GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
     }
 
     public int[] getScissorState() {
-    	if(!isScissorEnabled()) return null;
-    	int[] values = new int[4];
-    	GL20.glGetIntegerv(GL20.GL_SCISSOR_BOX, values);
-    	return values;
+        if (!isScissorEnabled())
+            return null;
+        int[] values = new int[4];
+        GL20.glGetIntegerv(GL20.GL_SCISSOR_BOX, values);
+        return values;
     }
-    
+
     public void scissorOn(final int x, final int y, final int width, final int height) {
         RenderSystem.enableScissor(x, y, width, height);
     }
 
     public void scissorOn() {
-	    GlStateManager._enableScissorTest();
+        GlStateManager._enableScissorTest();
     }
 
     public void scissorOff() {
