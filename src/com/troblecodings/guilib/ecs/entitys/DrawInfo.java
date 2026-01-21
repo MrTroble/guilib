@@ -79,8 +79,12 @@ public class DrawInfo {
         rotate(QuaternionWrapper.fromXYZ(x, y, z));
     }
 
-    public void applyTexture(final ResourceLocation location) {
+    public void enableTexture() {
         RenderSystem.enableTexture();
+    }
+
+    public void applyTexture(final ResourceLocation location) {
+        enableTexture();
         Minecraft.getInstance().getTextureManager().bind(location);
     }
 
