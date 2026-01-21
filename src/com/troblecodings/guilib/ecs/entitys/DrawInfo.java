@@ -27,7 +27,6 @@ public class DrawInfo {
     public final float tick;
 
     public DrawInfo(final int mouseX, final int mouseY, final float tick) {
-        super();
         this.mouseX = mouseX;
         this.mouseY = mouseY;
         this.tick = tick;
@@ -41,8 +40,8 @@ public class DrawInfo {
         color();
         applyTexture(location);
 
-        final BufferWrapper bufferbuilder = builder(GL11.GL_QUADS,
-                DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper bufferbuilder =
+                builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         bufferbuilder.pos(0, h, 0).tex((float) u, (float) mv).end();
         bufferbuilder.pos(w, h, 0).tex((float) mu, (float) mv).end();
         bufferbuilder.pos(w, 0, 0).tex((float) mu, (float) v).end();
@@ -82,8 +81,12 @@ public class DrawInfo {
         rotate(QuaternionWrapper.fromXYZ(x, y, z));
     }
 
-    public void applyTexture(final ResourceLocation location) {
+    public void enableTexture() {
         GlStateManager.enableTexture2D();
+    }
+
+    public void applyTexture(final ResourceLocation location) {
+        enableTexture();
         Minecraft.getMinecraft().getTextureManager().bindTexture(location);
     }
 
@@ -200,8 +203,8 @@ public class DrawInfo {
 
     public void lines(final int color, final float width, final float[] lines) {
         this.color(color);
-        final BufferWrapper bufferbuilder = this.builder(GL11.GL_TRIANGLES,
-                DefaultVertexFormats.POSITION);
+        final BufferWrapper bufferbuilder =
+                this.builder(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
         for (int i = 0; i < lines.length; i += 4) {
             singleLine(color, bufferbuilder, lines[i], lines[i + 2], lines[i + 1], lines[i + 3],
                     width);
