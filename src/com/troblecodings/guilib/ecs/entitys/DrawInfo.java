@@ -30,6 +30,10 @@ public class DrawInfo {
     public final PoseStack stack;
     public final float tick;
 
+    public DrawInfo(final PoseStack stack) {
+        this(0, 0, stack, 0);
+    }
+
     public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
