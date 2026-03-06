@@ -5,6 +5,7 @@ import com.mojang.math.Quaternion;
 public class UIBlockRender extends UIComponent {
 
     private UIBlockRenderInfo renderInfo;
+    protected boolean disable = false;
     protected final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     protected final float scale;
     protected final float height;
@@ -16,7 +17,7 @@ public class UIBlockRender extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        if (renderInfo != null) {
+        if (renderInfo != null && !disable) {
             info.scale(scale, -scale, scale);
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
@@ -27,6 +28,10 @@ public class UIBlockRender extends UIComponent {
 
     public void updateRotation(final Quaternion quaternion) {
         this.quaternion.mul(quaternion);
+    }
+
+    public void setDisable(final boolean disable) {
+        this.disable = disable;
     }
 
     @Override
