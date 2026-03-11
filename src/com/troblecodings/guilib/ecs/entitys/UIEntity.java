@@ -32,8 +32,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public UIEntity() {
         this.setVisible(true);
-        this.setInheritHeight(false);
-        this.setInheritWidth(false);
+        this.setInherits(false);
         this.enableHovering = true;
         this.scaleX = 1;
         this.scaleY = 1;
@@ -123,8 +122,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.components.contains(component)) {
             this.components.add(component);
             component.onAdd(this);
-            if (lastUpdateEvent != null)
+            if (lastUpdateEvent != null) {
                 this.updateEvent(lastUpdateEvent);
+            }
         }
     }
 
@@ -140,8 +140,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.children.contains(component) && component != this) {
             this.children.add(component);
             component.onAdd(this);
-            if (lastUpdateEvent != null)
+            if (lastUpdateEvent != null) {
                 this.updateEvent(lastUpdateEvent);
+            }
         }
     }
 
@@ -294,7 +295,6 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
         public KeyEvent(final int typedChar, final int keyCode, final int time,
                 final char character) {
-            super();
             this.typedChar = typedChar;
             this.keyCode = keyCode;
             this.time = time;
@@ -309,9 +309,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public static final class MouseEvent {
 
-    	public static int LEFT_MOUSE = 0;
-    	public static int RIGHT_MOUSE = 1;
-    	public static int MIDDLE_MOUSE = 2;
+        public static int LEFT_MOUSE = 0;
+        public static int RIGHT_MOUSE = 1;
+        public static int MIDDLE_MOUSE = 2;
 
         public final double x;
         public final double y;
@@ -401,8 +401,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     }
 
     public void setHoveringEnabled(final boolean enableHovering) {
-        if (!enableHovering)
+        if (!enableHovering) {
             this.hovered = false;
+        }
         this.enableHovering = enableHovering;
         this.children.forEach(entity -> entity.setHoveringEnabled(enableHovering));
     }
