@@ -15,20 +15,20 @@ import net.minecraft.core.BlockPos;
 
 public class WriteBuffer {
 
-    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER = (buffer,
-            pos) -> buffer.putBlockPos(pos);
+    public static final BiConsumer<WriteBuffer, BlockPos> BLOCKPOS_CONSUMER =
+            (buffer, pos) -> buffer.putBlockPos(pos);
 
-    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER = (buffer, i) -> buffer
-            .putInt(i);
+    public static final BiConsumer<WriteBuffer, Integer> INT_CONSUMER =
+            (buffer, i) -> buffer.putInt(i);
 
-    public static final BiConsumer<WriteBuffer, Byte> BYTE_CONSUMER = (buffer, b) -> buffer
-            .putByte(b);
+    public static final BiConsumer<WriteBuffer, Byte> BYTE_CONSUMER =
+            (buffer, b) -> buffer.putByte(b);
 
-    public static final BiConsumer<WriteBuffer, Integer> INT_TO_BYTE_CONSUMER = (buffer,
-            i) -> buffer.putByte(i.byteValue());
+    public static final BiConsumer<WriteBuffer, Integer> INT_TO_BYTE_CONSUMER =
+            (buffer, i) -> buffer.putByte(i.byteValue());
 
-    public static final BiConsumer<WriteBuffer, String> STRING_CONSUMER = (buffer, str) -> buffer
-            .putString(str);
+    public static final BiConsumer<WriteBuffer, String> STRING_CONSUMER =
+            (buffer, str) -> buffer.putString(str);
 
     public static <T extends INetworkSaveable> BiConsumer<WriteBuffer, T> getINetworkSaveableConsumer() {
         return (buf, type) -> type.writeNetwork(buf);
@@ -50,24 +50,28 @@ public class WriteBuffer {
     }
 
     public void putInt(final int i) {
-        for (final byte b : ByteBuffer.allocate(4).putInt(i).array())
+        for (final byte b : ByteBuffer.allocate(4).putInt(i).array()) {
             putByte(b);
+        }
     }
 
     public void putFloat(final float f) {
-        for (final byte b : ByteBuffer.allocate(4).putFloat(f).array())
+        for (final byte b : ByteBuffer.allocate(4).putFloat(f).array()) {
             putByte(b);
+        }
     }
 
     public void putDouble(final double d) {
-        for (final byte b : ByteBuffer.allocate(8).putDouble(d).array())
+        for (final byte b : ByteBuffer.allocate(8).putDouble(d).array()) {
             putByte(b);
+        }
     }
 
     public void putBlockPos(final BlockPos pos) {
         for (final byte b : ByteBuffer.allocate(12).putInt(pos.getX()).putInt(pos.getY())
-                .putInt(pos.getZ()).array())
+                .putInt(pos.getZ()).array()) {
             putByte(b);
+        }
     }
 
     public void putBoolean(final boolean bool) {
@@ -78,8 +82,9 @@ public class WriteBuffer {
         try {
             final byte[] array = str.getBytes("UTF-8");
             putInt(array.length);
-            for (final byte b : array)
+            for (final byte b : array) {
                 putByte(b);
+            }
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -124,6 +129,12 @@ public class WriteBuffer {
             keyConsumer.accept(this, key);
             valueConsumer.accept(this, key, value);
         });
+    }
+
+    public void putBuffer(final ByteBuffer other) {
+        for (final byte b : other.array()) {
+            putByte(b);
+        }
     }
 
     public void resetBuilder() {
