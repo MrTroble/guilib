@@ -11,22 +11,23 @@ import java.util.function.Function;
 
 import com.troblecodings.core.interfaces.INetworkSaveable;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 
 public class ReadBuffer {
 
-    public static final Function<ReadBuffer, BlockPos> BLOCKPOS_FUNCTION = (buffer) -> buffer
-            .getBlockPos();
+    public static final Function<ReadBuffer, BlockPos> BLOCKPOS_FUNCTION =
+            (buffer) -> buffer.getBlockPos();
 
     public static final Function<ReadBuffer, Integer> INT_FUNCTION = (buffer) -> buffer.getInt();
 
     public static final Function<ReadBuffer, Byte> BYTE_FUNCTION = (buffer) -> buffer.getByte();
 
-    public static final Function<ReadBuffer, Integer> BYTE_TO_INT_FUNCTION = (buffer) -> buffer
-            .getByteToUnsignedInt();
+    public static final Function<ReadBuffer, Integer> BYTE_TO_INT_FUNCTION =
+            (buffer) -> buffer.getByteToUnsignedInt();
 
-    public static final Function<ReadBuffer, String> STRING_FUNCTION = (buffer) -> buffer
-            .getString();
+    public static final Function<ReadBuffer, String> STRING_FUNCTION =
+            (buffer) -> buffer.getString();
 
     /**
      * IMPORTANT NOTICE: If you want to use this Method, your Type t for your clazz
@@ -143,6 +144,10 @@ public class ReadBuffer {
         } catch (final UnsupportedEncodingException e) {
         }
         return "";
+    }
+
+    public ByteBuffer getCopiedBuffer() {
+        return ByteBuffer.wrap(Unpooled.copiedBuffer(readBuffer).array());
     }
 
 }

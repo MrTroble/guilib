@@ -45,6 +45,13 @@ public class WriteBuffer {
         this.allBytes = new ArrayList<>();
     }
 
+    public WriteBuffer(final byte[] initArray) {
+        this();
+        for (final byte b : initArray) {
+            allBytes.add(b);
+        }
+    }
+
     public void putByte(final Byte b) {
         allBytes.add(b);
     }
@@ -131,10 +138,8 @@ public class WriteBuffer {
         });
     }
 
-    public void putBuffer(final ByteBuffer other) {
-        for (final byte b : other.array()) {
-            putByte(b);
-        }
+    public void putBuffer(final WriteBuffer other) {
+        allBytes.addAll(other.allBytes);
     }
 
     public void resetBuilder() {
