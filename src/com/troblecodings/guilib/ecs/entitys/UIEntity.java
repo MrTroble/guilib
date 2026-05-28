@@ -33,8 +33,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public UIEntity() {
         this.setVisible(true);
-        this.setInheritHeight(false);
-        this.setInheritWidth(false);
+        this.setInherits(true);
         this.enableHovering = true;
         this.scaleX = 1;
         this.scaleY = 1;
@@ -124,8 +123,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.components.contains(component)) {
             this.components.add(component);
             component.onAdd(this);
-            if (lastUpdateEvent != null)
+            if (lastUpdateEvent != null) {
                 this.updateEvent(lastUpdateEvent);
+            }
         }
     }
 
@@ -141,8 +141,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         if (!this.children.contains(component) && component != this) {
             this.children.add(component);
             component.onAdd(this);
-            if (lastUpdateEvent != null)
+            if (lastUpdateEvent != null) {
                 this.updateEvent(lastUpdateEvent);
+            }
         }
     }
 
@@ -292,7 +293,6 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         public final int keyCode;
 
         public KeyEvent(final int typedChar, final int keyCode) {
-            super();
             this.typedChar = typedChar;
             this.keyCode = keyCode;
         }
@@ -392,8 +392,9 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     }
 
     public void setHoveringEnabled(final boolean enableHovering) {
-        if (!enableHovering)
+        if (!enableHovering) {
             this.hovered = false;
+        }
         this.enableHovering = enableHovering;
         this.children.forEach(entity -> entity.setHoveringEnabled(enableHovering));
     }

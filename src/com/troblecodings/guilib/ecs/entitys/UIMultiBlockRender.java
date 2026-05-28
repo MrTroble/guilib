@@ -29,6 +29,8 @@ public class UIMultiBlockRender extends UIBlockRender {
 
     @Override
     public void draw(final DrawInfo info) {
+        if (disable)
+            return;
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
         info.depthOn();
@@ -56,6 +58,7 @@ public class UIMultiBlockRender extends UIBlockRender {
         updateBuffer();
     }
 
+    @Override
     public void setBlockState(final UIBlockRenderInfo info) {
         final BufferBuilder buffer = new BufferBuilder(500);
         final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
@@ -65,14 +68,16 @@ public class UIMultiBlockRender extends UIBlockRender {
         buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
         final List<BakedQuad> lst = new ArrayList<>();
         lst.addAll(info.model.getQuads(ebs, null, 0));
-        for (final EnumFacing face : EnumFacing.VALUES)
+        for (final EnumFacing face : EnumFacing.VALUES) {
             lst.addAll(info.model.getQuads(ebs, face, 0));
+        }
 
         for (final BakedQuad quad : lst) {
-            final int k = quad.hasTintIndex()
-                    ? (blockColors.colorMultiplier(info.state, null, null, quad.getTintIndex())
-                            + 0xFF000000)
-                    : 0xFFFFFFFF;
+            final int k =
+                    quad.hasTintIndex()
+                            ? (blockColors.colorMultiplier(info.state, null, null,
+                                    quad.getTintIndex()) + 0xFF000000)
+                            : 0xFFFFFFFF;
             LightUtil.renderQuadColor(buffer, quad, k);
         }
         buffer.finishDrawing();

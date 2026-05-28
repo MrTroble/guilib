@@ -276,8 +276,9 @@ public final class GuiElements {
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
             final IIntegerable<?> property, final IntConsumer consumer, final int minWidth,
             final int value) {
-        if (property instanceof DisableIntegerable<?>)
+        if (property instanceof DisableIntegerable<?>) {
             enumerable.setMin(-1);
+        }
         enumerable.setIndex(value);
         final UIEntity middle = new UIEntity();
         final UIEntity hbox = new UIEntity();
@@ -301,8 +302,9 @@ public final class GuiElements {
 
         hbox.add(new UIBox(UIBox.VBOX, 1));
         final String desc = property.getDescriptionForName();
-        if (desc != null)
+        if (desc != null) {
             hbox.add(new UIToolTip(desc));
+        }
         hbox.add(middle);
         hbox.setInheritWidth(true);
         hbox.setHeight(22);
@@ -329,19 +331,20 @@ public final class GuiElements {
             middleButton.setText("Page: " + (in + 1) + "/" + vbox.getMaxPages());
             rightButton.setEnabled(true);
             leftButton.setEnabled(true);
-            if (in <= enumerable.getMin())
+            if (in <= enumerable.getMin()) {
                 leftButton.setEnabled(false);
-            if (in >= enumerable.getMax() - 1)
+            }
+            if (in >= enumerable.getMax() - 1) {
                 rightButton.setEnabled(false);
+            }
             vbox.setPage(in);
         };
         enumerable.setOnChange(acceptOn);
 
         vbox.getParent().add(new UIOnUpdate(() -> {
             final int max = vbox.getMaxPages();
-            if (max < 1) {
+            if (max < 1)
                 return;
-            }
             hbox.setVisible(max != 1);
             enumerable.setMax(max);
             final int current = enumerable.getIndex();

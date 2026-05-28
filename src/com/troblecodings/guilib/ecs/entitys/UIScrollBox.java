@@ -9,10 +9,10 @@ public class UIScrollBox extends UIComponent {
     private final IBoxMode mode;
     private final int spacer;
     private int wholeBounds = 0;
-    private IntConsumer consumer;
+    private IntConsumer consumer = i -> {
+    };
 
     public UIScrollBox(final IBoxMode mode, final int spacer) {
-        super();
         this.mode = mode;
         this.spacer = spacer;
     }

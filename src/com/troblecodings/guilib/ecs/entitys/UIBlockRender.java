@@ -24,6 +24,7 @@ public class UIBlockRender extends UIComponent {
     private UIBlockRenderInfo info;
 
     private final BufferBuilder buffer = new BufferBuilder(500);
+    protected boolean disable = false;
     protected final float scale;
     protected final float height;
     protected final Quaternion quaternion = QuaternionWrapper.fromXYZ(0.0f, (float) Math.PI, 0.0f);
@@ -35,7 +36,7 @@ public class UIBlockRender extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        if (this.info == null)
+        if (this.info == null || disable)
             return;
         info.applyTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.enableRescaleNormal();
@@ -56,6 +57,10 @@ public class UIBlockRender extends UIComponent {
         Quaternion.mul(this.quaternion, quaternion, this.quaternion);
     }
 
+    public void setDisable(final boolean disable) {
+        this.disable = disable;
+    }
+
     @Override
     public void update() {
     }
@@ -68,15 +73,17 @@ public class UIBlockRender extends UIComponent {
         buffer.setTranslation(info.vector.getX(), info.vector.getY(), info.vector.getZ());
         final List<BakedQuad> lst = new ArrayList<>();
         lst.addAll(info.model.getQuads(ebs, null, 0));
-        for (final EnumFacing face : EnumFacing.VALUES)
+        for (final EnumFacing face : EnumFacing.VALUES) {
             lst.addAll(info.model.getQuads(ebs, face, 0));
+        }
 
         final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
         for (final BakedQuad quad : lst) {
-            final int k = quad.hasTintIndex()
-                    ? (blockColors.colorMultiplier(info.state, null, null, quad.getTintIndex())
-                            + 0xFF000000)
-                    : 0xFFFFFFFF;
+            final int k =
+                    quad.hasTintIndex()
+                            ? (blockColors.colorMultiplier(info.state, null, null,
+                                    quad.getTintIndex()) + 0xFF000000)
+                            : 0xFFFFFFFF;
             LightUtil.renderQuadColor(buffer, quad, k);
         }
         buffer.finishDrawing();
