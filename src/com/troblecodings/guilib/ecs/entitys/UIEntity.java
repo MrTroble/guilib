@@ -33,7 +33,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     public UIEntity() {
         this.setVisible(true);
-        this.setInherits(true);
+        this.setInherits(false);
         this.enableHovering = true;
         this.scaleX = 1;
         this.scaleY = 1;
