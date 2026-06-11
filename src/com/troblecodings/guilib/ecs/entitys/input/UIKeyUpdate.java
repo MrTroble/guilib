@@ -17,7 +17,7 @@ public class UIKeyUpdate extends UIComponent {
      * This can be used to add a key update call when the Enter Button is sued.
      */
     public UIKeyUpdate(final Consumer<UIEntity> consumer) {
-        this(consumer, 257, 28);
+        this(consumer, 13, 28);
     }
 
     public UIKeyUpdate(final Consumer<UIEntity> consumer, final int typedChar, final int keyCode) {
