@@ -11,6 +11,7 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import com.troblecodings.core.interfaces.INetworkSaveable;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.util.math.BlockPos;
 
 public class WriteBuffer {
@@ -139,7 +140,13 @@ public class WriteBuffer {
     }
 
     public void putBuffer(final WriteBuffer other) {
-        allBytes.addAll(other.allBytes);
+        if (other.allBytes.isEmpty() && other.buildedBuffer != null) {
+            for (final byte b : Unpooled.copiedBuffer(other.buildedBuffer).array()) {
+                allBytes.add(b);
+            }
+        } else {
+            allBytes.addAll(other.allBytes);
+        }
     }
 
     public void resetBuilder() {
@@ -156,6 +163,7 @@ public class WriteBuffer {
         buildedBuffer = ByteBuffer.allocate(allBytes.size());
         allBytes.forEach(buildedBuffer::put);
         resetBuilder();
+        buildedBuffer.position(0);
         return buildedBuffer;
     }
 }

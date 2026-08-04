@@ -59,7 +59,7 @@ public class NetworkHandler {
     }
 
     public void sendTo(final EntityPlayer player, final WriteBuffer buffer) {
-        sendTo(player, buffer.build());
+        sendTo(player, buffer.getBuildedBuffer());
     }
 
     public void sendTo(final EntityPlayer player, final ByteBuffer buf) {
