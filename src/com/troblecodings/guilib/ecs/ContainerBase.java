@@ -6,8 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ContainerBase extends AbstractContainerMenu implements INetworkSync {
 
@@ -32,6 +33,11 @@ public class ContainerBase extends AbstractContainerMenu implements INetworkSync
     @Override
     public boolean stillValid(final Player player) {
         return true;
+    }
+
+    @Override
+    public ItemStack quickMoveStack(final Player player, final int slotIndex) {
+        return ItemStack.EMPTY;
     }
 
     public GuiInfo getInfo() {

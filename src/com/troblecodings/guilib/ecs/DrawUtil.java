@@ -146,7 +146,7 @@ public final class DrawUtil {
 
         @Override
         public String getObjFromID(final int obj) {
-            return obj == 0 ? "true" : "false";
+            return Boolean.toString(obj == 0);
         }
 
         @Override
@@ -185,6 +185,6 @@ public final class DrawUtil {
 
     public static void drawCenteredString(final DrawInfo info, final Font fontRendererIn,
             final String text, final int x, final int y, final int color) {
-        fontRendererIn.drawShadow(info.stack, text, x - fontRendererIn.width(text) / 2, y, color);
+        info.drawString(fontRendererIn, text, x - (float) fontRendererIn.width(text) / 2, y, color, true);
     }
 }

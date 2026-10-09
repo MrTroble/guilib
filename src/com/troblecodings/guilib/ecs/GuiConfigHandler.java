@@ -1,7 +1,7 @@
 package com.troblecodings.guilib.ecs;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 public class GuiConfigHandler {
 
@@ -9,7 +9,7 @@ public class GuiConfigHandler {
     public static ConfigValue<Integer> infoTextColor;
     public static ConfigValue<Integer> errorTextColor;
 
-    public GuiConfigHandler(final ForgeConfigSpec.Builder builder) {
+    public GuiConfigHandler(final ModConfigSpec.Builder builder) {
         String desc;
         builder.push("Client Only");
 

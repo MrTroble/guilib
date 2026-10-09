@@ -3,8 +3,6 @@ package com.troblecodings.guilib.ecs.entitys;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.math.Quaternion;
-
 public class UIMultiBlockRender extends UIBlockRender {
 
     private final List<UIBlockRenderInfo> models = new ArrayList<>();
@@ -29,16 +27,8 @@ public class UIMultiBlockRender extends UIBlockRender {
 
     }
 
-    public void updateRotation(final Quaternion quaternion) {
-        this.quaternion.mul(quaternion);
-    }
-
     public void clear() {
         models.clear();
-    }
-
-    @Override
-    public void update() {
     }
 
     @Override

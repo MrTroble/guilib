@@ -2,17 +2,17 @@ package com.troblecodings.guilib.ecs.interfaces;
 
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public interface UIPagable {
 
-    public int getPage();
+    int getPage();
 
-    public void setPage(int page);
+    void setPage(int page);
 
-    public int getMaxPages();
+    int getMaxPages();
 
-    public UIEntity getParent();
+    UIEntity getParent();
 }

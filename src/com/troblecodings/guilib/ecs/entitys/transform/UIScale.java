@@ -3,8 +3,8 @@ package com.troblecodings.guilib.ecs.entitys.transform;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIScale extends UIComponent {
@@ -26,11 +26,6 @@ public class UIScale extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         info.stack.scale(this.scaleX, this.scaleY, this.scaleZ);
-    }
-
-    @Override
-    public void update() {
-
     }
 
     public float getScaleX() {

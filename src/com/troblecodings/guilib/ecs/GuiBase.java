@@ -14,11 +14,14 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import java.util.List;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiBase extends AbstractContainerScreen<ContainerBase> {
@@ -27,8 +30,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     private static final int GUI_MAX_HEIGHT = 300;
     private static final int GUI_INSET = 4;
 
-    public static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
-            "textures/gui/container/creative_inventory/tabs.png");
+    public static final ResourceLocation CREATIVE_TAB = ResourceLocation.withDefaultNamespace(
+            "textures/gui/container/creative_inventory/tab_items.png");
 
     protected int guiLeft;
     protected int guiTop;
@@ -68,9 +71,9 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         info.depthOn();
         final BufferWrapper builder = info.builder(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         final int inset = 8;
-        final int topOffset = 32;
-        final int leftOffset = 20;
-        final int bottomOffset = 120;
+        final int topOffset = 0;
+        final int leftOffset = 187;
+        final int bottomOffset = 128;
         builder.quadNonNormalized(xLeft, xLeft + inset, yTop, yTop + inset, 0, inset, topOffset,
                 topOffset + inset);
         builder.quadNonNormalized(xLeft, xLeft + inset, yBottom - inset, yBottom, 0, inset,
@@ -96,8 +99,9 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public void render(final PoseStack stack, final int mx, final int my, final float tick) {
-        this.renderBackground(stack);
+    public void render(final GuiGraphics graphics, final int mx, final int my, final float tick) {
+        this.renderBackground(graphics, mx, my, tick);
+        final PoseStack stack = graphics.pose();
         final DrawInfo info = new DrawInfo(mx, my, stack, tick);
         drawBack(info, guiLeft, guiLeft + xSize, guiTop, guiTop + ySize);
         this.entityStack.forEach(entity -> entity.draw(info));
@@ -178,28 +182,49 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     @Override
-    public boolean mouseScrolled(final double mouseX, final double mouseY, final double scroll) {
+    public boolean mouseScrolled(final double mouseX, final double mouseY,
+            final double horizontalScroll, final double scroll) {
         if (scroll != 0) {
             this.entityStack.lastElement()
                     .mouseEvent(new MouseEvent(scroll, scroll, -1, EnumMouseState.SCROLL));
         }
-        return super.mouseScrolled(mouseX, mouseY, scroll);
+        return super.mouseScrolled(mouseX, mouseY, horizontalScroll, scroll);
     }
 
     @Override
-    protected void renderBg(final PoseStack stack, final float deltaTime, final int mouseX,
+    protected void renderBg(final GuiGraphics graphics, final float deltaTime, final int mouseX,
             final int mouseY) {
     }
 
-    @Override
-    public GuiEventListener getFocused() {
-        final GuiEventListener eventListener = new GuiEventListener() {
+    public void renderComponentTooltip(final PoseStack stack, final List<Component> list,
+            final int mouseX, final int mouseY) {
+        final GuiGraphics graphics = new DrawInfo(mouseX, mouseY, stack, 0).graphics();
+        graphics.renderComponentTooltip(this.font, list, mouseX, mouseY);
+        graphics.flush();
+    }
+
+    private final GuiEventListener focusListener = new GuiEventListener() {
+            private boolean focused = true;
+
+            @Override
+            public void setFocused(final boolean focused) {
+                this.focused = focused;
+            }
+
+            @Override
+            public boolean isFocused() {
+                return focused;
+            }
+
             @Override
             public boolean keyPressed(final int typedChar, final int keyCode, final int time) {
                 return true;
             }
         };
-        return eventListener;
+
+    @Override
+    public GuiEventListener getFocused() {
+        return focusListener;
     }
 
 }

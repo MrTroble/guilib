@@ -8,10 +8,11 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UITextInput extends UIComponent {
@@ -22,19 +23,21 @@ public class UITextInput extends UIComponent {
 
     public UITextInput(final String id) {
         final Minecraft mc = Minecraft.getInstance();
-        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, new TranslatableComponent(id));
+        this.textInput = new EditBox(mc.font, 0, 0, 0, 0, Component.translatable(id));
         this.textInput.setCanLoseFocus(false);
-        this.textInput.setFocus(false);
+        this.textInput.setFocused(false);
         this.textInput.setVisible(true);
         this.textInput.setEditable(true);
         this.textInput.setMaxLength(60);
         this.textInput.setValue(id);
-        this.textInput.moveCursorTo(0);
+        this.textInput.moveCursorTo(0, false);
     }
 
     @Override
     public void draw(final DrawInfo info) {
-        textInput.render(info.stack, info.mouseX, info.mouseY, info.tick);
+        final GuiGraphics graphics = info.graphics();
+        textInput.render(graphics, info.mouseX, info.mouseY, info.tick);
+        graphics.flush();
     }
 
     @Override
@@ -48,7 +51,7 @@ public class UITextInput extends UIComponent {
     public void setVisible(final boolean visible) {
         super.setVisible(visible);
         this.textInput.setVisible(visible);
-        this.textInput.setFocus(visible);
+        this.textInput.setFocused(visible);
         this.textInput.setEditable(visible);
     }
 
@@ -64,10 +67,10 @@ public class UITextInput extends UIComponent {
     public void mouseEvent(final MouseEvent event) {
         if (event.state.equals(EnumMouseState.CLICKED)) {
             if (this.parent.isHovered()) {
-                this.textInput.setFocus(true);
+                this.textInput.setFocused(true);
                 this.textInput.mouseClicked(event.x, event.y, event.key);
             } else {
-                this.textInput.setFocus(false);
+                this.textInput.setFocused(false);
             }
         }
     }

@@ -22,7 +22,7 @@ import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 import com.troblecodings.guilib.ecs.entitys.render.UILabel;
 import com.troblecodings.guilib.ecs.entitys.render.UIScissor;
-import com.troblecodings.guilib.ecs.entitys.render.UITexture;
+import com.troblecodings.guilib.ecs.entitys.render.UISprite;
 import com.troblecodings.guilib.ecs.entitys.render.UIToolTip;
 import com.troblecodings.guilib.ecs.entitys.transform.UIIndependentTranslate;
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
@@ -32,9 +32,10 @@ import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public final class GuiElements {
@@ -87,7 +88,7 @@ public final class GuiElements {
         final SoundManager handler = Minecraft.getInstance().getSoundManager();
 
         final UICheckBox middleButton = new UICheckBox(property.getName());
-        middleButton.setChecked(defaultValue == 0 ? false : true);
+        middleButton.setChecked(defaultValue != 0);
         final UIClickable clickable = new UIClickable(e -> {
             middleButton.setChecked(!middleButton.isChecked());
             consumer.accept(middleButton.isChecked() ? 1 : 0);
@@ -140,8 +141,9 @@ public final class GuiElements {
         orthogonal.setBounds(entity, insets);
         entity.add(button);
 
-        button.add(new UITexture(GuiBase.CREATIVE_TAB, 232.0f / 256.0f, 0, 244.0f / 256.0f,
-                15.0f / 256.0f));
+        button.add(new UISprite(
+                ResourceLocation.withDefaultNamespace(
+                        "container/creative_inventory/scroller")));
         entity.add(new UIColor(0xFF3d3d3d));
 
         entity.add(new UIScrollBar(scrollbox, insets, input -> {
@@ -166,7 +168,7 @@ public final class GuiElements {
             search.setInherits(true);
             final UITextInput input = new UITextInput("");
             search.add(input);
-            searchBar.add(createButton("<", 20, e -> e.getLastUpdateEvent().base.pop()));
+            searchBar.add(createButton("<", 20, e -> e.getLastUpdateEvent().base().pop()));
             searchBar.add(search);
 
             searchPanel.add(searchBar);
@@ -199,15 +201,13 @@ public final class GuiElements {
 
             inputList.forEach(entry -> list.add(entry.getValue()));
 
-            input.setOnTextUpdate(string -> {
-                inputList.forEach(entry -> {
-                    if (!entry.getKey().contains(string.toLowerCase())) {
-                        list.remove(entry.getValue());
-                    } else {
-                        list.add(entry.getValue());
-                    }
-                });
-            });
+            input.setOnTextUpdate(string -> inputList.forEach(entry -> {
+                if (!entry.getKey().contains(string.toLowerCase())) {
+                    list.remove(entry.getValue());
+                } else {
+                    list.add(entry.getValue());
+                }
+            }));
         });
     }
 
@@ -218,7 +218,7 @@ public final class GuiElements {
             nameToUIEntity.add(
                     Maps.immutableEntry("disable", createButton(property.getNamedObj(-1), e -> {
                         enumerable.setIndex(-1);
-                        e.getLastUpdateEvent().base.pop();
+                        e.getLastUpdateEvent().base().pop();
                     })));
         }
         for (int i = 0; i < property.count(); i++) {
@@ -226,7 +226,7 @@ public final class GuiElements {
             final String name = property.getNamedObj(i);
             final UIEntity button = createButton(name, e -> {
                 enumerable.setIndex(index);
-                e.getLastUpdateEvent().base.pop();
+                e.getLastUpdateEvent().base().pop();
             });
             nameToUIEntity.add(Maps.immutableEntry(name.toLowerCase(), button));
         }
@@ -269,7 +269,7 @@ public final class GuiElements {
 
     public static UIEntity createScreenBack(final Consumer<UIEntity> entityConsumer) {
         return createScreen(entityConsumer.andThen(
-                e -> e.add(createButton("<", 20, u -> u.getLastUpdateEvent().base.pop()))));
+                e -> e.add(createButton("<", 20, u -> u.getLastUpdateEvent().base().pop()))));
     }
 
     public static UIEntity createEnumElement(final UIEnumerable enumerable,
@@ -293,7 +293,7 @@ public final class GuiElements {
         middle.add(new UIOnUpdate(() -> acceptOr.accept(enumerable.getIndex())));
         middle.add(middleButton);
         middle.add(enumerable);
-        middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base
+        middle.add(new UIClickable(entity -> middle.getLastUpdateEvent().base()
                 .push(createSelectionScreen(enumerable, property))));
 
         acceptOr.accept(value);

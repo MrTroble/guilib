@@ -46,7 +46,7 @@ public class VectorWrapper implements INetworkSaveable, ISaveable {
     }
 
     public BlockPos addToPos(final BlockPos pos) {
-        return new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+        return BlockPos.containing(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
     }
 
     public VectorWrapper subtract(final VectorWrapper vec) {
@@ -113,20 +113,16 @@ public class VectorWrapper implements INetworkSaveable, ISaveable {
     }
 
     public VectorWrapper addOnAxis(final Axis axis, final int steps) {
-        switch (axis) {
-            case X:
-                return new VectorWrapper(this.x + steps, this.y, this.z);
-            case Y:
-                return new VectorWrapper(this.x, this.y + steps, this.z);
-            case Z:
-                return new VectorWrapper(this.x, this.y, this.z + steps);
-            default:
-                return this;
-        }
+        return switch (axis) {
+            case X -> new VectorWrapper(this.x + steps, this.y, this.z);
+            case Y -> new VectorWrapper(this.x, this.y + steps, this.z);
+            case Z -> new VectorWrapper(this.x, this.y, this.z + steps);
+            default -> this;
+        };
     }
 
     public Vec3i toMC3iVector() {
-        return new Vec3i(x, y, z);
+        return BlockPos.containing(x, y, z);
     }
 
     @Override

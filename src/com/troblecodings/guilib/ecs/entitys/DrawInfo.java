@@ -6,29 +6,37 @@ import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.troblecodings.guilib.ecs.entitys.render.UIColor;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class DrawInfo {
     public final int mouseX;
     public final int mouseY;
     public final PoseStack stack;
     public final float tick;
+    private BufferBuilder activeBuilder;
 
     public DrawInfo(final int mouseX, final int mouseY, final PoseStack stack, final float tick) {
         super();
@@ -36,6 +44,22 @@ public class DrawInfo {
         this.mouseY = mouseY;
         this.stack = stack;
         this.tick = tick;
+    }
+
+    public GuiGraphics graphics() {
+        final Minecraft mc = Minecraft.getInstance();
+        final GuiGraphics graphics = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
+        graphics.pose().last().pose().set(this.stack.last().pose());
+        graphics.pose().last().normal().set(this.stack.last().normal());
+        return graphics;
+    }
+
+    public void drawString(final Font font, final String text, final float x, final float y,
+            final int color, final boolean shadow) {
+        final GuiGraphics graphics = graphics();
+        graphics.pose().translate(x, y, 0);
+        graphics.drawString(font, text, 0, 0, color, shadow);
+        graphics.flush();
     }
 
     public void drawTexture(final ResourceLocation location, 
@@ -53,7 +77,6 @@ public class DrawInfo {
         end();
         blendOff();
         depthOff();
-        disableTexture();
     }
     
     public void applyColor() {
@@ -77,12 +100,12 @@ public class DrawInfo {
         this.stack.scale((float) x, (float) y, (float) z);
     }
 
-    public void rotate(final Quaternion quaternion) {
+    public void rotate(final Quaternionf quaternion) {
         this.stack.mulPose(quaternion);
     }
     
     public void rotate(final float x, final float y, final float z) {
-    	rotate(Quaternion.fromXYZ(x, y, z));
+        rotate(new Quaternionf().rotationXYZ(x, y, z));
     }
 
     public void applyTexture(final ResourceLocation location) {
@@ -95,17 +118,24 @@ public class DrawInfo {
         MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.cutout());
         stack.pushPose();
-        final ModelBlockRenderer render = mc.getBlockRenderer().getModelRenderer();
         this.translate(info.vector.getX(), info.vector.getY(), info.vector.getZ());
         info.consumer.accept(this);
-        render.renderModel(this.stack.last(), consumer, info.state, info.model, 1.0f, 1.0f, 1.0f,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, info.wrapper);
+        final RandomSource random = RandomSource.create();
+        final ModelData data = info.wrapper.toModelData();
+        final Direction[] directions = Direction.values();
+        for (int side = 0; side <= directions.length; side++) {
+            random.setSeed(42L);
+            final Direction direction = side == directions.length ? null : directions[side];
+            for (final BakedQuad quad : info.model.getQuads(info.state, direction, random, data, null)) {
+                final int tint = quad.isTinted()
+                        ? mc.getBlockColors().getColor(info.state, null, null, quad.getTintIndex()) : -1;
+                consumer.putBulkData(this.stack.last(), quad, (tint >> 16 & 255) / 255.0f,
+                        (tint >> 8 & 255) / 255.0f, (tint & 255) / 255.0f, 1.0f,
+                        LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            }
+        }
         stack.popPose();
         bufferSource.endBatch();
-    }
-
-    public void disableTexture() {
-        RenderSystem.disableTexture();
     }
 
     public void color() {
@@ -198,12 +228,19 @@ public class DrawInfo {
     }
 
     public BufferWrapper builder(final VertexFormat.Mode mode, final VertexFormat format) {
-        final BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        builder.begin(mode, format);
-        return new BufferWrapper(builder, this.stack.last().pose());
+        if (activeBuilder != null)
+            throw new IllegalStateException("Finish the current GUI buffer before starting another");
+        activeBuilder = Tesselator.getInstance().begin(mode, format);
+        return new BufferWrapper(activeBuilder, this.stack.last().pose());
     }
 
     public void end() {
-        Tesselator.getInstance().end();
+        if (activeBuilder == null)
+            throw new IllegalStateException("No GUI buffer has been started");
+        final BufferBuilder builder = activeBuilder;
+        activeBuilder = null;
+        final MeshData mesh = builder.build();
+        if (mesh != null)
+            BufferUploader.drawWithShader(mesh);
     }
 }
