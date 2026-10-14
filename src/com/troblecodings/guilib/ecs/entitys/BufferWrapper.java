@@ -55,6 +55,19 @@ public class BufferWrapper {
         return this;
     }
 
+    public BufferWrapper quadItem(final float xLeft, final float xRight, final float yTop,
+            final float yBottom, final int color) {
+        final int r = UIColor.red(color);
+        final int g = UIColor.green(color);
+        final int b = UIColor.blue(color);
+        final int a = UIColor.alpha(color);
+        builder.pos(xRight, yTop, 0).color(r, g, b, a).tex(0, 0).normal(0, 0, 1).endVertex();
+        builder.pos(xLeft, yTop, 0).color(r, g, b, a).tex(1, 0).normal(0, 0, 1).endVertex();
+        builder.pos(xLeft, yBottom, 0).color(r, g, b, a).tex(1, 1).normal(0, 0, 1).endVertex();
+        builder.pos(xRight, yBottom, 0).color(r, g, b, a).tex(0, 1).normal(0, 0, 1).endVertex();
+        return this;
+    }
+
     public BufferWrapper quad(final float xLeft, final float xRight, final float yTop,
             final float yBottom, final float uStart, final float uEnd, final float vStart,
             final float vEnd) {
