@@ -55,7 +55,7 @@ public class NetworkHandler {
     }
 
     public void sendTo(final Player player, final WriteBuffer buffer) {
-        sendTo(player, buffer.build());
+        sendTo(player, buffer.getBuildedBuffer());
     }
 
     public void sendTo(final Player player, final ByteBuffer buf) {
