@@ -1,12 +1,12 @@
 package com.troblecodings.guilib.ecs.entitys;
 
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 
 public class UIBlockRender extends UIComponent {
 
     private UIBlockRenderInfo renderInfo;
+    protected final Quaternionf quaternion = new Quaternionf().rotationXYZ(0.0f, (float) Math.PI, 0.0f);
     protected boolean disable = false;
-    protected final Quaternion quaternion = Quaternion.fromXYZ(0.0f, (float) Math.PI, 0.0f);
     protected final float scale;
     protected final float height;
 
@@ -26,16 +26,12 @@ public class UIBlockRender extends UIComponent {
         }
     }
 
-    public void updateRotation(final Quaternion quaternion) {
+    public void updateRotation(final Quaternionf quaternion) {
         this.quaternion.mul(quaternion);
     }
 
     public void setDisable(final boolean disable) {
         this.disable = disable;
-    }
-
-    @Override
-    public void update() {
     }
 
     public void setBlockState(final UIBlockRenderInfo info) {

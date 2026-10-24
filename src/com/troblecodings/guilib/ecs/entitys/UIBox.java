@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import com.troblecodings.guilib.ecs.interfaces.IBoxMode;
 import com.troblecodings.guilib.ecs.interfaces.UIPagable;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIBox extends UIComponent implements UIPagable {

@@ -4,8 +4,8 @@ import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIScissor extends UIComponent {
@@ -27,16 +27,16 @@ public class UIScissor extends UIComponent {
 
     @Override
     public void updateEvent(final UpdateEvent lastUpdateEvent) {
-        this.height = (int) (parent.getHeight() * lastUpdateEvent.scaleFactor);
-        this.width = (int) (parent.getWidth() * lastUpdateEvent.scaleFactor);
+        this.height = (int) (parent.getHeight() * lastUpdateEvent.scaleFactor());
+        this.width = (int) (parent.getWidth() * lastUpdateEvent.scaleFactor());
         if (this.height < 0)
             this.height = 0;
         if (this.width < 0)
             this.width = 0;
-        this.x = (int) (parent.getLevelX() * lastUpdateEvent.scaleFactor
-                / lastUpdateEvent.guiScale);
-        this.y = (int) ((lastUpdateEvent.height - (int) parent.getLevelY()
-                - (int) parent.getHeight()) * lastUpdateEvent.scaleFactor);
+        this.x = (int) (parent.getLevelX() * lastUpdateEvent.scaleFactor()
+                / lastUpdateEvent.guiScale());
+        this.y = (int) ((lastUpdateEvent.height() - (int) parent.getLevelY()
+                - (int) parent.getHeight()) * lastUpdateEvent.scaleFactor());
     }
 
     @Override

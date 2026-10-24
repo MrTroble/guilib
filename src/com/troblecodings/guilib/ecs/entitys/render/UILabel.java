@@ -7,8 +7,8 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UILabel extends UIComponent {
@@ -40,7 +40,7 @@ public class UILabel extends UIComponent {
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
                     GlStateManager.DestFactor.ZERO);
-            renderer.draw(info.stack, string, restWidth, restHeight, stringColor);
+            info.drawString(renderer, string, restWidth, restHeight, stringColor, false);
             RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
