@@ -13,7 +13,7 @@ public class UIMultiBlockRender extends UIBlockRender {
 
     @Override
     public void draw(final DrawInfo info) {
-        if (!models.isEmpty()) {
+        if (!models.isEmpty() && !disable) {
             info.scale(scale, -scale, scale);
             info.translate(1.5, 0, 1.5);
             info.rotate(this.quaternion);
@@ -33,7 +33,8 @@ public class UIMultiBlockRender extends UIBlockRender {
 
     @Override
     public void setBlockState(final UIBlockRenderInfo info) {
-        if (!models.contains(info))
+        if (!models.contains(info)) {
             models.add(info);
+        }
     }
 }

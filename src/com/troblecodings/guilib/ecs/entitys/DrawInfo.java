@@ -62,8 +62,8 @@ public class DrawInfo {
         graphics.flush();
     }
 
-    public void drawTexture(final ResourceLocation location, 
-    		double w, double h, double u, double v, double mu, double mv) {
+    public void drawTexture(final ResourceLocation location,
+                            double w, double h, double u, double v, double mu, double mv) {
         depthOn();
         blendOn();
         applyTexture(location);
@@ -169,7 +169,7 @@ public class DrawInfo {
     }
     
     public boolean isScissorEnabled() {
-    	return GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
+        return GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
     }
 
     public int[] getScissorState() {
@@ -178,13 +178,13 @@ public class DrawInfo {
     	GL20.glGetIntegerv(GL20.GL_SCISSOR_BOX, values);
     	return values;
     }
-    
+
     public void scissorOn(final int x, final int y, final int width, final int height) {
         RenderSystem.enableScissor(x, y, width, height);
     }
 
     public void scissorOn() {
-	    GlStateManager._enableScissorTest();
+        GlStateManager._enableScissorTest();
     }
 
     public void scissorOff() {

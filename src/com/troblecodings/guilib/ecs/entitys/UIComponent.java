@@ -1,5 +1,6 @@
 package com.troblecodings.guilib.ecs.entitys;
 
+import com.troblecodings.core.HexConverter;
 import com.troblecodings.guilib.ecs.GuiConfigHandler;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
@@ -13,17 +14,18 @@ public abstract class UIComponent {
 
     protected UIEntity parent = null;
     protected boolean visible = true;
-    
-    protected int basicTextColor = GuiConfigHandler.basicTextColor.get();
-    protected int infoTextColor = GuiConfigHandler.infoTextColor.get();
-    protected int errorTextColor = GuiConfigHandler.errorTextColor.get();
+
+    protected String basicTextColor = GuiConfigHandler.basicTextColor.get();
+    protected String infoTextColor = GuiConfigHandler.infoTextColor.get();
+    protected String errorTextColor = GuiConfigHandler.errorTextColor.get();
 
     public abstract void draw(final DrawInfo info);
 
     public void exitDraw(final DrawInfo info) {
     }
 
-    public void update() {}
+    public void update() {
+    }
 
     public void onAdd(final UIEntity entity) {
         this.parent = entity;
@@ -65,14 +67,14 @@ public abstract class UIComponent {
     }
 
     public int getBasicTextColor() {
-        return basicTextColor;
+        return HexConverter.decodeARGB(basicTextColor);
     }
 
     public int getInfoTextColor() {
-        return infoTextColor;
+        return HexConverter.decodeARGB(infoTextColor);
     }
 
     public int getErrorTextColor() {
-        return errorTextColor;
+        return HexConverter.decodeARGB(errorTextColor);
     }
 }
