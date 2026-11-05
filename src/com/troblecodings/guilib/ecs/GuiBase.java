@@ -29,8 +29,8 @@ public abstract class GuiBase extends GuiScreen {
     private static final int GUI_MAX_HEIGHT = 300;
     private static final int GUI_INSET = 4;
 
-    public static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
-            "textures/gui/container/creative_inventory/tabs.png");
+    public static final ResourceLocation CREATIVE_TAB =
+            new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
     protected int guiLeft;
     protected int guiTop;
@@ -77,8 +77,8 @@ public abstract class GuiBase extends GuiScreen {
         info.color();
         info.blendOn();
         info.depthOn();
-        final BufferWrapper builder = info.builder(GL11.GL_QUADS,
-                DefaultVertexFormats.POSITION_TEX);
+        final BufferWrapper builder =
+                info.builder(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         final int inset = 8;
         final int topOffset = 32;
         final int leftOffset = 20;
@@ -140,6 +140,8 @@ public abstract class GuiBase extends GuiScreen {
     }
 
     public UIEntity pop() {
+        if (this.entityStack.isEmpty())
+            return new UIEntity();
         final UIEntity old = this.entityStack.pop();
         this.entityStack.lastElement().setHoveringEnabled(true);
         return old;
@@ -179,7 +181,7 @@ public abstract class GuiBase extends GuiScreen {
                 .mouseEvent(new MouseEvent(mouseX, mouseY, lastButton, EnumMouseState.RELEASE));
         super.mouseReleased(mouseX, mouseY, state);
     }
-    
+
     @Override
     protected void mouseClickMove(final int mouseX, final int mouseY, final int clickedMouseButton,
             final long timeSinceLastClick) {
