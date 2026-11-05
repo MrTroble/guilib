@@ -70,10 +70,10 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
         info.blendOn();
         info.depthOn();
         final BufferWrapper builder = info.builder(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        final int inset = 8;
+        final int inset = 4;
         final int topOffset = 0;
-        final int leftOffset = 187;
-        final int bottomOffset = 128;
+        final int leftOffset = 191;
+        final int bottomOffset = 132;
         builder.quadNonNormalized(xLeft, xLeft + inset, yTop, yTop + inset, 0, inset, topOffset,
                 topOffset + inset);
         builder.quadNonNormalized(xLeft, xLeft + inset, yBottom - inset, yBottom, 0, inset,
