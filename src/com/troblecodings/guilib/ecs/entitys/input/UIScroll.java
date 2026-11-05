@@ -7,8 +7,8 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIScroll extends UIComponent {
@@ -26,11 +26,6 @@ public class UIScroll extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    }
-
-    @Override
-    public void update() {
-
     }
 
     @Override

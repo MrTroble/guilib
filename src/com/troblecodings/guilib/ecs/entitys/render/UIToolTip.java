@@ -6,14 +6,12 @@ import java.util.List;
 import com.troblecodings.core.I18Wrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
-import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIToolTip extends UIComponent {
@@ -57,21 +55,14 @@ public class UIToolTip extends UIComponent {
             if (base != null) {
                 final List<Component> listComp = new ArrayList<>();
                 for(String value : desc.split(String.format("%n")))
-                	listComp.add(new TextComponent(value));
-                base.base.renderComponentTooltip(info.stack, listComp, info.mouseX, info.mouseY);
+                    listComp.add(Component.literal(value));
+                base.base().renderComponentTooltip(info.stack, listComp, info.mouseX, info.mouseY);
             }
         }
-    }
-
-    @Override
-    public void keyEvent(final KeyEvent event) {
     }
 
     @Override
     public void draw(final DrawInfo info) {
     }
 
-    @Override
-    public void update() {
-    }
 }

@@ -1,16 +1,16 @@
 package com.troblecodings.guilib.ecs.entitys.render;
 
-import com.troblecodings.guilib.ecs.DrawUtil;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIButton extends UIComponent {
@@ -19,8 +19,10 @@ public class UIButton extends UIComponent {
     public static final int DEFAULT_DISABLED_COLOR = 10526880;
     public static final int DEFAULT_HOVER_COLOR = 16777120;
 
-    public static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation(
-            "textures/gui/widgets.png");
+    private static final WidgetSprites SPRITES = new WidgetSprites(
+            ResourceLocation.withDefaultNamespace("widget/button"),
+            ResourceLocation.withDefaultNamespace("widget/button_disabled"),
+            ResourceLocation.withDefaultNamespace("widget/button_highlighted"));
 
     private String text;
     private boolean enabled;
@@ -37,25 +39,19 @@ public class UIButton extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         if (this.visible) {
-            info.applyTexture(BUTTON_TEXTURES);
+            final GuiGraphics graphics = info.graphics();
             info.color();
-            info.depthOff();
-            final int offsetV = enabled ? (parent.isHovered() ? 2 : 1) : 0;
-            GuiUtils.drawTexturedModalRect(info.stack, 0, 0, 0, 46 + offsetV * 20,
-                    (int) parent.getWidth() / 2, (int) parent.getHeight(), 0);
-            GuiUtils.drawTexturedModalRect(info.stack, (int) parent.getWidth() / 2, 0,
-                    200 - (int) parent.getWidth() / 2, 46 + offsetV * 20,
-                    (int) parent.getWidth() / 2, (int) parent.getHeight(), 0);
+            info.blendOn();
+            graphics.blitSprite(SPRITES.get(enabled, parent.isHovered()), 0, 0,
+                    (int) parent.getWidth(), (int) parent.getHeight());
             final int colorUsed = enabled
                     ? (parent.isHovered() ? DEFAULT_HOVER_COLOR : DEFAULT_COLOR)
                     : DEFAULT_DISABLED_COLOR;
-            DrawUtil.drawCenteredString(info, fontrenderer, this.text, (int) parent.getWidth() / 2,
+            graphics.drawCenteredString(fontrenderer, this.text, (int) parent.getWidth() / 2,
                     ((int) parent.getHeight() - 8) / 2, colorUsed);
+            graphics.flush();
+            info.depthOff();
         }
-    }
-
-    @Override
-    public void update() {
     }
 
     @Override

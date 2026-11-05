@@ -2,13 +2,13 @@ package com.troblecodings.guilib.ecs.entitys;
 
 import java.util.function.IntConsumer;
 
-import com.troblecodings.guilib.ecs.DrawUtil;
 import com.troblecodings.guilib.ecs.entitys.render.UIButton;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.GuiUtils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UICheckBox extends UIComponent {
@@ -35,12 +35,19 @@ public class UICheckBox extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
         final Minecraft mc = Minecraft.getInstance();
-        GuiUtils.drawContinuousTexturedBox(info.stack, UIButton.BUTTON_TEXTURES, 0, 0, 0, 46,
-                BOX_WIDTH, BOX_WIDTH, 200, 20, 2, 3, 2, 2, 0);
+        final GuiGraphics graphics = info.graphics();
+        final boolean hovered = enabled && parent.isHovered();
+        final String sprite = checked
+                ? (hovered ? "widget/checkbox_selected_highlighted" : "widget/checkbox_selected")
+                : (hovered ? "widget/checkbox_highlighted" : "widget/checkbox");
+        info.color();
+        info.blendOn();
+        graphics.blitSprite(ResourceLocation.withDefaultNamespace(sprite), 0, 0,
+                BOX_WIDTH, BOX_WIDTH);
         final int color = this.enabled ? UIButton.DEFAULT_COLOR : UIButton.DEFAULT_DISABLED_COLOR;
-        if (this.isChecked())
-            DrawUtil.drawCenteredString(info, mc.font, "x", BOX_WIDTH / 2 + 1, 1, 14737632);
-        mc.font.drawShadow(info.stack, text, BOX_WIDTH + 2.0f, 2.0f, color);
+        graphics.drawString(mc.font, text, BOX_WIDTH + 2, 2, color);
+        graphics.flush();
+        info.depthOff();
     }
 
     public IntConsumer getOnChange() {

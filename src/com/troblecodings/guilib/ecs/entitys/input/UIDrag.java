@@ -6,8 +6,8 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.interfaces.BiDoubleConsumer;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIDrag extends UIComponent {
@@ -30,11 +30,6 @@ public class UIDrag extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    }
-
-    @Override
-    public void update() {
-
     }
 
     @Override

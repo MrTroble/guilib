@@ -3,6 +3,7 @@ package com.troblecodings.core;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
+import net.neoforged.bus.api.IEventBus;
 
 import com.google.common.collect.Maps;
 import com.troblecodings.core.net.NetworkHandler;
@@ -24,8 +25,8 @@ public final class UIInit {
      * @param modid , the modid of the owning mod
      */
     public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
-            final Logger logger) {
-        return initCommon(modid, logger, false);
+            final Logger logger, final IEventBus eventBus) {
+        return initCommon(modid, logger, false, eventBus);
     }
 
     /**
@@ -36,10 +37,10 @@ public final class UIInit {
      * @param debug , whether debugging should be enabled or not
      */
     public static Map.Entry<GuiHandler, NetworkHandler> initCommon(final String modid,
-            final Logger logger, final boolean debug) {
+            final Logger logger, final boolean debug, final IEventBus eventBus) {
         UIInit.debug = debug;
-        return Maps.immutableEntry(new GuiHandler(modid, logger),
-                new NetworkHandler(modid, logger));
+        return Maps.immutableEntry(new GuiHandler(modid, logger, eventBus),
+                new NetworkHandler(modid, logger, eventBus));
     }
 
     /**

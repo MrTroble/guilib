@@ -6,8 +6,8 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity.KeyEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.UpdateEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class UIComponent {

@@ -5,8 +5,8 @@ import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UITexture extends UIComponent {
@@ -15,7 +15,7 @@ public class UITexture extends UIComponent {
     private final ResourceLocation texture;
 
     public UITexture(final TextureAtlasSprite sprite) {
-        this(sprite.atlas().location(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
+        this(sprite.atlasLocation(), sprite.getU0(), sprite.getV0(), sprite.getU1(),
                 sprite.getV1());
     }
 
@@ -35,10 +35,6 @@ public class UITexture extends UIComponent {
     @Override
     public void draw(final DrawInfo info) {
     	info.drawTexture(texture, parent.getWidth(), parent.getHeight(), u, v, mu, mv);
-    }
-
-    @Override
-    public void update() {
     }
 
 }

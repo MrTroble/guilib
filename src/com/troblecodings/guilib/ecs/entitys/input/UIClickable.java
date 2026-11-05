@@ -8,8 +8,8 @@ import com.troblecodings.guilib.ecs.entitys.UIEntity;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.EnumMouseState;
 import com.troblecodings.guilib.ecs.entitys.UIEntity.MouseEvent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIClickable extends UIComponent {
@@ -28,10 +28,6 @@ public class UIClickable extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-    }
-
-    @Override
-    public void update() {
     }
 
     @Override

@@ -3,34 +3,34 @@ package com.troblecodings.guilib.ecs.interfaces;
 import com.troblecodings.core.I18Wrapper;
 
 import net.minecraft.client.gui.Font;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public interface IIntegerable<T> {
 
-    public T getObjFromID(int obj);
+    T getObjFromID(int obj);
 
-    public int count();
+    int count();
 
-    public String getName();
+    String getName();
 
     @OnlyIn(Dist.CLIENT)
-    default public String getLocalizedName() {
+    default String getLocalizedName() {
         return I18Wrapper.format("property." + this.getName() + ".name");
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public String getNamedObj(final int obj) {
+    default String getNamedObj(final int obj) {
         return getLocalizedName() + ": " + I18Wrapper.format("property.value." + getObjFromID(obj));
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public String getDescriptionForName() {
+    default String getDescriptionForName() {
         return I18Wrapper.format("property." + this.getName() + ".desc");
     }
 
     @OnlyIn(Dist.CLIENT)
-    default public int getMaxWidth(final Font render) {
+    default int getMaxWidth(final Font render) {
         int ret = 0;
         for (int i = 0; i < this.count(); i++) {
             final int newVal = render.width(getNamedObj(i));

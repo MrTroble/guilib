@@ -7,8 +7,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.troblecodings.guilib.ecs.GuiBase;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
@@ -27,8 +27,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     private boolean enableHovering;
     private boolean layoutable;
 
-    protected ArrayList<UIEntity> children = new ArrayList<>();
-    protected ArrayList<UIComponent> components = new ArrayList<>();
+    ArrayList<UIEntity> children = new ArrayList<>();
+    private final ArrayList<UIComponent> components = new ArrayList<>();
 
     public UIEntity() {
         this.setVisible(true);
@@ -75,8 +75,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
     public synchronized void update() {
         if (lastUpdateEvent != null) {
             updateWorld();
-            Lists.newArrayList(components).forEach(c -> c.update());
-            Lists.newArrayList(children).forEach(c -> c.update());
+            Lists.newArrayList(components).forEach(UIComponent::update);
+            Lists.newArrayList(children).forEach(UIEntity::update);
         }
     }
 
@@ -156,7 +156,7 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
 
     @Override
     public synchronized void onClosed() {
-        children.forEach(c -> c.onClosed());
+        children.forEach(UIEntity::onClosed);
     }
 
     @SuppressWarnings("unchecked")
@@ -268,22 +268,8 @@ public final class UIEntity extends UIComponent implements Iterable<UIEntity> {
         CLICKED, RELEASE, MOVE, SCROLL
     }
 
-    public static final class UpdateEvent {
+    public record UpdateEvent(int width, int height, double scaleFactor, int guiScale, GuiBase base) {
 
-        public final int width;
-        public final int height;
-        public final double scaleFactor;
-        public final int guiScale;
-        public final GuiBase base;
-
-        public UpdateEvent(final int width, final int height, final double scaleFactor,
-                final int guiScale, final GuiBase base) {
-            this.width = width;
-            this.height = height;
-            this.scaleFactor = scaleFactor;
-            this.guiScale = guiScale;
-            this.base = base;
-        }
     }
 
     public static final class KeyEvent {

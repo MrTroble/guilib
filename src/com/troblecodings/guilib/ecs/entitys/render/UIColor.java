@@ -6,8 +6,8 @@ import com.troblecodings.guilib.ecs.entitys.BufferWrapper;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIColor extends UIComponent {
@@ -37,11 +37,6 @@ public class UIColor extends UIComponent {
             info.end();
             info.blendOff();
         }
-    }
-
-    @Override
-    public void update() {
-
     }
 
     public int getColor() {

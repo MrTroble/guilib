@@ -1,11 +1,11 @@
 package com.troblecodings.guilib.ecs.entitys.transform;
 
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.troblecodings.guilib.ecs.entitys.DrawInfo;
 import com.troblecodings.guilib.ecs.entitys.UIComponent;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class UIRotate extends UIComponent {
@@ -16,11 +16,7 @@ public class UIRotate extends UIComponent {
 
     @Override
     public void draw(final DrawInfo info) {
-        info.stack.mulPose(Quaternion.fromXYZ(rotateX, rotateY, rotateZ));
-    }
-
-    @Override
-    public void update() {
+        info.stack.mulPose(new Quaternionf().rotationXYZ(rotateX, rotateY, rotateZ));
     }
 
     public float getRotateX() {
