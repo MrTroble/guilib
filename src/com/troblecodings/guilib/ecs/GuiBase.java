@@ -27,8 +27,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     private static final int GUI_MAX_HEIGHT = 300;
     private static final int GUI_INSET = 4;
 
-    public static final ResourceLocation CREATIVE_TAB = new ResourceLocation(
-            "textures/gui/container/creative_inventory/tabs.png");
+    public static final ResourceLocation CREATIVE_TAB =
+            new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
     protected int guiLeft;
     protected int guiTop;
@@ -125,6 +125,8 @@ public class GuiBase extends AbstractContainerScreen<ContainerBase> {
     }
 
     public UIEntity pop() {
+        if (this.entityStack.isEmpty())
+            return new UIEntity();
         final UIEntity old = this.entityStack.pop();
         this.entityStack.lastElement().setHoveringEnabled(true);
         return old;
